@@ -18,13 +18,13 @@ import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
     int position;
-    private ArrayList<CalendarEvents> arrayList = new ArrayList<CalendarEvents>();
+    private ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
     private int selectedPos = 0;
 
     Context ctx;
 
     //Constructor for the RecyclerAdapter
-    public RecyclerAdapter(ArrayList<CalendarEvents> arrayList,Context ctx){
+    public RecyclerAdapter(ArrayList<CalendarEvent> arrayList, Context ctx){
         this.arrayList = arrayList;
         this.ctx =ctx;
 
@@ -45,7 +45,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
 
         //Attach the values we retrieve from the Item class to the values.
-        final CalendarEvents event = arrayList.get(position);
+        final CalendarEvent event = arrayList.get(position);
 
         holder.date.setText(event.getDate()+"");
         holder.event.setText(event.getEvent());
@@ -77,11 +77,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
         TextView date,event;
         private View container;
-        ArrayList<CalendarEvents> events = new ArrayList<CalendarEvents>();
+        ArrayList<CalendarEvent> events = new ArrayList<CalendarEvent>();
         Context ctx;
 
         //Constructor for the view holder.
-        public RecyclerViewHolder(View view, Context ctx, ArrayList<CalendarEvents> events){
+        public RecyclerViewHolder(View view, Context ctx, ArrayList<CalendarEvent> events){
             super(view);
             this.events = events;
             this.ctx = ctx;
@@ -102,7 +102,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
             //Find out which item was clicked
             int position = getAdapterPosition();
-            CalendarEvents event = this.events.get(position);
+            CalendarEvent event = this.events.get(position);
             if(event != null) {
                 //Create new intent that gets us to the next activity.
                 //Intent intent = new Intent(ctx, ItemDetails.class);

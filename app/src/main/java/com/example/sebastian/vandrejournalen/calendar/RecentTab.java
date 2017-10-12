@@ -25,7 +25,7 @@ public class RecentTab extends Fragment {
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<CalendarEvents> arrayList = new ArrayList<CalendarEvents>();
+    ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
     Schedule calendar = new Schedule();
 
     @Nullable
@@ -56,8 +56,8 @@ public class RecentTab extends Fragment {
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
-        calendar.getRecentEvents(arrayList);
-        adapter = new RecyclerAdapter(arrayList, getActivity());
+
+        adapter = new RecyclerAdapter(calendar.getRecentEvents(), getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

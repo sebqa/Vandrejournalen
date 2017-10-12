@@ -24,7 +24,7 @@ public class UpcomingTab extends Fragment {
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<CalendarEvents> arrayList = new ArrayList<CalendarEvents>();
+    ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
     Schedule calendar = new Schedule();
     @Nullable
     @Override
@@ -53,8 +53,8 @@ public class UpcomingTab extends Fragment {
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
-        calendar.getUpcomingEvents(arrayList);
-        adapter = new RecyclerAdapter(arrayList, getActivity());
+
+        adapter = new RecyclerAdapter(calendar.getUpcomingEvents(), getActivity());
 
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);

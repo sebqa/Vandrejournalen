@@ -13,13 +13,13 @@ import android.view.MenuItem;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
-import com.example.sebastian.vandrejournalen.calendar.CalendarEvents;
+import com.example.sebastian.vandrejournalen.calendar.CalendarEvent;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
-    ArrayList<CalendarEvents> arrayList = new ArrayList<CalendarEvents>();
+    ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
     Schedule scheduleFrag = new Schedule();
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
 

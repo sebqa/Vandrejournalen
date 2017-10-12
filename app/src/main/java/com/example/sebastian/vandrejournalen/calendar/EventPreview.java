@@ -15,7 +15,7 @@ import com.example.sebastian.journalapp.R;
 
 public class EventPreview extends Fragment {
 
-    private CalendarEvents event;
+    private CalendarEvent event;
     TextView previewText,blodtryk;
 
 
@@ -27,7 +27,7 @@ public class EventPreview extends Fragment {
         setHasOptionsMenu(true);
 
         Log.d("EVNENTNETNET","WERWERWER");
-        event = (CalendarEvents) getArguments().getSerializable("event");
+        event = (CalendarEvent) getArguments().getSerializable("event");
         previewText = rootView.findViewById(R.id.previewText);
         blodtryk = rootView.findViewById(R.id.blodtryk);
         event.setBlodtryk("120 over 80");
@@ -46,7 +46,7 @@ public class EventPreview extends Fragment {
         //Detach listeners
     }
 
-    public static EventPreview newInstance(CalendarEvents calendarEvents) {
+    public static EventPreview newInstance(CalendarEvent calendarEvents) {
         EventPreview fragment = new EventPreview();
         Bundle args = new Bundle();
         args.putSerializable("event",calendarEvents);

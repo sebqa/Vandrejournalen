@@ -15,12 +15,14 @@ import com.example.sebastian.journalapp.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 
 import br.com.jpttrindade.calendarview.view.CalendarView;
 
 public class CalendarTab extends Fragment {
     public CalendarView calendarView;
+    ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
+    Schedule calendar = new Schedule();
 
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
 
@@ -32,7 +34,14 @@ public class CalendarTab extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_calendartab,container,false);
         setHasOptionsMenu(true);
         calendarView =  rootView.findViewById(R.id.calendarView);
-        calendarView.addEvent(16,9,2017);
+
+        calendar.getRecentEvents();
+
+        for (int i=0;i<arrayList.size();i++){
+            arrayList.get(i).getDate();
+        }
+
+        //calendarView.addEvent(cEvent);
         calendarView.setOnDayClickListener(new CalendarView.OnDayClickListener() {
             @Override
             public void onClick(int day, int month, int year, boolean hasEvent) {
