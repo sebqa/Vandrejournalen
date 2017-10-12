@@ -7,12 +7,15 @@ import java.util.Date;
  * Created by Sebastian on 27-09-2017.
  */
 
-public class CalendarEvents implements Serializable {
+public class CalendarEvent implements Serializable {
 
 
 
     public String event;
     public String date;
+    int day;
+    int month;
+    int year;
 
     public int getGestationsalder() {
         return gestationsalder;
@@ -60,10 +63,15 @@ public class CalendarEvents implements Serializable {
     public String urinASLeuNit;
     public String Ødem;
 
-    public CalendarEvents (String date, String event){
+    public CalendarEvent(String date, String event){
         this.date = date;
         this.event = event;
 
+    }
+    public CalendarEvent(int day, int month, int year){
+        this.day = day;
+        this.month = month;
+        this.year = year;
     }
 
     public String getDate() {

@@ -20,6 +20,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:fontFamily="sans-serif"
+        android:paddingLeft="8dp"
         />
 
     <TextView
@@ -30,7 +31,9 @@
         android:textSize="15sp"
         android:layout_below="@+id/eventDate"
         android:layout_marginBottom="1dp"
-         />
+        android:paddingLeft="8dp"
+
+        />
 
 
 </RelativeLayout>
