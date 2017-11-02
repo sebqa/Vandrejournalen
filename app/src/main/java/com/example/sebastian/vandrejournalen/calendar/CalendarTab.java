@@ -48,10 +48,14 @@ public class CalendarTab extends Fragment {
 
 
         calendarView.addEvent(3,11,2017);
+
+        calendarView.addEvent(6,11,2017);
+        calendarView.addEvent(9,11,2017);
+
         calendarView.setOnDayClickListener(new CalendarView.OnDayClickListener() {
             @Override
             public void onClick(int day, int month, int year, boolean hasEvent) {
-                Toast.makeText(getActivity(), day+"/"+month+"/"+year + " hasEvent="+hasEvent, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), day+"/"+month+"/"+year + " hasEvent="+hasEvent, Toast.LENGTH_SHORT).show();
                 if (hasEvent) {
                     mListener.showPreview(new CalendarEvent(""+day+"/"+month+"/"+year,"FEEEEST"));
                 } else{
