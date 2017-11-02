@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void showPreview(CalendarEvent calendarEvent) {
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        appointText.setText(getResources().getString(R.string.appointment)+": "+calendarEvent.event);
+        appointText.setText(calendarEvent.event);
         previewDate.setText(calendarEvent.date);
 
     }

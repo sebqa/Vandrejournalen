@@ -51,6 +51,10 @@ dependencies {
     compile 'com.sothree.slidinguppanel:library:3.4.0'
 
 
+    //StickyScrollView - https://github.com/emilsjolander/StickyScrollViewItems
+    compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
+
+
 
 
 
