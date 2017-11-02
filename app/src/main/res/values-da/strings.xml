@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">Vandrejournalen</string>
     <string name="action_settings">Skift tema</string>
+    <string name="calendar">Kalender</string>
+    <string name="change_language">English</string>
+    <string name="notes">Noter</string>
+    <string name="overview">Oversigt</string>
+    <string name="appointment">Aftale</string>
 </resources>

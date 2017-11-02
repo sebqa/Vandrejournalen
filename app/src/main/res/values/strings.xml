@@ -3,10 +3,15 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
+    <string name="calendar">Calendar</string>
     <string name="action_settings">Change theme</string>
     <string name="title_activity_authentication">AuthenticationActivity</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="change_language">Dansk</string>
+    <string name="notes">Notes</string>
+    <string name="overview">Overview</string>
+    <string name="appointment">Appointment</string>
+    <string name ="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Suscipit tellus mauris a diam maecenas sed enim ut sem. Fringilla ut morbi tincidunt augue interdum. Suspendisse ultrices gravida dictum fusce ut placerat orci nulla pellentesque. Arcu bibendum at varius vel pharetra vel turpis. Turpis tincidunt id aliquet risus feugiat in ante metus dictum. Iaculis eu non diam phasellus vestibulum lorem sed. Non blandit massa enim nec dui nunc mattis enim. Enim diam vulputate ut pharetra sit amet aliquam. Nulla aliquet porttitor lacus luctus accumsan. Sapien et ligula ullamcorper malesuada. Aliquam purus sit amet luctus venenatis lectus magna fringilla. At ultrices mi tempus imperdiet nulla malesuada. Sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec. Nisi quis eleifend quam adipiscing vitae proin. Et molestie ac feugiat sed lectus vestibulum mattis. Diam maecenas ultricies mi eget mauris.</string>
 </resources>

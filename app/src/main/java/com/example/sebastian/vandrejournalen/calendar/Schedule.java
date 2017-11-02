@@ -1,5 +1,7 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import com.example.sebastian.journalapp.R;
 import com.google.gson.Gson;
@@ -21,6 +25,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import br.com.jpttrindade.calendarview.view.CalendarView;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -43,11 +50,11 @@ public class Schedule extends Fragment  {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.test,container,false);
-        getActivity().setTitle("Schedule");
+        View rootView = inflater.inflate(R.layout.fragment_schedule,container,false);
+        getActivity().setTitle(rootView.getResources().getString(R.string.overview));
 
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(getFragmentManager());
+        adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext());
         vpPager.setAdapter(adapterViewPager);
         vpPager.setOffscreenPageLimit(3);
 
@@ -57,14 +64,7 @@ public class Schedule extends Fragment  {
         TabLayout tabLayout = rootView.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
 
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Add new note", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
 
 
         return rootView;
@@ -128,7 +128,6 @@ public class Schedule extends Fragment  {
 
         return recentEvents;
     }
-
 
 }
 

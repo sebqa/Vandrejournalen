@@ -2,6 +2,8 @@ package com.example.sebastian.vandrejournalen.calendar;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
  * Created by Sebastian on 30-12-2016.
  */
 
-public class RecentTab extends Fragment {
+public class NotesListTab extends Fragment {
 
 
     RecyclerView recyclerView;
@@ -31,10 +33,18 @@ public class RecentTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recent,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_noteslist,container,false);
         setHasOptionsMenu(true);
         recyclerView =  rootView.findViewById(R.id.recentRecyclerView);
 
+        FloatingActionButton fab = rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Add new note", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
         initList();
         return rootView;
     }
@@ -45,8 +55,8 @@ public class RecentTab extends Fragment {
         //Detach listeners
     }
 
-    public static RecentTab newInstance() {
-        RecentTab fragment = new RecentTab();
+    public static NotesListTab newInstance() {
+        NotesListTab fragment = new NotesListTab();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
