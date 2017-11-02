@@ -1,6 +1,8 @@
 package com.example.sebastian.vandrejournalen;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,22 +10,32 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.example.sebastian.vandrejournalen.calendar.CalendarEvent;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, CalendarTab.OnFragmentInteractionListener{
     ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
     Schedule scheduleFrag = new Schedule();
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
-
+    Locale mylocale;
     public static int theme = 0;
+    TextView previewDate,appointText;
+    private SlidingUpPanelLayout slidingUpPanelLayout;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (theme == 0){
@@ -46,7 +58,11 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+        previewDate = findViewById(R.id.previewDate);
+        appointText = findViewById(R.id.appointTitle);
 
+        slidingUpPanelLayout = findViewById(R.id.sliding_layout);
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         loadCalendar();
     }
 
@@ -86,6 +102,16 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             finish();
             return true;
+        }
+        if (id == R.id.change_lang) {
+            if(mylocale == null ){
+                setLanguage("da");
+            } else if(mylocale.getCountry().equals("default")){
+                setLanguage("da");
+            } else{
+                setLanguage("default");
+            }
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -140,9 +166,32 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        overridePendingTransition(0, 0);
-        fn.beginTransaction().remove(scheduleFrag);
-        finish();
 
+
+    }
+
+    protected void setLanguage(String language){
+        mylocale=new Locale(language);
+        Resources resources=getResources();
+        DisplayMetrics dm=resources.getDisplayMetrics();
+        Configuration conf= resources.getConfiguration();
+        conf.locale=mylocale;
+        resources.updateConfiguration(conf,dm);
+        Intent refreshIntent=new Intent(MainActivity.this,MainActivity.class);
+        finish();
+        startActivity(refreshIntent);
+    }
+
+    @Override
+    public void showPreview(CalendarEvent calendarEvent) {
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        appointText.setText(getResources().getString(R.string.appointment)+": "+calendarEvent.event);
+        previewDate.setText(calendarEvent.date);
+
+    }
+
+    @Override
+    public void removePreview() {
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 }

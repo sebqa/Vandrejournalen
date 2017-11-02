@@ -1,7 +1,10 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
+import android.app.usage.UsageEvents;
+import android.content.Context;
 import android.os.Bundle;
 
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.authentication.LoginFragment;
 
 
 import java.text.DateFormat;
@@ -25,6 +29,7 @@ public class CalendarTab extends Fragment {
     Schedule calendar = new Schedule();
 
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
+    private CalendarTab.OnFragmentInteractionListener mListener;
 
 
 
@@ -41,13 +46,16 @@ public class CalendarTab extends Fragment {
             arrayList.get(i).getDate();
         }
 
-        //calendarView.addEvent(cEvent);
+
+        calendarView.addEvent(3,11,2017);
         calendarView.setOnDayClickListener(new CalendarView.OnDayClickListener() {
             @Override
             public void onClick(int day, int month, int year, boolean hasEvent) {
                 Toast.makeText(getActivity(), day+"/"+month+"/"+year + " hasEvent="+hasEvent, Toast.LENGTH_SHORT).show();
                 if (hasEvent) {
-
+                    mListener.showPreview(new CalendarEvent(""+day+"/"+month+"/"+year,"FEEEEST"));
+                } else{
+                    mListener.removePreview();
                 }
             }
         });
@@ -86,6 +94,20 @@ public class CalendarTab extends Fragment {
     }
 
 
+    public interface OnFragmentInteractionListener {
+        void showPreview(CalendarEvent calendarEvent);
 
+        void removePreview();
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CalendarTab.OnFragmentInteractionListener) {
+            mListener = (CalendarTab.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 }

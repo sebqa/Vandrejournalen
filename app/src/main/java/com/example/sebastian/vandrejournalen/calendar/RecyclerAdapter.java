@@ -55,10 +55,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                 //Here goes your desired onClick behaviour. Like:
                 //You can change the fragment, something like this, not tested, please correct for your desired output:
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                EventPreview ep = EventPreview.newInstance(event);
+                /*EventPreview ep = EventPreview.newInstance(event);
                 //Create a bundle to pass data, add data, set the bundle to your fragment and:
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.previewContainer, ep).addToBackStack(null).commit();
-
+*/
             }
         });
 

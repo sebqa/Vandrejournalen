@@ -11,11 +11,11 @@
         android:layout_height="match_parent"
         app:dayHeight="60dp"
         app:dayWidth="48dp"
-        app:eventCircleColor="?attr/colorPrimaryDark"
+        app:eventCircleColor="?attr/colorPrimary"
         app:monthDividerSize="3dp"
         app:monthLabelHeight="30dp"
         app:monthLabelSize="14sp"
-        app:todayCircleColor="?attr/colorPrimary"
+        app:todayCircleColor="?attr/colorPrimaryDark"
         app:todayCircleSize="40dp"
         app:weekdayNameHeight="24dp">
 

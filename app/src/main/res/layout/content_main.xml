@@ -7,12 +7,91 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.sebastian.vandrejournalen.MainActivity"
     tools:showIn="@layout/app_bar_main">
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="68dp"
+        sothree:umanoShadowHeight="4dp"
+        sothree:umanoDragView="@id/sliding"
+
+        >
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/content_frame">
 
-    </FrameLayout>
 
+    </FrameLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sliding">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/appointment"
+                android:id="@+id/appointTitle"
+                android:gravity="center|top"
+                android:textSize="20sp"
+                android:padding="8dp"
+                android:background="?attr/colorPrimary"
+                android:textColor="#FFF"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/previewDate"
+                    android:text="98298h2839h2"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:padding="8dp"
+                    android:layout_marginTop="35sp"
+                    />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/previewDate"
+                    android:id="@+id/appointInfo">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lorem"
+                        android:id="@+id/appointText"
+                        />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/notes"
+                        android:gravity="center|top"
+                        android:textSize="20sp"
+                        android:padding="8dp"
+                        android:background="?attr/colorPrimary"
+                        android:textColor="#FFF"
+                        android:layout_below="@+id/appointText"
+                        android:id="@+id/notesTitle"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lorem"
+                        android:layout_below="@id/notesTitle"
+                        />
+
+                </RelativeLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 </android.support.constraint.ConstraintLayout>
