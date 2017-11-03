@@ -1,31 +1,25 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
-import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.os.Bundle;
 
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
-import com.example.sebastian.vandrejournalen.authentication.LoginFragment;
 
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import br.com.jpttrindade.calendarview.view.CalendarView;
 
 public class CalendarTab extends Fragment {
     public CalendarView calendarView;
-    ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
+    ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     Schedule calendar = new Schedule();
     private CalendarTab.OnFragmentInteractionListener mListener;
 
@@ -99,7 +93,7 @@ public class CalendarTab extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        void showPreview(CalendarEvent calendarEvent);
+        void showPreview(Appointment appointment);
 
         void removePreview();
     }

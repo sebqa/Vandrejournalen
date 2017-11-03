@@ -1,4 +1,4 @@
-package com.example.sebastian.vandrejournalen;
+package com.example.sebastian.vandrejournalen.calendar;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -16,9 +16,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
-import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
-import com.example.sebastian.vandrejournalen.calendar.Schedule;
-import com.example.sebastian.vandrejournalen.calendar.CalendarEvent;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
@@ -26,7 +23,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, CalendarTab.OnFragmentInteractionListener{
-    ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
+    ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     Schedule scheduleFrag = new Schedule();
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     Locale mylocale;
@@ -183,10 +180,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void showPreview(CalendarEvent calendarEvent) {
+    public void showPreview(Appointment appointment) {
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        appointText.setText(calendarEvent.event);
-        previewDate.setText(calendarEvent.getDay()+"/"+calendarEvent.getMonth()+"/"+calendarEvent.getYear());
+        appointText.setText(appointment.event);
+        previewDate.setText(appointment.getDay()+"/"+ appointment.getMonth()+"/"+ appointment.getYear()+"\n"+appointment.getTime());
+
 
     }
 

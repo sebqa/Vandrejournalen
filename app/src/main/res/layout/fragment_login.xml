@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sebastian.vandrejournalen.authentication.LoginFragment">
+    tools:context="com.example.sebastian.vandrejournalen.authentication.LoginFragment"
+    android:id="@+id/loginLayout">
 
-    <!-- TODO: Update blank fragment layout -->
+
+<!-- TODO: Update blank fragment layout -->
 
     <Button
         android:id="@+id/button"
@@ -37,7 +39,7 @@
         app:layout_constraintVertical_bias="0.272" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/usernameInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
