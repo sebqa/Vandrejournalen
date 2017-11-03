@@ -38,7 +38,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class Schedule extends Fragment  {
     FragmentPagerAdapter adapterViewPager;
     ArrayList<CalendarEvent> upcomingEvents = new ArrayList<CalendarEvent>();
-    ArrayList<CalendarEvent> recentEvents = new ArrayList<CalendarEvent>();
+    ArrayList<CalendarEvent> allEvents = new ArrayList<CalendarEvent>();
 
 
 
@@ -89,44 +89,17 @@ public class Schedule extends Fragment  {
         return upcomingEvents;
     }
 
-    public ArrayList<CalendarEvent> getRecentEvents(){
+    public ArrayList<CalendarEvent> getAllEvents(){
 
 
-        /*SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        Gson gson = new Gson();
-        String json = mPrefs.getString("recentEvents","");
-        if (json.isEmpty()) {
-            recentEvents = new ArrayList<CalendarEvent>();
-        } else {
-            Type type = new TypeToken<ArrayList<CalendarEvent>>() {
-            }.getType();
-            recentEvents = gson.fromJson(json, type);
-        }*/
+        final CalendarEvent event = new CalendarEvent(7,11,2017,"Læge");
+        final CalendarEvent event2 = new CalendarEvent(17,11,2017,"Jordemoder");
 
-        //Populate array
-        if(recentEvents.size() == 0) {
-            CalendarEvent event = new CalendarEvent("Friday 29-09-17", "KJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdb ");
-            recentEvents.add(event);
-            CalendarEvent event2 = new CalendarEvent("Thursday 28-09-17", "KJsd f3");
-            recentEvents.add(event2);
-            CalendarEvent event3 = new CalendarEvent("Wednesday 27-09-17", "KJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdbKJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdbKJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdbKJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdb ");
-            recentEvents.add(event3);
-            CalendarEvent event4 = new CalendarEvent("Tuesday 26-09-17", "KJSD kjasdasjkdksjaDBAKSJ jksakd ");
-            recentEvents.add(event4);
-            recentEvents.add(event3);
-            recentEvents.add(event3);
-            recentEvents.add(event3);
-            recentEvents.add(event3);
-            recentEvents.add(event);
+        allEvents.add(0,event);
+        allEvents.add(0,event2);
 
 
-
-
-
-        } else{
-        }
-
-        return recentEvents;
+        return allEvents;
     }
 
 }
