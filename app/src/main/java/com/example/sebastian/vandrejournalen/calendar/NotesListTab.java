@@ -78,7 +78,7 @@ public class NotesListTab extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
 
-        adapter = new RecyclerAdapter(calendar.getRecentEvents(), getActivity());
+        adapter = new RecyclerAdapter(calendar.getAllEvents(), getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

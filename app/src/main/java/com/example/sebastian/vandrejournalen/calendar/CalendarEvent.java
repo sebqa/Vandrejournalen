@@ -68,10 +68,11 @@ public class CalendarEvent implements Serializable {
         this.event = event;
 
     }
-    public CalendarEvent(int day, int month, int year){
+    public CalendarEvent(int day, int month, int year, String event){
         this.day = day;
         this.month = month;
         this.year = year;
+        this.event = event;
     }
 
     public String getDate() {
@@ -90,5 +91,29 @@ public class CalendarEvent implements Serializable {
 
     public void setEvent(String event) {
         this.event = event;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

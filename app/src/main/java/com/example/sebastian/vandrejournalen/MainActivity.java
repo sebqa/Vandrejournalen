@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.change_lang) {
             if(mylocale == null ){
                 setLanguage("da");
-            } else if(mylocale.getCountry().equals("default")){
+            } else if(mylocale.getCountry().equals("Default Value")){
                 setLanguage("da");
             } else{
-                setLanguage("default");
+                setLanguage("Default Value");
             }
 
         }
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
     public void showPreview(CalendarEvent calendarEvent) {
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         appointText.setText(calendarEvent.event);
-        previewDate.setText(calendarEvent.date);
+        previewDate.setText(calendarEvent.getDay()+"/"+calendarEvent.getMonth()+"/"+calendarEvent.getYear());
 
     }
 
