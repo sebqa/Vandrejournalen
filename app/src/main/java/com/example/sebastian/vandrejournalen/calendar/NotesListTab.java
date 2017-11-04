@@ -47,9 +47,9 @@ public class NotesListTab extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //alerttdialog box
+          /*      //alerttdialog box
             AlertDialog.Builder notesBuilder = new AlertDialog().Builder(this);
-            notesBuilder.setMessage(getResources().getString(R.string.new_note));
+            notesBuilder.setMessage(getResources().getString(R.string.new_note));*/
                /* Snackbar.make(view, "Add new note", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
 

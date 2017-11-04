@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     Schedule scheduleFrag = new Schedule();
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
-    Locale mylocale;
+    public static Locale mylocale;
     public static int theme = 0;
     TextView previewDate,appointText;
     private SlidingUpPanelLayout slidingUpPanelLayout;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+//setLanguage("en");
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -101,12 +102,13 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.change_lang) {
+            Log.d(""+mylocale, "onOptionsItemSelected: ");
             if(mylocale == null ){
                 setLanguage("da");
-            } else if(mylocale.getCountry().equals("Default Value")){
+            } else if(mylocale.getLanguage().equals("en")){
                 setLanguage("da");
             } else{
-                setLanguage("Default Value");
+                setLanguage("en");
             }
 
         }
