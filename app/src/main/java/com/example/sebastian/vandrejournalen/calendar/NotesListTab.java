@@ -1,5 +1,7 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 import com.example.sebastian.journalapp.R;
@@ -23,6 +27,8 @@ import java.util.ArrayList;
 
 public class NotesListTab extends Fragment {
 
+    EditText input;
+    Button showBtn;
 
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
@@ -41,8 +47,13 @@ public class NotesListTab extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Add new note", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //alerttdialog box
+            AlertDialog.Builder notesBuilder = new AlertDialog().Builder(this);
+            notesBuilder.setMessage(getResources().getString(R.string.new_note));
+               /* Snackbar.make(view, "Add new note", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
+
+
             }
         });
         initList();
