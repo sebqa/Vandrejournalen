@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by Sebastian on 27-09-2017.
  */
 
-public class CalendarEvent implements Serializable {
+public class Appointment implements Serializable {
 
 
 
@@ -63,16 +63,20 @@ public class CalendarEvent implements Serializable {
     public String urinASLeuNit;
     public String Ødem;
 
-    public CalendarEvent(String date, String event){
+
+    public String time;
+
+    public Appointment(String date, String event){
         this.date = date;
         this.event = event;
 
     }
-    public CalendarEvent(int day, int month, int year, String event){
+    public Appointment(int day, int month, int year,String time, String event){
         this.day = day;
         this.month = month;
         this.year = year;
         this.event = event;
+        this.time = time;
     }
 
     public String getDate() {
@@ -83,7 +87,13 @@ public class CalendarEvent implements Serializable {
         this.date = date;
     }
 
+    public String getTime() {
+        return time;
+    }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getEvent() {
         return event;

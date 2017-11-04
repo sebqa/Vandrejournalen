@@ -24,7 +24,7 @@ public class UpcomingTab extends Fragment {
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<CalendarEvent> arrayList = new ArrayList<CalendarEvent>();
+    ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     Schedule calendar = new Schedule();
     @Nullable
     @Override

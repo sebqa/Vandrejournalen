@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.sebastian.vandrejournalen.MainActivity"
+    tools:context="com.example.sebastian.vandrejournalen.calendar.MainActivity"
     tools:showIn="@layout/app_bar_main">
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         xmlns:sothree="http://schemas.android.com/apk/res-auto"
@@ -53,16 +53,17 @@
                             android:text="@string/appointment"
                             android:textSize="16sp"
                             android:textColor="#FFF"
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginLeft="@dimen/fab_margin"
                             />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/appointment"
                             android:id="@+id/appointTitle"
-                            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
                             android:textColor="#FFF"
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginLeft="@dimen/fab_margin"
                             />
                     </LinearLayout>
                     <TextView
@@ -73,7 +74,7 @@
                         android:gravity="right"
                         android:textSize="16sp"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="@dimen/fab_margin"
+                        android:layout_marginRight="@dimen/fab_margin"
                         android:textColor="#FFF"
                         />
                 </LinearLayout>
