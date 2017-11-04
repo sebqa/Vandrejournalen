@@ -7,4 +7,6 @@
     <string name="notes">Noter</string>
     <string name="overview">Oversigt</string>
     <string name="appointment">Aftale</string>
+    <string name="new_note">Nyt notat</string>
+    <string name="note_finish">Afslut notat</string>
 </resources>
