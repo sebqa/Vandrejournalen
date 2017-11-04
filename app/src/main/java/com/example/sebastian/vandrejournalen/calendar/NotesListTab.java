@@ -1,6 +1,7 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -47,11 +48,10 @@ public class NotesListTab extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-          /*      //alerttdialog box
-            AlertDialog.Builder notesBuilder = new AlertDialog().Builder(this);
-            notesBuilder.setMessage(getResources().getString(R.string.new_note));*/
-               /* Snackbar.make(view, "Add new note", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
+                Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.new_note);
+                dialog.show();
+
 
 
             }
