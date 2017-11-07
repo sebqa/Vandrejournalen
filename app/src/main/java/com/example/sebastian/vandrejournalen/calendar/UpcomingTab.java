@@ -1,5 +1,6 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,6 +43,8 @@ public class UpcomingTab extends Fragment {
         super.onStop();
         //Detach listeners
     }
+
+
 
     public static UpcomingTab newInstance() {
         UpcomingTab fragment = new UpcomingTab();

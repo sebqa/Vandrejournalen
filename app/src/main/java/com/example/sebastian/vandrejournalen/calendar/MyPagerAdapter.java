@@ -39,6 +39,10 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
+    @Override
+    public long getItemId(int position) {
+        return System.currentTimeMillis();
+    }
 
     // Returns the page title for the top indicator
     @Override

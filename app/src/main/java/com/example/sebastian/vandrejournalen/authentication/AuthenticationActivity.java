@@ -7,9 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
-import com.example.sebastian.vandrejournalen.calendar.MainActivity;
-
-import retrofit2.Call;
+import com.example.sebastian.vandrejournalen.PLActivity;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener{
@@ -39,7 +37,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void login() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, PLActivity.class));
         finish();
 
     }
