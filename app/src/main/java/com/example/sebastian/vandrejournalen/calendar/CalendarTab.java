@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,15 @@ import com.example.sebastian.journalapp.R;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import br.com.jpttrindade.calendarview.view.CalendarView;
 
 public class CalendarTab extends Fragment {
     public CalendarView calendarView;
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
-    Schedule calendar = new Schedule();
+    Schedule schedule = new Schedule();
     private CalendarTab.OnFragmentInteractionListener mListener;
 
 
@@ -37,16 +40,28 @@ public class CalendarTab extends Fragment {
     }
 
     private void setUpCalendar() {
-        arrayList = calendar.getAllEvents();
+        arrayList = schedule.getAllEvents();
 
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+
+        //Put all appointments in list
         for(int i=0; i<arrayList.size();i++){
-            calendarView.addEvent(arrayList.get(i).getDay(),arrayList.get(i).getMonth(),arrayList.get(i).getYear());
+            Appointment appointment = arrayList.get(i);
+            calendarView.addEvent(appointment.getDay(),appointment.getMonth(),appointment.getYear());
+            //Check if appointment is today
+            if(appointment.getDay() ==calendar.get(Calendar.DAY_OF_MONTH)){
+
+                if(appointment.getMonth()== calendar.get(Calendar.MONTH)+1){
+                    //show today's appointment
+                    mListener.showPreview(appointment);
+                }
+            }
         }
 
         calendarView.setOnDayClickListener(new CalendarView.OnDayClickListener() {
             @Override
             public void onClick(int day, int month, int year, boolean hasEvent) {
-                //Toast.makeText(getActivity(), day+"/"+month+"/"+year + " hasEvent="+hasEvent, Toast.LENGTH_SHORT).show();
+                //Check if there is an event on this day
                 if (hasEvent) {
                     for (int i=0; i< arrayList.size();i++){
                         if(day == arrayList.get(i).getDay() && month == arrayList.get(i).getMonth() && year == arrayList.get(i).getYear()){

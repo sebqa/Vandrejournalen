@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.sebastian.vandrejournalen.calendar.MainActivity"
+            android:name="com.example.sebastian.vandrejournalen.PLActivity"
             android:label="@string/app_name"
             android:theme="@style/BlueTheme">
 

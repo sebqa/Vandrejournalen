@@ -1,9 +1,10 @@
-package com.example.sebastian.vandrejournalen.calendar;
+package com.example.sebastian.vandrejournalen;
 
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,13 +18,16 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.calendar.Appointment;
+import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
+import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, CalendarTab.OnFragmentInteractionListener{
+public class PLActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, CalendarTab.OnFragmentInteractionListener {
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     Schedule scheduleFrag = new Schedule();
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
@@ -44,7 +48,7 @@ public class MainActivity extends AppCompatActivity
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//setLanguage("en");
+        //setLanguage("da");
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.inflateMenu(RoleHelper.getOptionsMenu("PL"));
         previewDate = findViewById(R.id.previewDate);
         appointText = findViewById(R.id.appointTitle);
 
@@ -96,7 +101,7 @@ public class MainActivity extends AppCompatActivity
                 theme = 1;
             }
 
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, PLActivity.class);
             startActivity(intent);
             finish();
             return true;
@@ -128,9 +133,7 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
             fn.beginTransaction().replace(R.id.content_frame, new Schedule()).commit();
-
         } else if (id == R.id.nav_slideshow) {
-
 
         } else if (id == R.id.nav_manage) {
 
@@ -147,8 +150,6 @@ public class MainActivity extends AppCompatActivity
 
     public void loadCalendar(){
         fn.beginTransaction().replace(R.id.content_frame, scheduleFrag).commit();
-
-
     }
 
     @Override
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity
             setTheme(R.style.PinkTheme);
 
         }
+
     }
 
     @Override
@@ -176,18 +178,25 @@ public class MainActivity extends AppCompatActivity
         Configuration conf= resources.getConfiguration();
         conf.locale=mylocale;
         resources.updateConfiguration(conf,dm);
-        Intent refreshIntent=new Intent(MainActivity.this,MainActivity.class);
+        Intent refreshIntent=new Intent(PLActivity.this,PLActivity.class);
         finish();
         startActivity(refreshIntent);
     }
 
     @Override
-    public void showPreview(Appointment appointment) {
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        appointText.setText(appointment.event);
-        previewDate.setText(appointment.getDay()+"/"+ appointment.getMonth()+"/"+ appointment.getYear()+"\n"+appointment.getTime());
+    public void showPreview(final Appointment appointment) {
+        //Delay showing new panel to see it animate
 
-
+        /*slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {*/
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                appointText.setText(appointment.event);
+                previewDate.setText(appointment.getDay()+"/"+ appointment.getMonth()+"/"+ appointment.getYear()+"\n"+appointment.getTime());
+            /*}
+        },400);*/
     }
 
     @Override

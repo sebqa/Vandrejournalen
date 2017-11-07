@@ -33,7 +33,6 @@ public class Schedule extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_schedule,container,false);
-        getActivity().setTitle(rootView.getResources().getString(R.string.overview));
 
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext());

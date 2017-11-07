@@ -22,7 +22,7 @@
             android:layout_marginTop="5dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="Add new note!"
+            android:hint="@string/new_note"
             android:textAlignment="center"
             android:textSize="30dp"
 
