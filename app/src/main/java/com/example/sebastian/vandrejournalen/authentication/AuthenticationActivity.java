@@ -112,75 +112,94 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public String encrypt(String passwordString) {
+        if (!keyguardManager.isKeyguardSecure())
+        {
+            // Show a message that the user hasn't set up a lock screen.
+            Toast.makeText(this, "Secure lock screen isn't set up.\n" +
+                    "Go to 'Settings -> Security -> Screen lock' to set up a lock screen", Toast.LENGTH_SHORT).show();
 
-        try{
-            SecretKey secretKey = createKey();
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            byte[] encryptionIv = cipher.getIV();
-            byte[] passwordBytes = passwordString.getBytes(CHARSET_NAME);
-            byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
-            encryptedPassword = Base64.encodeToString(encryptedPasswordBytes,Base64.DEFAULT);
+        }
+        else {
+            try {
+                SecretKey secretKey = createKey();
+                Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                byte[] encryptionIv = cipher.getIV();
+                byte[] passwordBytes = passwordString.getBytes(CHARSET_NAME);
+                byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
+                encryptedPassword = Base64.encodeToString(encryptedPasswordBytes, Base64.DEFAULT);
 
 
-            SharedPreferences.Editor editor = getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE).edit();
-            editor.putString("encryptionIv", Base64.encodeToString(encryptionIv, Base64.DEFAULT));
-            editor.apply();
+                SharedPreferences.Editor editor = getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE).edit();
+                editor.putString("encryptionIv", Base64.encodeToString(encryptionIv, Base64.DEFAULT));
+                editor.apply();
 
 
-        } catch (UserNotAuthenticatedException e) {
-            showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
-                | BadPaddingException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            } catch (UserNotAuthenticatedException e) {
+                showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
+                    | BadPaddingException | UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         }
         return encryptedPassword;
     }
 
     @Override
     public String decrypt(String passwordString) {
-        try {
-            SharedPreferences sharedPreferences = getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE);
-            String base64EncryptionIv = sharedPreferences.getString("encryptionIv", null);
-            byte[] encryptionIv = Base64.decode(base64EncryptionIv, Base64.DEFAULT);
-            KeyStore keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
-            keyStore.load(null);
+        if (!keyguardManager.isKeyguardSecure())
+        {
+            // Show a message that the user hasn't set up a lock screen.
+            Toast.makeText(this, "Secure lock screen isn't set up.\n" +
+                    "Go to 'Settings -> Security -> Screen lock' to set up a lock screen", Toast.LENGTH_SHORT).show();
 
-            SecretKey secretKey = (SecretKey) keyStore.getKey(KEY_NAME, null);
-            byte[] passwordStringBytes = Base64.decode(passwordString, Base64.DEFAULT);
+        }
+        else {
+            try {
+                SharedPreferences sharedPreferences = getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE);
+                String base64EncryptionIv = sharedPreferences.getString("encryptionIv", null);
+                byte[] encryptionIv = Base64.decode(base64EncryptionIv, Base64.DEFAULT);
+                KeyStore keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
+                keyStore.load(null);
 
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(encryptionIv));
+                SecretKey secretKey = (SecretKey) keyStore.getKey(KEY_NAME, null);
+                byte[] passwordStringBytes = Base64.decode(passwordString, Base64.DEFAULT);
 
-            byte[] passwordBytes = cipher.doFinal(passwordStringBytes);
-            decryptedPassword = new String(passwordBytes, CHARSET_NAME);
-        } catch (UserNotAuthenticatedException e) {
-            showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
-                | BadPaddingException | InvalidAlgorithmParameterException
-                | UnrecoverableKeyException | KeyStoreException | CertificateException | IOException e) {
-            throw new RuntimeException(e);
+                Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+                cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(encryptionIv));
+
+                byte[] passwordBytes = cipher.doFinal(passwordStringBytes);
+                decryptedPassword = new String(passwordBytes, CHARSET_NAME);
+            } catch (UserNotAuthenticatedException e) {
+                showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
+                    | BadPaddingException | InvalidAlgorithmParameterException
+                    | UnrecoverableKeyException | KeyStoreException | CertificateException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return decryptedPassword;
     }
 
     private SecretKey createKey() {
+
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
             keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_NAME,
-                    KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                    .setUserAuthenticationRequired(true)
-                    .setUserAuthenticationValidityDurationSeconds(AUTHENTICATION_DURATION_SECONDS)
-                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                        KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                        .setUserAuthenticationRequired(true)
+                        .setUserAuthenticationValidityDurationSeconds(AUTHENTICATION_DURATION_SECONDS)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
 
-                    .build());
-            return keyGenerator.generateKey();
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
-            throw new RuntimeException("Failed to create a symmetric key", e);
-        }
+                        .build());
+                return keyGenerator.generateKey();
+            } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
+                throw new RuntimeException("Failed to create a symmetric key", e);
+            }
+
     }
-    
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
