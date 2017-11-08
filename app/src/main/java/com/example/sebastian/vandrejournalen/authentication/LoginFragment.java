@@ -8,21 +8,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
+
+import java.io.IOException;
+
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
 
 
 public class LoginFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    EditText passwordInput;
     private String mParam1;
     private String mParam2;
-    Button button;
-    Button qrbutton;
+    Button button,qrbutton, drbutton, mwbutton;
     private View myFragmentView;
-
+    TextView cipherText;
+    String encryptedString;
+    String decryptedString;
 
     private OnFragmentInteractionListener mListener;
 
@@ -46,6 +55,7 @@ public class LoginFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -53,10 +63,33 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         myFragmentView = inflater.inflate(R.layout.fragment_login, container, false);
-
+        passwordInput = myFragmentView.findViewById(R.id.passwordInput);
         button = myFragmentView.findViewById(R.id.button);
         qrbutton = myFragmentView.findViewById(R.id.qrbutton);
+        cipherText = myFragmentView.findViewById(R.id.cipherText);
+        drbutton = myFragmentView.findViewById(R.id.drbutton);
+        mwbutton = myFragmentView.findViewById(R.id.mwbutton);
 
+
+        mwbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
+
+                    encryptedString = mListener.encrypt(passwordInput.getText().toString());
+                    cipherText.setText(encryptedString);
+                }
+            }
+        });
+        drbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
+                    decryptedString = mListener.decrypt(encryptedString);
+                    cipherText.setText(decryptedString);
+                }
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,5 +133,7 @@ public class LoginFragment extends Fragment {
 
         void startQR();
         void notSuccessful();
+        String encrypt(String passwordString);
+        String decrypt(String passwordString);
     }
 }
