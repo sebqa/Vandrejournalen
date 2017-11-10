@@ -40,30 +40,13 @@ import javax.crypto.spec.IvParameterSpec;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener{
-
-    public static final int SAVE_CREDENTIALS_REQUEST_CODE = 1;
-    private static final int LOGIN_WITH_CREDENTIALS_REQUEST_CODE = 2;
-
-    public static final int AUTHENTICATION_DURATION_SECONDS = 30;
-
-    public static final String KEY_NAME = "key";
-
-    public static final String TRANSFORMATION = KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/"
-            + KeyProperties.ENCRYPTION_PADDING_PKCS7;
-    public static final String CHARSET_NAME = "UTF-8";
-    public static final String STORAGE_FILE_NAME = "credentials";
-    public static final String ANDROID_KEY_STORE = "AndroidKeyStore";
-    private KeyguardManager keyguardManager;
-    String encryptedPassword;
-    String decryptedPassword;
-
+    SecureUtil secureUtil;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
         /*Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
-        keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
 
         if (findViewById(R.id.fragment_container) != null) {
             if (savedInstanceState != null) {
@@ -75,6 +58,8 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment).commit();
         }
+        secureUtil = new SecureUtil(this);
+
 
     }
 
@@ -97,113 +82,38 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void notSuccessful() {
-        Toast.makeText(this,"Unsuccessful",Toast.LENGTH_LONG);
-    }
-
-
-//Kode fra https://github.com/Zlate87/android-fingerprint-example/blob/master/app/src/main/java/com/example/zlatko/fingerprintexample/MainActivity.java
-
-    private void showAuthenticationScreen(int requestCode) {
-        Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
-        if (intent != null) {
-            startActivityForResult(intent, requestCode);
-        }
+        Toast.makeText(this,"Unsuccessful",Toast.LENGTH_LONG).show();
     }
 
     @Override
     public String encrypt(String passwordString) {
-        if (!keyguardManager.isKeyguardSecure())
-        {
-            // Show a message that the user hasn't set up a lock screen.
-            Toast.makeText(this, "Secure lock screen isn't set up.\n" +
-                    "Go to 'Settings -> Security -> Screen lock' to set up a lock screen", Toast.LENGTH_SHORT).show();
-
-        }
-        else {
-            try {
-                SecretKey secretKey = createKey();
-                Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-                byte[] encryptionIv = cipher.getIV();
-                byte[] passwordBytes = passwordString.getBytes(CHARSET_NAME);
-                byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
-                encryptedPassword = Base64.encodeToString(encryptedPasswordBytes, Base64.DEFAULT);
-
-
-                SharedPreferences.Editor editor = getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE).edit();
-                editor.putString("encryptionIv", Base64.encodeToString(encryptionIv, Base64.DEFAULT));
-                editor.apply();
-
-
-            } catch (UserNotAuthenticatedException e) {
-                showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
-            } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
-                    | BadPaddingException | UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return encryptedPassword;
+        return secureUtil.encrypt(passwordString);
     }
 
     @Override
     public String decrypt(String passwordString) {
-        if (!keyguardManager.isKeyguardSecure())
-        {
-            // Show a message that the user hasn't set up a lock screen.
-            Toast.makeText(this, "Secure lock screen isn't set up.\n" +
-                    "Go to 'Settings -> Security -> Screen lock' to set up a lock screen", Toast.LENGTH_SHORT).show();
-
-        }
-        else {
-            try {
-                SharedPreferences sharedPreferences = getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE);
-                String base64EncryptionIv = sharedPreferences.getString("encryptionIv", null);
-                byte[] encryptionIv = Base64.decode(base64EncryptionIv, Base64.DEFAULT);
-                KeyStore keyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
-                keyStore.load(null);
-
-                SecretKey secretKey = (SecretKey) keyStore.getKey(KEY_NAME, null);
-                byte[] passwordStringBytes = Base64.decode(passwordString, Base64.DEFAULT);
-
-                Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-                cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(encryptionIv));
-
-                byte[] passwordBytes = cipher.doFinal(passwordStringBytes);
-                decryptedPassword = new String(passwordBytes, CHARSET_NAME);
-            } catch (UserNotAuthenticatedException e) {
-                showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
-            } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
-                    | BadPaddingException | InvalidAlgorithmParameterException
-                    | UnrecoverableKeyException | KeyStoreException | CertificateException | IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return decryptedPassword;
+        return secureUtil.decrypt(passwordString);
     }
 
-    private SecretKey createKey() {
 
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
-            keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_NAME,
-                        KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                        .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        .setUserAuthenticationRequired(true)
-                        .setUserAuthenticationValidityDurationSeconds(AUTHENTICATION_DURATION_SECONDS)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-
-                        .build());
-                return keyGenerator.generateKey();
-            } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
-                throw new RuntimeException("Failed to create a symmetric key", e);
-            }
-
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        secureUtil.checkLockScreen();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            Toast.makeText(this, "User confirmed", Toast.LENGTH_SHORT).show();
 
+        } else {
+            Toast.makeText(this, "User confirmation failed", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
