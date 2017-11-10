@@ -3,8 +3,8 @@ package com.example.sebastian.vandrejournalen;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,11 +15,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
+import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -33,9 +35,8 @@ public class PLActivity extends AppCompatActivity
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
     public static int theme = 0;
-    TextView previewDate,appointText;
     private SlidingUpPanelLayout slidingUpPanelLayout;
-
+    String role;
 
 
     @Override
@@ -47,12 +48,15 @@ public class PLActivity extends AppCompatActivity
 
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         //setLanguage("da");
+        setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        role = getIntent().getStringExtra("role");
 
+        if(role.equals("PL")){
 
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -60,13 +64,18 @@ public class PLActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.inflateMenu(RoleHelper.getOptionsMenu("PL"));
-        previewDate = findViewById(R.id.previewDate);
-        appointText = findViewById(R.id.appointTitle);
+        navigationView.inflateMenu(RoleHelper.getOptionsMenu(role));
+
 
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-        loadCalendar();
+        slidingUpPanelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            }
+        });
+        loadMainFragment();
     }
 
     @Override
@@ -101,9 +110,7 @@ public class PLActivity extends AppCompatActivity
                 theme = 1;
             }
 
-            Intent intent = new Intent(this, PLActivity.class);
-            startActivity(intent);
-            finish();
+            restartActivity();
             return true;
         }
         if (id == R.id.change_lang) {
@@ -119,6 +126,13 @@ public class PLActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void restartActivity() {
+        Intent intent=new Intent(PLActivity.this,PLActivity.class);
+        intent.putExtra("role",role);
+        finish();
+        startActivity(intent);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -148,8 +162,8 @@ public class PLActivity extends AppCompatActivity
         return true;
     }
 
-    public void loadCalendar(){
-        fn.beginTransaction().replace(R.id.content_frame, scheduleFrag).commit();
+    public void loadMainFragment(){
+        fn.beginTransaction().replace(R.id.content_frame, RoleHelper.getMainFragment(role)).commit();
     }
 
     @Override
@@ -167,8 +181,6 @@ public class PLActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-
-
     }
 
     protected void setLanguage(String language){
@@ -178,9 +190,7 @@ public class PLActivity extends AppCompatActivity
         Configuration conf= resources.getConfiguration();
         conf.locale=mylocale;
         resources.updateConfiguration(conf,dm);
-        Intent refreshIntent=new Intent(PLActivity.this,PLActivity.class);
-        finish();
-        startActivity(refreshIntent);
+        restartActivity();
     }
 
     @Override
@@ -192,9 +202,13 @@ public class PLActivity extends AppCompatActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {*/
+
+        fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,appointment)).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                appointText.setText(appointment.event);
-                previewDate.setText(appointment.getDay()+"/"+ appointment.getMonth()+"/"+ appointment.getYear()+"\n"+appointment.getTime());
+
+                if(role.equals("PL")){
+
+                }
             /*}
         },400);*/
     }
@@ -203,4 +217,7 @@ public class PLActivity extends AppCompatActivity
     public void removePreview() {
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
+
+
 }
+
