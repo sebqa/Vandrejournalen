@@ -64,10 +64,15 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     }
 
     @Override
-    public void login() {
-        startActivity(new Intent(this, PLActivity.class));
+    public void login(String role) {
+        if(role.equals("")){
+            role = "PL";
+        }
+        Intent intent = new Intent(this,PLActivity.class);
+        //Get role from server and put here
+        intent.putExtra("role",role.toUpperCase());
+        startActivity(intent);
         finish();
-
     }
 
     @Override
