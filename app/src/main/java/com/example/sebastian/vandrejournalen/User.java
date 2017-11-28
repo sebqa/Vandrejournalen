@@ -8,14 +8,15 @@ public class User {
     String role;
     String name;
     String token;
-
+    String cpr;
+    String pass;
 
     boolean response;
 
-    public User(String role, String name, String token){
+    public User(String role, String cpr, String pass){
         this.role = role;
-        this.name = name;
-        this.token = token;
+        this.cpr = cpr;
+        this.pass = pass;
     }
 
     public String getRole() {
@@ -34,4 +35,7 @@ public class User {
         this.response = response;
     }
 
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 }

@@ -7,9 +7,9 @@
             android:icon="@android:drawable/ic_menu_my_calendar"
             android:title="Schedule" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_results"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Show all results" />
+            android:title="Results" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"

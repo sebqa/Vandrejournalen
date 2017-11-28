@@ -96,9 +96,10 @@ public class LoginFragment extends Fragment {
         qrbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String text = usernameInput.getText().toString();
-                if (mListener != null && !text.equals("") ){
-                    User user = new User("",text,"randomtokensnansdasnd");
+                String cpr = usernameInput.getText().toString();
+                String pass = passwordInput.getText().toString();
+                if (mListener != null && !cpr.equals("") && !pass.equals("")){
+                    User user = new User("PL",cpr, pass);
                     mListener.register(user);
                 }
             }

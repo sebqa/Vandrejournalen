@@ -19,6 +19,7 @@ import android.widget.EditText;
 
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.RoleHelper;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,14 @@ public class NotesListTab extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     Schedule calendar = new Schedule();
+    String role;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            role = getArguments().getString("role");
+        }
 
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,9 +74,10 @@ public class NotesListTab extends Fragment {
         //Detach listeners
     }
 
-    public static NotesListTab newInstance() {
+    public static NotesListTab newInstance(String role) {
         NotesListTab fragment = new NotesListTab();
         Bundle args = new Bundle();
+        args.putString("role",role);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,7 +87,7 @@ public class NotesListTab extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
 
-        adapter = new RecyclerAdapter(calendar.getAllEvents(), getActivity());
+        adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

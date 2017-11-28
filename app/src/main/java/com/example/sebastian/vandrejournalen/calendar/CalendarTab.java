@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.RoleHelper;
 
 
 import java.util.ArrayList;
@@ -23,10 +24,16 @@ import br.com.jpttrindade.calendarview.view.CalendarView;
 public class CalendarTab extends Fragment {
     public CalendarView calendarView;
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
-    Schedule schedule = new Schedule();
     private CalendarTab.OnFragmentInteractionListener mListener;
+    String role;
 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            role = getArguments().getString("role");
+        }
 
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +47,8 @@ public class CalendarTab extends Fragment {
     }
 
     private void setUpCalendar() {
-        arrayList = schedule.getAllEvents();
+        //Get appointments based on role somehow. Maybe from rolehelper.
+        arrayList = RoleHelper.getAllAppointments(role);
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
@@ -53,7 +61,7 @@ public class CalendarTab extends Fragment {
 
                 if(appointment.getMonth()== calendar.get(Calendar.MONTH)+1){
                     //show today's appointment
-                    mListener.showPreview(appointment);
+                    mListener.onToday(arrayList,i);
                 }
             }
         }
@@ -62,13 +70,18 @@ public class CalendarTab extends Fragment {
             @Override
             public void onClick(int day, int month, int year, boolean hasEvent) {
                 //Check if there is an event on this day
+                ArrayList<Appointment> thisDayList = new ArrayList<>();
+
                 if (hasEvent) {
                     for (int i=0; i< arrayList.size();i++){
                         if(day == arrayList.get(i).getDay() && month == arrayList.get(i).getMonth() && year == arrayList.get(i).getYear()){
-                            mListener.showPreview(arrayList.get(i));
+                            thisDayList.add(arrayList.get(i));
+
 
                         }
+
                     }
+                    mListener.onDateClick(thisDayList);
                 } else{
                     mListener.removePreview();
                 }
@@ -99,17 +112,18 @@ public class CalendarTab extends Fragment {
     }
 
 
-    public static CalendarTab newInstance() {
+    public static CalendarTab newInstance(String role) {
         CalendarTab fragment = new CalendarTab();
         Bundle args = new Bundle();
+        args.putString("role",role);
         fragment.setArguments(args);
         return fragment;
     }
 
 
     public interface OnFragmentInteractionListener {
-        void showPreview(Appointment appointment);
-
+        void onDateClick(ArrayList<Appointment> arrayList);
+        void onToday(ArrayList<Appointment> arrayList, int pos);
         void removePreview();
     }
 

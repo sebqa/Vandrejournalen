@@ -14,10 +14,12 @@ import com.example.sebastian.journalapp.R;
 public class MyPagerAdapter extends FragmentPagerAdapter {
     private static int NUM_ITEMS = 2;
     Context context;
+    String role;
 
-    public MyPagerAdapter(FragmentManager fragmentManager, Context mContext) {
+    public MyPagerAdapter(FragmentManager fragmentManager, Context mContext, String role) {
         super(fragmentManager);
         context = mContext;
+        this.role = role;
     }
 
     // Returns total number of pages
@@ -31,9 +33,9 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: // Fragment # 0 - This will show FirstFragment
-                return CalendarTab.newInstance();
+                return CalendarTab.newInstance(role);
             case 1: // Fragment # 0 - This will show FirstFragment different title
-                return NotesListTab.newInstance();
+                return NotesListTab.newInstance(role);
 
             default:
                 return null;

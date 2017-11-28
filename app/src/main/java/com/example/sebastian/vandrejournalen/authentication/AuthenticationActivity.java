@@ -6,9 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-
 import com.example.sebastian.journalapp.R;
-import com.example.sebastian.vandrejournalen.PLActivity;
+import com.example.sebastian.vandrejournalen.MainActivity;
+
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
@@ -49,7 +49,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         if(role.equals("")){
             role = "PL";
         }
-        Intent intent = new Intent(this,PLActivity.class);
+        Intent intent = new Intent(this,MainActivity.class);
         //Get role from server and put here
         intent.putExtra("role",role.toUpperCase());
         startActivity(intent);

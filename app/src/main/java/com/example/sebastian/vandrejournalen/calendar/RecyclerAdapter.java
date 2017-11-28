@@ -47,7 +47,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         //Attach the values we retrieve from the Item class to the values.
         final Appointment event = arrayList.get(position);
 
-        holder.date.setText(event.getDate()+"");
+        holder.date.setText(event.getDay()+"/"+ event.getMonth()+"/"+ event.getYear()+"\n"+event.getTime());
         holder.event.setText(event.getEvent());
         holder.container.setOnClickListener(new View.OnClickListener(){
             @Override

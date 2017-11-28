@@ -19,14 +19,13 @@ import java.util.ArrayList;
 
 public class Schedule extends Fragment  {
     FragmentPagerAdapter adapterViewPager;
-    ArrayList<Appointment> upcomingEvents = new ArrayList<Appointment>();
-    ArrayList<Appointment> allEvents = new ArrayList<Appointment>();
-
-
-
+    String role;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            role = getArguments().getString("role");
+        }
 
     }
 
@@ -35,7 +34,7 @@ public class Schedule extends Fragment  {
         View rootView = inflater.inflate(R.layout.fragment_schedule,container,false);
 
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext());
+        adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext(),role);
         vpPager.setAdapter(adapterViewPager);
         vpPager.setOffscreenPageLimit(3);
 
@@ -57,35 +56,13 @@ public class Schedule extends Fragment  {
 
     }
 
-    public ArrayList<Appointment> getUpcomingEvents(){
-
-        Appointment event = new Appointment("Friday 6-10-17","KJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdb ");
-        upcomingEvents.add(0,event);
-        Appointment event2 = new Appointment("Thursday 5-10-17","KJsd f3");
-        upcomingEvents.add(0,event2);
-        Appointment event3 = new Appointment("Wednesday 4-10-17","KJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdbKJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdbKJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdbKJSD kjasdasjkdksjaDBAKSJ jksakdj BAKSJdb ");
-        upcomingEvents.add(0,event3);
-        Appointment event4 = new Appointment("Tuesday 3-10-17","KJSD kjasdasjkdksjaDBAKSJ jksakd ");
-        upcomingEvents.add(0,event4);
-        return upcomingEvents;
-    }
-
-    public ArrayList<Appointment> getAllEvents(){
 
 
-        final Appointment event = new Appointment(7,11,2017,"13.00","Læge");
-        final Appointment event2 = new Appointment(17,11,2017,"11.00","Jordemoder");
 
-        allEvents.add(0,event);
-        allEvents.add(0,event2);
-
-
-        return allEvents;
-    }
-
-    public static Schedule newInstance() {
+    public static Schedule newInstance(String role) {
         Schedule fragment = new Schedule();
         Bundle args = new Bundle();
+        args.putString("role",role);
         fragment.setArguments(args);
         return fragment;
     }

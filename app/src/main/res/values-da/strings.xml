@@ -10,4 +10,6 @@
     <string name="new_note">Tilføj ny note</string>
     <string name="note_finish">Afslut notat</string>
     <string name="cancel_newNote">Fortryd</string>
+    <string name="patients">Patienter</string>
+    <string name="search_patients">Søg efter patient</string>
 </resources>
