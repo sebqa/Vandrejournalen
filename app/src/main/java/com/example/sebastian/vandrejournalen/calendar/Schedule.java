@@ -83,5 +83,12 @@ public class Schedule extends Fragment  {
         return allEvents;
     }
 
+    public static Schedule newInstance() {
+        Schedule fragment = new Schedule();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 }
 

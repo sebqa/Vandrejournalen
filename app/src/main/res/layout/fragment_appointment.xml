@@ -1,0 +1,105 @@
+<com.emilsjolander.components.StickyScrollViewItems.StickyScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.sebastian.vandrejournalen.calendar.AppointmentFragment">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:background="?attr/colorPrimary"
+        android:id="@+id/backgroundColor"
+        android:tag="sticky"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/appointment"
+                android:textSize="16sp"
+                android:textColor="#FFF"
+                android:layout_marginLeft="@dimen/fab_margin"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/appointment"
+                android:id="@+id/appointTitle"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFF"
+                android:layout_marginLeft="@dimen/fab_margin"
+                />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/previewDate"
+            android:text="98298h2839h2"
+            android:gravity="right"
+            android:textSize="16sp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:textColor="#FFF"
+            />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backgroundColor">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/appointInfo">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lorem"
+                android:id="@+id/appointText"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:orientation="vertical"
+                android:background="?attr/colorPrimary"
+                android:layout_below="@id/appointText"
+                android:id="@+id/notesBackgroundColor"
+                android:gravity="center"
+
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notes"
+                    android:textSize="20sp"
+                    android:textColor="#FFF"
+                    android:id="@+id/notesTitle"
+                    />
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lorem"
+                android:layout_below="@id/notesBackgroundColor"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>
+</com.emilsjolander.components.StickyScrollViewItems.StickyScrollView>
