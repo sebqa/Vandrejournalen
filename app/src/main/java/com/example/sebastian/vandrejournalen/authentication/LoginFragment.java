@@ -1,7 +1,6 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,23 +11,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
-
-import java.io.IOException;
-
-import javax.net.ssl.HandshakeCompletedListener;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
+import com.example.sebastian.vandrejournalen.User;
 
 
 public class LoginFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    EditText passwordInput;
+    EditText passwordInput, usernameInput;
     private String mParam1;
     private String mParam2;
     Button button,qrbutton, drbutton, mwbutton;
-    private View myFragmentView;
+    private View rootView;
     TextView cipherText;
     String encryptedString;
     String decryptedString;
@@ -62,13 +56,14 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        myFragmentView = inflater.inflate(R.layout.fragment_login, container, false);
-        passwordInput = myFragmentView.findViewById(R.id.passwordInput);
-        button = myFragmentView.findViewById(R.id.button);
-        qrbutton = myFragmentView.findViewById(R.id.qrbutton);
-        cipherText = myFragmentView.findViewById(R.id.cipherText);
-        drbutton = myFragmentView.findViewById(R.id.drbutton);
-        mwbutton = myFragmentView.findViewById(R.id.mwbutton);
+        rootView = inflater.inflate(R.layout.fragment_login, container, false);
+        passwordInput = rootView.findViewById(R.id.passwordInput);
+        usernameInput = rootView.findViewById(R.id.usernameInput);
+        button = rootView.findViewById(R.id.button);
+        qrbutton = rootView.findViewById(R.id.qrbutton);
+        cipherText = rootView.findViewById(R.id.cipherText);
+        drbutton = rootView.findViewById(R.id.drbutton);
+        mwbutton = rootView.findViewById(R.id.mwbutton);
 
 
         mwbutton.setOnClickListener(new View.OnClickListener() {
@@ -101,12 +96,14 @@ public class LoginFragment extends Fragment {
         qrbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mListener != null) {
-                    mListener.startQR();
+                String text = usernameInput.getText().toString();
+                if (mListener != null && !text.equals("") ){
+                    User user = new User("",text,"randomtokensnansdasnd");
+                    mListener.register(user);
                 }
             }
         });
-        return myFragmentView;
+        return rootView;
     }
 
 
@@ -135,5 +132,7 @@ public class LoginFragment extends Fragment {
         void notSuccessful();
         String encrypt(String passwordString);
         String decrypt(String passwordString);
+
+        void register(User user);
     }
 }

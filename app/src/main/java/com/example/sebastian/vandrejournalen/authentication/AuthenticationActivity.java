@@ -59,25 +59,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     public void startQR() {
 
-        ServerClient client = ServiceGenerator.createService(ServerClient.class);
 
-        // Fetch a list of the Github repositories.
-        Call<User> call = client.reposForUser("testtest.php");
-
-        // Execute the call asynchronously. Get a positive or negative callback.
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                // The network call was a success and we got a response
-                Toast.makeText(AuthenticationActivity.this, "", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // the network call was a failure
-                Toast.makeText(AuthenticationActivity.this, "Network Failure", Toast.LENGTH_SHORT).show();
-            }
-        });
 
 /*
 
@@ -104,6 +86,25 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         return secureUtil.decrypt(passwordString);
     }
 
+    @Override
+    public void register(User user) {
+        ServerClient client = ServiceGenerator.createService(ServerClient.class);
+        Call<User> call = client.addUser("testtest.php",user);
+        // Execute the call asynchronously. Get a positive or negative callback.
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                // The network call was a success and we got a response
+                Toast.makeText(AuthenticationActivity.this, ""+response.body().getRole(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // the network call was a failure
+                Toast.makeText(AuthenticationActivity.this, "Network Failure", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
     @Override
