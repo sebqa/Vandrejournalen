@@ -6,8 +6,16 @@ package com.example.sebastian.vandrejournalen;
 
 public class User {
     String role;
+    String name;
+    String token;
 
-    public User(){
+
+    boolean response;
+
+    public User(String role, String name, String token){
+        this.role = role;
+        this.name = name;
+        this.token = token;
     }
 
     public String getRole() {
@@ -18,6 +26,12 @@ public class User {
         this.role = role;
     }
 
+    public boolean isResponse() {
+        return response;
+    }
 
+    public void setResponse(boolean response) {
+        this.response = response;
+    }
 
 }
