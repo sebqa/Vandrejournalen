@@ -1,42 +1,23 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.app.Activity;
-import android.app.KeyguardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
-import android.security.keystore.UserNotAuthenticatedException;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.PLActivity;
+import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.networking.ServerClient;
+import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener{
@@ -77,10 +58,33 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void startQR() {
+
+        ServerClient client = ServiceGenerator.createService(ServerClient.class);
+
+        // Fetch a list of the Github repositories.
+        Call<User> call = client.reposForUser("testtest.php");
+
+        // Execute the call asynchronously. Get a positive or negative callback.
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                // The network call was a success and we got a response
+                Toast.makeText(AuthenticationActivity.this, "", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // the network call was a failure
+                Toast.makeText(AuthenticationActivity.this, "Network Failure", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+/*
+
         QRReader fragment = QRReader.newInstance("","");
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment).commit();
+                .replace(R.id.fragment_container, fragment).commit();*/
     }
 
 
