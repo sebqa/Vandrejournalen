@@ -1,10 +1,11 @@
 package com.example.sebastian.vandrejournalen;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,27 +17,29 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.Results.ResultsPager;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
-import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class PLActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, CalendarTab.OnFragmentInteractionListener {
-    ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
-    Schedule scheduleFrag = new Schedule();
+public class MainActivity extends AppCompatActivity
+        implements CalendarTab.OnFragmentInteractionListener{
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
     public static int theme = 0;
     private SlidingUpPanelLayout slidingUpPanelLayout;
     String role;
+    MaterialDialog dialog;
+    ArrayList<String> patients = new ArrayList<>();
 
 
     @Override
@@ -53,9 +56,18 @@ public class PLActivity extends AppCompatActivity
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         role = getIntent().getStringExtra("role");
+        slidingUpPanelLayout = findViewById(R.id.sliding_layout);
 
         if(role.equals("PL")){
-
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+            slidingUpPanelLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                }
+            });
+        } else {
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -66,15 +78,41 @@ public class PLActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.inflateMenu(RoleHelper.getOptionsMenu(role));
 
-
-        slidingUpPanelLayout = findViewById(R.id.sliding_layout);
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-        slidingUpPanelLayout.setOnClickListener(new View.OnClickListener() {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
+
+                int id = item.getItemId();
+                Log.d(""+id, "onNavigationItemSelected: ");
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+
+                if (id == R.id.nav_camera) {
+                    // Handle the camera action
+                    loadMainFragment();
+                } else if (id == R.id.nav_results) {
+                    fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role)).commit();
+                } else if (id == R.id.nav_slideshow) {
+
+                } else if (id == R.id.nav_manage) {
+
+                } else if (id == R.id.nav_share) {
+
+                } else if (id == R.id.nav_send) {
+
+                }
+
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
             }
         });
+        navigationView.bringToFront();
+
+
+
+
+
         loadMainFragment();
     }
 
@@ -85,6 +123,7 @@ public class PLActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+
         }
     }
 
@@ -129,38 +168,13 @@ public class PLActivity extends AppCompatActivity
     }
 
     private void restartActivity() {
-        Intent intent=new Intent(PLActivity.this,PLActivity.class);
+        Intent intent=new Intent(MainActivity.this,MainActivity.class);
         intent.putExtra("role",role);
         finish();
         startActivity(intent);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
 
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            fn.beginTransaction().replace(R.id.content_frame, new Schedule()).commit();
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     public void loadMainFragment(){
         fn.beginTransaction().replace(R.id.content_frame, RoleHelper.getMainFragment(role)).commit();
@@ -169,6 +183,7 @@ public class PLActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
         if (theme == 0) {
             setTheme(R.style.BlueTheme);
         } else {
@@ -194,7 +209,7 @@ public class PLActivity extends AppCompatActivity
     }
 
     @Override
-    public void showPreview(final Appointment appointment) {
+    public void onDateClick(ArrayList<Appointment> arrayList) {
         //Delay showing new panel to see it animate
 
         /*slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
@@ -202,22 +217,81 @@ public class PLActivity extends AppCompatActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {*/
-
-        fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,appointment)).commit();
+        switch(role){
+            case "PL":
+                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,arrayList.get(0))).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                break;
+            case "MW":
+                /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);*/
 
-                if(role.equals("PL")){
+                createDialog(arrayList);
 
-                }
+
+        }
+                //fn.beginTransaction().add(R.id.content_frame,RoleHelper.getSlidingFragment(role,appointment)).commit();
+
+
+
             /*}
         },400);*/
     }
+
+    @Override
+    public void onToday(ArrayList<Appointment> arrayList, int pos) {
+        switch(role){
+            case "PL":
+                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,arrayList.get(pos))).commit();
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                break;
+            case "MW":
+
+                //fn.beginTransaction().add(R.id.content_frame,RoleHelper.getSlidingFragment(role,appointment)).commit();
+
+
+                break;
+
+        }
+    }
+
 
     @Override
     public void removePreview() {
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
+    public void createDialog(ArrayList<Appointment> arrayList){
+        for (int i=0; i< arrayList.size();i++){
+            patients.add(arrayList.get(i).fullName+" + CPR + Tid");
+
+        }
+       if(dialog == null) {
+           MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
+                   .title(getResources().getString(R.string.patients)+" - "+patients.size()).items(patients)
+                   .dismissListener(new DialogInterface.OnDismissListener() {
+                       @Override
+                       public void onDismiss(DialogInterface dialogInterface) {
+                           dialog = null;
+                       }
+                   })
+                   .itemsCallback(new MaterialDialog.ListCallback() {
+                       @Override
+                       public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
+                           Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                           fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role), "sliding").addToBackStack(null).commit();
+                           dialog = null;
+
+                       }
+                   });
+           dialog = builder.build();
+           dialog.show();
+       } else if(dialog.isShowing()){
+           dialog = null;
+       }
+       patients.clear();
+
+    }
 
 }
 

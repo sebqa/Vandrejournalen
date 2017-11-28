@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.sebastian.vandrejournalen.SearchFragment"
+    android:focusableInTouchMode="true"
+    >
+
+<android.support.v7.widget.SearchView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/search_view"
+    app:iconifiedByDefault="false"
+    android:inputType="number"
+    app:defaultQueryHint="@string/search_patients"
+    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/content_search"
+        android:layout_below="@+id/search_view"
+
+        >
+
+    </LinearLayout>
+
+</RelativeLayout>

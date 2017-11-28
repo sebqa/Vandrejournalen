@@ -1,42 +1,14 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.app.Activity;
-import android.app.KeyguardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
-import android.security.keystore.UserNotAuthenticatedException;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
-import com.example.sebastian.vandrejournalen.PLActivity;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+import com.example.sebastian.vandrejournalen.MainActivity;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener{
@@ -68,7 +40,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         if(role.equals("")){
             role = "PL";
         }
-        Intent intent = new Intent(this,PLActivity.class);
+        Intent intent = new Intent(this,MainActivity.class);
         //Get role from server and put here
         intent.putExtra("role",role.toUpperCase());
         startActivity(intent);

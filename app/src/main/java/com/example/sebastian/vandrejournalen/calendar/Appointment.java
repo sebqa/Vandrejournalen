@@ -1,7 +1,9 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Sebastian on 27-09-2017.
@@ -12,7 +14,7 @@ public class Appointment implements Serializable {
 
 
     public String event;
-    public String date;
+    public Date date;
     int day;
     int month;
     int year;
@@ -63,13 +65,23 @@ public class Appointment implements Serializable {
     public String urinASLeuNit;
     public String Ødem;
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String fullName;
+
+
 
     public String time;
 
-    public Appointment(String date, String event){
+    public Appointment(Date date, String event){
         this.date = date;
         this.event = event;
-
     }
     public Appointment(int day, int month, int year,String time, String event){
         this.day = day;
@@ -77,14 +89,15 @@ public class Appointment implements Serializable {
         this.year = year;
         this.event = event;
         this.time = time;
+
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDate(int day,int month,int year, int hour, int min) {
+        this.date = new GregorianCalendar(year, month-1, day, hour, min).getTime();
     }
 
     public String getTime() {
