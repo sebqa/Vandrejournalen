@@ -9,6 +9,15 @@ import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.MainActivity;
+import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.networking.ServerClient;
+import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
+
+
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener{
@@ -49,10 +58,15 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void startQR() {
+
+
+
+/*
+
         QRReader fragment = QRReader.newInstance("","");
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment).commit();
+                .replace(R.id.fragment_container, fragment).commit();*/
     }
 
 
@@ -72,6 +86,25 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         return secureUtil.decrypt(passwordString);
     }
 
+    @Override
+    public void register(User user) {
+        ServerClient client = ServiceGenerator.createService(ServerClient.class);
+        Call<User> call = client.addUser("testtest.php",user);
+        // Execute the call asynchronously. Get a positive or negative callback.
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                // The network call was a success and we got a response
+                Toast.makeText(AuthenticationActivity.this, ""+response.body().getRole(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // the network call was a failure
+                Toast.makeText(AuthenticationActivity.this, "Network Failure", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
     @Override

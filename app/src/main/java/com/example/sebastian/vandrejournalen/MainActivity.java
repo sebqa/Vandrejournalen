@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
                     // Handle the camera action
                     loadMainFragment();
                 } else if (id == R.id.nav_results) {
-                    fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role)).commit();
+                    fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role)).addToBackStack(null).commit();
                 } else if (id == R.id.nav_slideshow) {
 
                 } else if (id == R.id.nav_manage) {
@@ -121,11 +121,64 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else{
+            new MaterialDialog.Builder(this)
+                    .title("Exit")
+                    .content("Are you sure you want to exit?")
+                    .positiveText("Yes")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            onYesClick();
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            onNoClick();
+                        }
+                    })
+                    .negativeText("No")
+                    .show();
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Exit");
+            builder.setMessage("Are you sure you want to exit?").setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                    onYesClick();
 
+                                }
+
+
+                            }).setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            onNoClick();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();*/
         }
     }
+    private void onYesClick() {
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+
+        MainActivity.this.finish();
+
+
+
+    }private void onNoClick() {
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

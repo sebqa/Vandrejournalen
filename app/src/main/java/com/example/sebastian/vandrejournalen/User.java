@@ -6,8 +6,17 @@ package com.example.sebastian.vandrejournalen;
 
 public class User {
     String role;
+    String name;
+    String token;
+    String cpr;
+    String pass;
 
-    public User(){
+    boolean response;
+
+    public User(String role, String cpr, String pass){
+        this.role = role;
+        this.cpr = cpr;
+        this.pass = pass;
     }
 
     public String getRole() {
@@ -18,6 +27,15 @@ public class User {
         this.role = role;
     }
 
+    public boolean isResponse() {
+        return response;
+    }
 
+    public void setResponse(boolean response) {
+        this.response = response;
+    }
 
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 }

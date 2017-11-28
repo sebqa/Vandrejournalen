@@ -94,4 +94,6 @@ public class AppointmentFragment extends Fragment  {
     public interface OnFragmentInteractionListener {
         void makeScrollable(View view);
     }
+
+
 }
