@@ -103,7 +103,11 @@ public class ResultsFragment extends Fragment  {
 
         // Gestationsalder
         MaterialEditText etGestationsalder = new MaterialEditText(getContext());
-        etGestationsalder.setText(appointment.gestationsalder);
+        etGestationsalder.setText("" + appointment.getGestationsalder());
+        etGestationsalder.setFloatingLabelAlwaysShown(true);
+        etGestationsalder.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etGestationsalder.setFloatingLabelText("Gestationsalder");
+        etGestationsalder.setEnabled(false);
         linearLayout.addView(etGestationsalder);
 
         // Vaegt
@@ -113,12 +117,12 @@ public class ResultsFragment extends Fragment  {
 
         // Blodtryk
         MaterialEditText etBlodtryk = new MaterialEditText(getContext());
-        etBlodtryk.setText(appointment.blodtryk);
+        etBlodtryk.setText(appointment.getBlodtryk());
         linearLayout.addView(etBlodtryk);
 
         // UrinASLeuNit
         MaterialEditText etUrinASLeuNit = new MaterialEditText(getContext());
-        etUrinASLeuNit.setText(appointment.urinASLeuNit);
+        etUrinASLeuNit.setText(appointment.getUrinASLeuNit());
         linearLayout.addView(etUrinASLeuNit);
 
         // Oedem
