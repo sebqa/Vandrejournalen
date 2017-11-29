@@ -102,24 +102,13 @@ public class RoleHelper {
         allAppointments.add(event3);
         allAppointments.add(event4);
         allAppointments.add(event5);
-        switch(role) {
-            case "PL":
-                event.setFullName("Lars");
-                event2.setFullName("Lars");
-                event3.setFullName("Lars");
-                event4.setFullName("Lars");
-                event5.setFullName("Lars");
 
-
-            case "MW":
                 event.setFullName("Lars");
                 event2.setFullName("Hanne");
                 event3.setFullName("Gitte");
                 event4.setFullName("Peter");
                 event5.setFullName("Jussi");
 
-
-        }
         return allAppointments;
 
     }

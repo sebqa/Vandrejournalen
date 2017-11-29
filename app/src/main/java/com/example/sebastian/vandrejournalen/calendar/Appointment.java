@@ -19,6 +19,11 @@ public class Appointment implements Serializable {
     int month;
     int year;
 
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public int getGestationsalder() {
         return gestationsalder;
     }
@@ -27,12 +32,12 @@ public class Appointment implements Serializable {
         this.gestationsalder = gestationsalder;
     }
 
-    public float getVægt() {
-        return vægt;
+    public float getVaegt() {
+        return vaegt;
     }
 
-    public void setVægt(float vægt) {
-        this.vægt = vægt;
+    public void setVaegt(float vaegt) {
+        this.vaegt = vaegt;
     }
 
     public String getBlodtryk() {
@@ -51,19 +56,73 @@ public class Appointment implements Serializable {
         this.urinASLeuNit = urinASLeuNit;
     }
 
-    public String getØdem() {
-        return Ødem;
+    public String getOedem() {
+        return oedem;
     }
 
-    public void setØdem(String ødem) {
-        Ødem = ødem;
+    public void setOedem(String oedem) {
+        this.oedem = oedem;
+    }
+
+    public float getSymfyseFundus() {
+        return symfyseFundus;
+    }
+
+    public void setSymfyseFundus(float symfyseFundus) {
+        this.symfyseFundus = symfyseFundus;
+    }
+
+    public String getFosterpraes() {
+        return fosterpraes;
+    }
+
+    public void setFosterpraes(String fosterpraes) {
+        this.fosterpraes = fosterpraes;
+    }
+
+    public String getFosterskoen() {
+        return fosterskoen;
+    }
+
+    public void setFosterskoen(String fosterskoen) {
+        this.fosterskoen = fosterskoen;
+    }
+
+    public String getFosteraktivitet() {
+        return fosteraktivitet;
+    }
+
+    public void setFosteraktivitet(String fosteraktivitet) {
+        this.fosteraktivitet = fosteraktivitet;
+    }
+
+    public String getUndersoegelsessted() {
+        return undersoegelsessted;
+    }
+
+    public void setUndersoegelsessted(String undersoegelsessted) {
+        this.undersoegelsessted = undersoegelsessted;
+    }
+
+    public String getInitialer() {
+        return initialer;
+    }
+
+    public void setInitialer(String initialer) {
+        this.initialer = initialer;
     }
 
     public int gestationsalder;
-    public float vægt;
+    public float vaegt;
     public String blodtryk;
     public String urinASLeuNit;
-    public String Ødem;
+    public String oedem;
+    public float symfyseFundus;
+    public String fosterpraes;
+    public String fosterskoen;
+    public String fosteraktivitet;
+    public String undersoegelsessted;
+    public String initialer;
 
     public String getFullName() {
         return fullName;
@@ -74,7 +133,6 @@ public class Appointment implements Serializable {
     }
 
     public String fullName;
-
 
 
     public String time;
