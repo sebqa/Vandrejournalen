@@ -1,9 +1,13 @@
 package com.example.sebastian.vandrejournalen.Results;
 
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +23,7 @@ import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -33,7 +38,7 @@ public class ResultsFragment extends Fragment  {
     private View rootView;
     private ResultsFragment.OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
-    Schedule schedule = new Schedule();
+    Context context;
     LinearLayout linearLayout;
     Appointment appointment;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer;
@@ -95,8 +100,16 @@ public class ResultsFragment extends Fragment  {
         ArrayList<Appointment> someText = RoleHelper.getAllAppointments(role);
 
         //txt.setText(appointment.getDay()+"/"+appointment.getMonth()+"/"+appointment.getYear());
-        initLayout();
-        setEditable();
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if(isAdded())
+                initLayout();
+                setEditable();
+            }
+        });
+
 
 
         //etName.setText(appointment.getEvent());
@@ -122,18 +135,23 @@ public class ResultsFragment extends Fragment  {
     }
 
     public void initLayout() {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.topMargin = 16;
         // Fullname
-        MaterialEditText etFullname = new MaterialEditText(getContext());
-        etFullname.setText(appointment.fullName);
-        linearLayout.addView(etFullname);
+        TextView tvDate = new TextView(context);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        tvDate.setLayoutParams(params);
+        tvDate.setText(dateFormat.format(appointment.getDate()));
+
+        linearLayout.addView(tvDate);
 
         // Gestationsalder
         etGestationsalder.setText("" + appointment.getGestationsalder());
         etGestationsalder.setFloatingLabelAlwaysShown(true);
         etGestationsalder.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etGestationsalder.setFloatingLabelText("Gestationsalder");
+        etGestationsalder.setPrimaryColor(getResources().getColor(R.color.colorPrimary));
         linearLayout.addView(etGestationsalder);
 
         // Vaegt
@@ -210,9 +228,11 @@ public class ResultsFragment extends Fragment  {
     public void setEditable() {
         switch(role) {
             case "MW":
+                etGestationsalder.requestFocus();
                 return;
 
             case "DR":
+                etGestationsalder.requestFocus();
                 return;
 
             default:
@@ -229,5 +249,10 @@ public class ResultsFragment extends Fragment  {
                 etInitialer.setFocusable(false);
 
         }
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
     }
 }

@@ -62,7 +62,10 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.5.0'
 
     //Viewpager arrows
-    compile 'com.github.sembozdemir:ViewPagerArrowIndicator:1.0.0'
+    //compile 'com.github.sembozdemir:ViewPagerArrowIndicator:1.0.0'
+
+    //Edited version
+    compile 'com.github.sebqa:ViewPagerArrowIndicator:master-SNAPSHOT'
 
     //Material EditText - https://github.com/rengwuxian/MaterialEditText
     compile 'com.rengwuxian.materialedittext:library:2.1.4'

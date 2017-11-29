@@ -1,11 +1,12 @@
 package com.example.sebastian.vandrejournalen.Results;
 
-import android.app.Dialog;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,9 @@ public class ResultsPager extends Fragment {
     String role;
     ArrayList<Date> dates = new ArrayList<Date>();
     long now;
+    ViewPager viewPager;
+    Context context;
+    ResultsPagerAdapter adapter;
     public ResultsPager() {
         // Required empty public constructor
     }
@@ -66,20 +70,57 @@ public class ResultsPager extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View rootView = inflater.inflate(R.layout.fragment_results_pager, container, false);
-        ViewPager viewPager = rootView.findViewById(R.id.resultsPager);
+        viewPager = rootView.findViewById(R.id.resultsPager);
         arrayList = RoleHelper.getAllAppointments(role);
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
         viewPagerArrowIndicator =  rootView.findViewById(R.id.viewPagerArrowIndicator);
 
+        //Sort by date, low to high
+        Collections.sort(arrayList, new Comparator<Appointment>() {
+            public int compare(Appointment o1, Appointment o2) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        });
 
-        ResultsPagerAdapter adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,role);
+        adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,role);
+
         viewPager.setAdapter(adapter);
         viewPagerArrowIndicator.bind(viewPager);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd hh:mm:ss 'GMT'Z yyyy");
+        getNearestDate();
+        FloatingActionButton fab = rootView.findViewById(R.id.fab);
+
+        switch(role) {
+            case "PL":
+                fab.hide();
+                break;
+            default:
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Date date = new Date();
+                    Appointment appointment = new Appointment(date, "Læge");
+                    appointment.setDate(8, 12, 2017, 13, 00);
+                    arrayList.add(appointment);
+                    adapter.notifyDataSetChanged();
+                    viewPager.setCurrentItem(arrayList.size(), true);
+                    Toast.makeText(getActivity(), "New appointment", Toast.LENGTH_SHORT).show();
+
+
+                }
+            });
+        }
+
+        return rootView;
+
+
+    }
+
+
+    public void getNearestDate(){
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd hh:mm:ss 'GMT'Z yyyy");
         now = System.currentTimeMillis();
         //Check if it's today
         for (int i=0; i< arrayList.size();i++){
@@ -99,30 +140,18 @@ public class ResultsPager extends Fragment {
                 return Long.compare(diff1, diff2);
             }
         });
-        Log.d(""+closest, "onCreateView: ");
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "New appointment", Toast.LENGTH_SHORT).show();
-
-
-
-            }
-        });
-
-        return rootView;
-
-
+        viewPager.setCurrentItem(dates.indexOf(closest));
     }
-
-
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
 
 }

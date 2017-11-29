@@ -88,8 +88,8 @@ public class RoleHelper {
         final Appointment event2 = new Appointment(24,11,2017,"11.00","Jordemoder");
         event2.setDate(24,11,2017,11,00);
 
-        final Appointment event3 = new Appointment(27,11,2017,"11.00","Jordemoder");
-        event3.setDate(27,11,2017,11,00);
+        final Appointment event3 = new Appointment(28,11,2017,"11.00","Jordemoder");
+        event3.setDate(28,11,2017,11,00);
 
         final Appointment event4 = new Appointment(27,11,2017,"11.00","Jordemoder");
         event4.setDate(27,11,2017,11,00);
