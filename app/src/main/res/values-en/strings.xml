@@ -11,7 +11,7 @@
     <string name="appointment">Appointment</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="new_note">Add new note</string>
-    <string name="note_finish">Finish note</string>
+    <string name="Back">Finish note</string>
     <string name="cancel_newNote">Cancel</string>
     <string name="patients">Patients</string>
     <string name="search_patients">Search for patient</string>
