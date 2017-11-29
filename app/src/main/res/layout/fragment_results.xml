@@ -3,16 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clickable="true">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbarThumbVertical="?attr/colorPrimary"
+        android:scrollbarSize="3dp"
+        android:scrollbarStyle="outsideInset"
+        android:paddingEnd="16dp"
+        >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/resultsLayout">
+        android:id="@+id/resultsLayout"
+        android:layout_marginTop="16dp">
 
     </LinearLayout>
     </ScrollView>

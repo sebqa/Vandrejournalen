@@ -137,11 +137,13 @@ public class ResultsFragment extends Fragment  {
     public void initLayout() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.topMargin = 16;
         // Fullname
         TextView tvDate = new TextView(context);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         tvDate.setLayoutParams(params);
         tvDate.setText(dateFormat.format(appointment.getDate()));
+
         linearLayout.addView(tvDate);
 
         // Gestationsalder
@@ -226,9 +228,11 @@ public class ResultsFragment extends Fragment  {
     public void setEditable() {
         switch(role) {
             case "MW":
+                etGestationsalder.requestFocus();
                 return;
 
             case "DR":
+                etGestationsalder.requestFocus();
                 return;
 
             default:
