@@ -1,5 +1,7 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
@@ -9,7 +11,7 @@ import java.util.GregorianCalendar;
  * Created by Sebastian on 27-09-2017.
  */
 
-public class Appointment implements Serializable {
+public class Appointment implements Serializable, Comparable<Appointment> {
 
 
 
@@ -196,5 +198,12 @@ public class Appointment implements Serializable {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    //Sort by date
+    @Override
+    public int compareTo(@NonNull Appointment appointment) {
+        return getDate().compareTo(appointment.getDate());
+
     }
 }

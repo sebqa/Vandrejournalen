@@ -18,10 +18,12 @@ import java.util.ArrayList;
 public class ResultsPagerAdapter extends FragmentStatePagerAdapter {
     String role;
     ArrayList<Appointment> arraylist;
+    Context context;
     public ResultsPagerAdapter(FragmentManager fragmentManager, Context mContext, ArrayList<Appointment> arraylist, String role) {
         super(fragmentManager);
         this.arraylist = arraylist;
         this.role = role;
+        this.context = mContext;
     }
     @Override
     public Fragment getItem(int position) {
