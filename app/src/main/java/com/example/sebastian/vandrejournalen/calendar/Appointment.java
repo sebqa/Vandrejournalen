@@ -24,11 +24,11 @@ public class Appointment implements Serializable {
         this.date = date;
     }
 
-    public int getGestationsalder() {
+    public String getGestationsalder() {
         return gestationsalder;
     }
 
-    public void setGestationsalder(int gestationsalder) {
+    public void setGestationsalder(String gestationsalder) {
         this.gestationsalder = gestationsalder;
     }
 
@@ -112,17 +112,17 @@ public class Appointment implements Serializable {
         this.initialer = initialer;
     }
 
-    public int gestationsalder;
-    public float vaegt;
-    public String blodtryk;
-    public String urinASLeuNit;
-    public String oedem;
-    public float symfyseFundus;
-    public String fosterpraes;
-    public String fosterskoen;
-    public String fosteraktivitet;
-    public String undersoegelsessted;
-    public String initialer;
+    public String gestationsalder = "";
+    public float vaegt = 0.0f;
+    public String blodtryk = "";
+    public String urinASLeuNit = "";
+    public String oedem = "";
+    public float symfyseFundus = 0.0f;
+    public String fosterpraes = "";
+    public String fosterskoen = "";
+    public String fosteraktivitet = "";
+    public String undersoegelsessted = "";
+    public String initialer = "";
 
     public String getFullName() {
         return fullName;
