@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
@@ -62,6 +63,9 @@ dependencies {
 
     //Viewpager arrows
     compile 'com.github.sembozdemir:ViewPagerArrowIndicator:1.0.0'
+
+    //Material EditText - https://github.com/rengwuxian/MaterialEditText
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
 
 
 }

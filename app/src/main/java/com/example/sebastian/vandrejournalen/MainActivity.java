@@ -30,13 +30,20 @@ import com.example.sebastian.vandrejournalen.Results.ResultsPager;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
+import com.example.sebastian.vandrejournalen.networking.ServerClient;
+import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity
         implements CalendarTab.OnFragmentInteractionListener{
+    private static final String TAG = "MAINACTIVITY" ;
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
     public static int theme = 0;
@@ -99,9 +106,7 @@ public class MainActivity extends AppCompatActivity
 
                 } else if (id == R.id.nav_results) {
                     slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-                    slidingUpPanelLayout.setEnabled(false);
-                    constraintLayout.removeView(slidingUpPanelLayout);
-                    slidingUpPanelLayout.setEnabled(false);
+
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -299,6 +304,24 @@ public class MainActivity extends AppCompatActivity
             case "PL":
                 fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,arrayList.get(0))).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                Appointment appointment = arrayList.get(0);
+                appointment.setGestationsalder("ksndfkjn");
+                appointment.setInitialer("BOESBOI");
+                ServerClient client = ServiceGenerator.createService(ServerClient.class);
+                Call<User> call = client.addAppointment("addAppointment.php", appointment);
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        Toast.makeText(MainActivity.this, "success", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onResponse: "+response.body().getUserID());
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "Network failure", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
                 break;
             case "MW":
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
