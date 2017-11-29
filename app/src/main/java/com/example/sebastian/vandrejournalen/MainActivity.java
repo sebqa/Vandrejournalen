@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -40,7 +44,8 @@ public class MainActivity extends AppCompatActivity
     String role;
     MaterialDialog dialog;
     ArrayList<String> patients = new ArrayList<>();
-
+    SlidingUpPanelLayout.PanelSlideListener panelSlideListener;
+    FrameLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +62,14 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         role = getIntent().getStringExtra("role");
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
+        constraintLayout = findViewById(R.id.sliding);
 
         if(role.equals("PL")){
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
             slidingUpPanelLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                 }
             });
@@ -85,13 +92,23 @@ public class MainActivity extends AppCompatActivity
 
                 int id = item.getItemId();
                 Log.d(""+id, "onNavigationItemSelected: ");
-                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
                 if (id == R.id.nav_camera) {
                     // Handle the camera action
                     loadMainFragment();
+
                 } else if (id == R.id.nav_results) {
-                    fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role)).addToBackStack(null).commit();
+                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                    slidingUpPanelLayout.setEnabled(false);
+                    constraintLayout.removeView(slidingUpPanelLayout);
+                    slidingUpPanelLayout.setEnabled(false);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role)).addToBackStack(null).commit();
+                        }},400);
+
                 } else if (id == R.id.nav_slideshow) {
 
                 } else if (id == R.id.nav_manage) {
@@ -122,7 +139,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
+
+
         } else{
             new MaterialDialog.Builder(this)
                     .title("Exit")
@@ -231,6 +252,10 @@ public class MainActivity extends AppCompatActivity
 
     public void loadMainFragment(){
         fn.beginTransaction().replace(R.id.content_frame, RoleHelper.getMainFragment(role)).commit();
+        slidingUpPanelLayout.setEnabled(true);
+        slidingUpPanelLayout.setClickable(true);
+        slidingUpPanelLayout.setTouchEnabled(true);
+
     }
 
     @Override

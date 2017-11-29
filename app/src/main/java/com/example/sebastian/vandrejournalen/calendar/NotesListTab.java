@@ -59,9 +59,6 @@ public class NotesListTab extends Fragment {
                 Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(R.layout.new_note);
                 dialog.show();
-
-
-
             }
         });
         initList();
