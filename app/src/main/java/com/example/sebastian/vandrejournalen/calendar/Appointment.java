@@ -10,6 +10,9 @@ import java.util.GregorianCalendar;
  */
 
 public class Appointment implements Serializable {
+
+
+
     public String event;
     public Date date;
     int day;
@@ -109,17 +112,17 @@ public class Appointment implements Serializable {
         this.initialer = initialer;
     }
 
-    public String gestationsalder;
-    public float vaegt;
-    public String blodtryk;
-    public String urinASLeuNit;
-    public String oedem;
-    public float symfyseFundus;
-    public String fosterpraes;
-    public String fosterskoen;
-    public String fosteraktivitet;
-    public String undersoegelsessted;
-    public String initialer;
+    public String gestationsalder = "";
+    public float vaegt = 0.0f;
+    public String blodtryk = "";
+    public String urinASLeuNit = "";
+    public String oedem = "";
+    public float symfyseFundus = 0.0f;
+    public String fosterpraes = "";
+    public String fosterskoen = "";
+    public String fosteraktivitet = "";
+    public String undersoegelsessted = "";
+    public String initialer = "";
 
     public String getFullName() {
         return fullName;
