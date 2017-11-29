@@ -10,21 +10,25 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="117dp"
+        tools:layout_editor_absoluteY="16dp">
 
         <EditText
             android:id="@+id/noteEditor"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="150dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="0dp"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:gravity="center"
             android:hint="@string/new_note"
+            android:inputType="textMultiLine"
+            android:maxLength="100"
             android:textAlignment="center"
-            android:textSize="30dp"
+            android:textSize="22sp"
+
 
             />
 
@@ -38,26 +42,26 @@
 
             <Button
                 android:id="@+id/cancel"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/cancel_newNote"
+
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="100dp"
                 android:background="?attr/colorPrimary"
-                android:textColor="#FFF"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="5dp"/>
+                android:text="@string/back"
+                android:textColor="#FFF"/>
 
             <Button
-                android:id="@+id/Finish"
-                android:layout_width="0dp"
+                android:id="@+id/Add"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/note_finish"
-                android:background="?attr/colorPrimary"
-                android:textColor="#FFF"
-                android:layout_marginLeft="5dp"
+
                 android:layout_marginBottom="5dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:background="?attr/colorPrimary"
+                android:text="@string/addNote"
+                android:textColor="#FFF"/>
         </LinearLayout>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
