@@ -36,6 +36,8 @@ public class ResultsFragment extends Fragment  {
     Schedule schedule = new Schedule();
     LinearLayout linearLayout;
     Appointment appointment;
+    MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer;
+
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -76,18 +78,44 @@ public class ResultsFragment extends Fragment  {
         //etName = rootView.findViewById(R.id.name);
         linearLayout = rootView.findViewById(R.id.resultsLayout);
 
+        etGestationsalder = new MaterialEditText(getContext());
+        etVaegt = new MaterialEditText(getContext());
+        etBlodtryk = new MaterialEditText(getContext());
+        etUrinASLeuNit= new MaterialEditText(getContext());
+        etOedem= new MaterialEditText(getContext());
+        etSymfyseFundus= new MaterialEditText(getContext());
+        etFosterpraes = new MaterialEditText(getContext());
+        etFosterskoen = new MaterialEditText(getContext());
+        etFosteraktivitet = new MaterialEditText(getContext());
+        etUndersoegelsessted = new MaterialEditText(getContext());
+        etInitialer = new MaterialEditText(getContext());
+
+
         //Get all appointments for this person
         ArrayList<Appointment> someText = RoleHelper.getAllAppointments(role);
 
         //txt.setText(appointment.getDay()+"/"+appointment.getMonth()+"/"+appointment.getYear());
         initLayout();
+        setEditable();
+
 
         //etName.setText(appointment.getEvent());
         return rootView;
 
     }
 
+    private void updateAppointment() {
 
+    // Make
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        updateAppointment();
+    }
 
     public interface OnFragmentInteractionListener {
         void makeScrollable(View view);
@@ -102,39 +130,104 @@ public class ResultsFragment extends Fragment  {
         linearLayout.addView(etFullname);
 
         // Gestationsalder
-        MaterialEditText etGestationsalder = new MaterialEditText(getContext());
         etGestationsalder.setText("" + appointment.getGestationsalder());
         etGestationsalder.setFloatingLabelAlwaysShown(true);
         etGestationsalder.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etGestationsalder.setFloatingLabelText("Gestationsalder");
-        etGestationsalder.setEnabled(false);
         linearLayout.addView(etGestationsalder);
 
         // Vaegt
-        MaterialEditText etVaegt = new MaterialEditText(getContext());
         etVaegt.setText("" + appointment.vaegt);
+        etVaegt.setFloatingLabelAlwaysShown(true);
+        etVaegt.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etVaegt.setFloatingLabelText("Vægt");
         linearLayout.addView(etVaegt);
 
         // Blodtryk
-        MaterialEditText etBlodtryk = new MaterialEditText(getContext());
         etBlodtryk.setText(appointment.getBlodtryk());
+        etBlodtryk.setFloatingLabelAlwaysShown(true);
+        etBlodtryk.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etBlodtryk.setFloatingLabelText("Blodtryk");
         linearLayout.addView(etBlodtryk);
 
         // UrinASLeuNit
-        MaterialEditText etUrinASLeuNit = new MaterialEditText(getContext());
         etUrinASLeuNit.setText(appointment.getUrinASLeuNit());
+        etUrinASLeuNit.setFloatingLabelAlwaysShown(true);
+        etUrinASLeuNit.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etUrinASLeuNit.setFloatingLabelText("Urin: A, S, Leu, Nit");
         linearLayout.addView(etUrinASLeuNit);
 
         // Oedem
-        MaterialEditText etOedem = new MaterialEditText(getContext());
         etOedem.setText(appointment.oedem);
+        etOedem.setFloatingLabelAlwaysShown(true);
+        etOedem.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etOedem.setFloatingLabelText("Oedem");
         linearLayout.addView(etOedem);
 
         // SymfyseFundus
-        MaterialEditText etSymfyseFundus = new MaterialEditText(getContext());
         etSymfyseFundus.setText("" + appointment.symfyseFundus);
+        etSymfyseFundus.setFloatingLabelAlwaysShown(true);
+        etSymfyseFundus.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etSymfyseFundus.setFloatingLabelText("SymfyseFundus");
         linearLayout.addView(etSymfyseFundus);
 
+        // Fosterpraes
+        etFosterpraes.setText("" + appointment.getFosterpraes());
+        etFosterpraes.setFloatingLabelAlwaysShown(true);
+        etFosterpraes.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etFosterpraes.setFloatingLabelText("Fosterpræs");
+        linearLayout.addView(etFosterpraes);
 
+        // Fosterskoen
+        etFosterskoen.setText(appointment.fosterskoen);
+        etFosterskoen.setFloatingLabelAlwaysShown(true);
+        etFosterskoen.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etFosterskoen.setFloatingLabelText("Fosterskøn");
+        linearLayout.addView(etFosterskoen);
+
+        // Fosteraktivitet
+        etFosteraktivitet.setText(appointment.fosteraktivitet);
+        etFosteraktivitet.setFloatingLabelAlwaysShown(true);
+        etFosteraktivitet.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etFosteraktivitet.setFloatingLabelText("Fosteraktivitet");
+        linearLayout.addView(etFosteraktivitet);
+
+        // Undersoegelsessted
+        etUndersoegelsessted.setText(appointment.undersoegelsessted);
+        etUndersoegelsessted.setFloatingLabelAlwaysShown(true);
+        etUndersoegelsessted.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etUndersoegelsessted.setFloatingLabelText("Undersøgelsessted");
+        linearLayout.addView(etUndersoegelsessted);
+
+        // Initialer
+        etInitialer.setText(appointment.initialer);
+        etInitialer.setFloatingLabelAlwaysShown(true);
+        etInitialer.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etInitialer.setFloatingLabelText("Initialer");
+        linearLayout.addView(etInitialer);
+
+    }
+    public void setEditable() {
+        switch(role) {
+            case "MW":
+                return;
+
+            case "DR":
+                return;
+
+            default:
+                etGestationsalder.setFocusable(false);
+                etVaegt.setFocusable(false);
+                etBlodtryk.setFocusable(false);
+                etUrinASLeuNit.setFocusable(false);
+                etOedem.setFocusable(false);
+                etSymfyseFundus.setFocusable(false);
+                etFosterpraes.setFocusable(false);
+                etFosterskoen.setFocusable(false);
+                etFosteraktivitet.setFocusable(false);
+                etUndersoegelsessted.setFocusable(false);
+                etInitialer.setFocusable(false);
+
+        }
     }
 }
