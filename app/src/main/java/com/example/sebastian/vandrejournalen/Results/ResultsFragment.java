@@ -19,7 +19,6 @@ import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
-import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -39,7 +38,9 @@ public class ResultsFragment extends Fragment  {
     private ResultsFragment.OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     Context context;
-    LinearLayout linearLayout;
+    LinearLayout cLinearLayout;
+    LinearLayout hLinearLayout;
+
     Appointment appointment;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer;
 
@@ -81,8 +82,8 @@ public class ResultsFragment extends Fragment  {
         Bundle args = getArguments();
         role = args.getString("role");
         //etName = rootView.findViewById(R.id.name);
-        linearLayout = rootView.findViewById(R.id.resultsLayout);
-
+        cLinearLayout = rootView.findViewById(R.id.resultsLayout);
+        hLinearLayout = rootView.findViewById(R.id.hLayout);
         etGestationsalder = new MaterialEditText(getContext());
         etVaegt = new MaterialEditText(getContext());
         etBlodtryk = new MaterialEditText(getContext());
@@ -100,13 +101,13 @@ public class ResultsFragment extends Fragment  {
         ArrayList<Appointment> someText = RoleHelper.getAllAppointments(role);
 
         //txt.setText(appointment.getDay()+"/"+appointment.getMonth()+"/"+appointment.getYear());
-
+        setEditable();
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 if(isAdded())
                 initLayout();
-                setEditable();
+
             }
         });
 
@@ -121,6 +122,14 @@ public class ResultsFragment extends Fragment  {
 
     // Make
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(etGestationsalder.getText().toString().equals("")) {
+            etGestationsalder.requestFocus();
+        }
     }
 
     @Override
@@ -144,91 +153,90 @@ public class ResultsFragment extends Fragment  {
         tvDate.setLayoutParams(params);
         tvDate.setText(dateFormat.format(appointment.getDate()));
 
-        linearLayout.addView(tvDate);
+        hLinearLayout.addView(tvDate,0);
 
         // Gestationsalder
         etGestationsalder.setText("" + appointment.getGestationsalder());
         etGestationsalder.setFloatingLabelAlwaysShown(true);
         etGestationsalder.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etGestationsalder.setFloatingLabelText("Gestationsalder");
-        etGestationsalder.setPrimaryColor(getResources().getColor(R.color.colorPrimary));
-        linearLayout.addView(etGestationsalder);
+        cLinearLayout.addView(etGestationsalder);
 
         // Vaegt
         etVaegt.setText("" + appointment.vaegt);
         etVaegt.setFloatingLabelAlwaysShown(true);
         etVaegt.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etVaegt.setFloatingLabelText("Vægt");
-        linearLayout.addView(etVaegt);
+        cLinearLayout.addView(etVaegt);
 
         // Blodtryk
         etBlodtryk.setText(appointment.getBlodtryk());
         etBlodtryk.setFloatingLabelAlwaysShown(true);
         etBlodtryk.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etBlodtryk.setFloatingLabelText("Blodtryk");
-        linearLayout.addView(etBlodtryk);
+        cLinearLayout.addView(etBlodtryk);
 
         // UrinASLeuNit
         etUrinASLeuNit.setText(appointment.getUrinASLeuNit());
         etUrinASLeuNit.setFloatingLabelAlwaysShown(true);
         etUrinASLeuNit.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etUrinASLeuNit.setFloatingLabelText("Urin: A, S, Leu, Nit");
-        linearLayout.addView(etUrinASLeuNit);
+        cLinearLayout.addView(etUrinASLeuNit);
 
         // Oedem
         etOedem.setText(appointment.oedem);
         etOedem.setFloatingLabelAlwaysShown(true);
         etOedem.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etOedem.setFloatingLabelText("Oedem");
-        linearLayout.addView(etOedem);
+        cLinearLayout.addView(etOedem);
 
         // SymfyseFundus
         etSymfyseFundus.setText("" + appointment.symfyseFundus);
         etSymfyseFundus.setFloatingLabelAlwaysShown(true);
         etSymfyseFundus.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etSymfyseFundus.setFloatingLabelText("SymfyseFundus");
-        linearLayout.addView(etSymfyseFundus);
+        cLinearLayout.addView(etSymfyseFundus);
 
         // Fosterpraes
         etFosterpraes.setText("" + appointment.getFosterpraes());
         etFosterpraes.setFloatingLabelAlwaysShown(true);
         etFosterpraes.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosterpraes.setFloatingLabelText("Fosterpræs");
-        linearLayout.addView(etFosterpraes);
+        cLinearLayout.addView(etFosterpraes);
 
         // Fosterskoen
         etFosterskoen.setText(appointment.fosterskoen);
         etFosterskoen.setFloatingLabelAlwaysShown(true);
         etFosterskoen.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosterskoen.setFloatingLabelText("Fosterskøn");
-        linearLayout.addView(etFosterskoen);
+        cLinearLayout.addView(etFosterskoen);
 
         // Fosteraktivitet
         etFosteraktivitet.setText(appointment.fosteraktivitet);
         etFosteraktivitet.setFloatingLabelAlwaysShown(true);
         etFosteraktivitet.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosteraktivitet.setFloatingLabelText("Fosteraktivitet");
-        linearLayout.addView(etFosteraktivitet);
+        cLinearLayout.addView(etFosteraktivitet);
 
         // Undersoegelsessted
         etUndersoegelsessted.setText(appointment.undersoegelsessted);
         etUndersoegelsessted.setFloatingLabelAlwaysShown(true);
         etUndersoegelsessted.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etUndersoegelsessted.setFloatingLabelText("Undersøgelsessted");
-        linearLayout.addView(etUndersoegelsessted);
+        cLinearLayout.addView(etUndersoegelsessted);
 
         // Initialer
         etInitialer.setText(appointment.initialer);
         etInitialer.setFloatingLabelAlwaysShown(true);
         etInitialer.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etInitialer.setFloatingLabelText("Initialer");
-        linearLayout.addView(etInitialer);
+        cLinearLayout.addView(etInitialer);
 
     }
     public void setEditable() {
         switch(role) {
             case "MW":
-                etGestationsalder.requestFocus();
+
                 return;
 
             case "DR":

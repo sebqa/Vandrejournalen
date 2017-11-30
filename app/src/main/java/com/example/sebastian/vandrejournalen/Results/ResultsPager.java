@@ -2,11 +2,14 @@ package com.example.sebastian.vandrejournalen.Results;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +34,7 @@ public class ResultsPager extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "RESULTSPAGER";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -42,6 +46,7 @@ public class ResultsPager extends Fragment {
     String role;
     ArrayList<Date> dates = new ArrayList<Date>();
     long now;
+    Date today;
     ViewPager viewPager;
     Context context;
     ResultsPagerAdapter adapter;
@@ -74,7 +79,7 @@ public class ResultsPager extends Fragment {
         viewPager = rootView.findViewById(R.id.resultsPager);
         arrayList = RoleHelper.getAllAppointments(role);
         final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-
+        today = calendar.getTime();
         viewPagerArrowIndicator =  rootView.findViewById(R.id.viewPagerArrowIndicator);
 
         //Sort by date, low to high
@@ -83,11 +88,15 @@ public class ResultsPager extends Fragment {
                 return o1.getDate().compareTo(o2.getDate());
             }
         });
-
+        int[] attrs = {R.attr.colorPrimary};
+        TypedArray ta = context.obtainStyledAttributes(attrs);
+        int color = ta.getResourceId(0, android.R.color.black);
+        ta.recycle();
         adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,role);
 
         viewPager.setAdapter(adapter);
         viewPagerArrowIndicator.bind(viewPager);
+        viewPagerArrowIndicator.setArrowColor(getResources().getColor(color));
 
         getNearestDate();
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
@@ -120,8 +129,11 @@ public class ResultsPager extends Fragment {
 
 
     public void getNearestDate(){
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd hh:mm:ss 'GMT'Z yyyy");
         now = System.currentTimeMillis();
+
+        Log.d(TAG, "getNearestDate: "+today);
+
+
         //Check if it's today
         for (int i=0; i< arrayList.size();i++){
             dates.add(arrayList.get(i).getDate());
@@ -140,12 +152,25 @@ public class ResultsPager extends Fragment {
                 return Long.compare(diff1, diff2);
             }
         });
-        viewPager.setCurrentItem(dates.indexOf(closest));
+
+        afterToday(closest);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+
+
+    public void afterToday(Date closest){
+        if(!closest.after(today)) {
+            viewPager.setCurrentItem(dates.indexOf(closest));
+
+        }
+        else {
+            afterToday(dates.get(dates.indexOf(closest)-1));
+        }
     }
 
     @Override
