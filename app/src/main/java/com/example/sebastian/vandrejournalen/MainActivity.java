@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SlidingPaneLayout;
@@ -30,6 +31,7 @@ import com.example.sebastian.vandrejournalen.Results.ResultsPager;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
+import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> patients = new ArrayList<>();
     SlidingUpPanelLayout.PanelSlideListener panelSlideListener;
     FrameLayout constraintLayout;
+    Fragment currentFragment;
+    NavigationView navigationView;
+    Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +94,12 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.inflateMenu(RoleHelper.getOptionsMenu(role));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
 
                 int id = item.getItemId();
                 Log.d(""+id, "onNavigationItemSelected: ");
@@ -111,7 +115,8 @@ public class MainActivity extends AppCompatActivity
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role)).addToBackStack(null).commit();
+                            currentFragment = ResultsPager.newInstance(role);
+                            fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
                         }},400);
 
                 } else if (id == R.id.nav_slideshow) {
@@ -141,33 +146,31 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
 
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-
-
-
-        } else{
-            new MaterialDialog.Builder(this)
-                    .title("Exit")
-                    .content("Are you sure you want to exit?")
-                    .positiveText("Yes")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            onYesClick();
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            onNoClick();
-                        }
-                    })
-                    .negativeText("No")
-                    .show();
+            else{
+                new MaterialDialog.Builder(this)
+                        .title("Exit")
+                        .content("Are you sure you want to exit?")
+                        .positiveText("Yes")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                onYesClick();
+                            }
+                        })
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                onNoClick();
+                            }
+                        })
+                        .negativeText("No")
+                        .show();
             /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Exit");
             builder.setMessage("Are you sure you want to exit?").setCancelable(false)
@@ -189,7 +192,7 @@ public class MainActivity extends AppCompatActivity
                     });
             AlertDialog alert = builder.create();
             alert.show();*/
-        }
+            }
     }
     private void onYesClick() {
         Intent setIntent = new Intent(Intent.ACTION_MAIN);
@@ -256,10 +259,12 @@ public class MainActivity extends AppCompatActivity
 
 
     public void loadMainFragment(){
-        fn.beginTransaction().replace(R.id.content_frame, RoleHelper.getMainFragment(role)).commit();
+        currentFragment = RoleHelper.getMainFragment(role);
+        fn.beginTransaction().replace(R.id.content_frame, currentFragment).commit();
         slidingUpPanelLayout.setEnabled(true);
         slidingUpPanelLayout.setClickable(true);
         slidingUpPanelLayout.setTouchEnabled(true);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
     }
 

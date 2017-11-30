@@ -106,6 +106,8 @@ public class ResultsPager extends Fragment {
                 fab.hide();
                 break;
             default:
+
+                //Open dialog here to request appointment
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
