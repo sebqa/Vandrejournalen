@@ -4,20 +4,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.sebastian.journalapp.R;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RegisterPatient.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RegisterPatient#newInstance} factory method to
- * create an instance of this fragment.
- */
+
+
 public class RegisterPatient extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,7 +24,12 @@ public class RegisterPatient extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private View rootView;
     private OnFragmentInteractionListener mListener;
+    LinearLayout vLinearLayout;
+    Context context;
+
+    MaterialEditText etRegisterPatient;
 
     public RegisterPatient() {
         // Required empty public constructor
@@ -55,7 +57,12 @@ public class RegisterPatient extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register_patient, container, false);
+        rootView = inflater.inflate(R.layout.fragment_register_patient, container, false);
+        setHasOptionsMenu(true);
+        vLinearLayout = rootView.findViewById(R.id.layoutRegisterPatient);
+
+        etRegisterPatient = new MaterialEditText(context);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -68,12 +75,8 @@ public class RegisterPatient extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+ 
+        this.context = context;
     }
 
     @Override
@@ -86,4 +89,17 @@ public class RegisterPatient extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+   /* public void initLayout() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.topMargin = 16;
+
+        // Register Patient EditTextView
+        etRegisterPatient.setText("Register User");
+        etRegisterPatient.setFloatingLabelAlwaysShown(true);
+        etRegisterPatient.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etRegisterPatient.setFloatingLabelText("Register User");
+        vLinearLayout.addView(etRegisterPatient);
+    }   */
 }

@@ -6,9 +6,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SlidingPaneLayout;
@@ -31,13 +34,21 @@ import com.example.sebastian.vandrejournalen.authentication.RegisterPatient;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
+import com.example.sebastian.vandrejournalen.calendar.Schedule;
+import com.example.sebastian.vandrejournalen.networking.ServerClient;
+import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity
         implements CalendarTab.OnFragmentInteractionListener{
+    private static final String TAG = "MAINACTIVITY" ;
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
     public static int theme = 0;
@@ -47,6 +58,9 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> patients = new ArrayList<>();
     SlidingUpPanelLayout.PanelSlideListener panelSlideListener;
     FrameLayout constraintLayout;
+    Fragment currentFragment;
+    NavigationView navigationView;
+    Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,32 +97,35 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.inflateMenu(RoleHelper.getOptionsMenu(role));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
 
                 int id = item.getItemId();
                 Log.d(""+id, "onNavigationItemSelected: ");
+                navigationView.getMenu().getItem(0).setChecked(false);
 
                 if (id == R.id.nav_camera) {
                     // Handle the camera action
-                    loadMainFragment();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadMainFragment();
+                        }},300);
 
                 } else if (id == R.id.nav_results) {
                     slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-                    slidingUpPanelLayout.setEnabled(false);
-                    constraintLayout.removeView(slidingUpPanelLayout);
-                    slidingUpPanelLayout.setEnabled(false);
+
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role)).addToBackStack(null).commit();
-                        }},400);
+                            currentFragment = ResultsPager.newInstance(role);
+                            fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
+                        }},300);
 
                 } else if (id == R.id.nav_slideshow) {
 
@@ -133,8 +150,9 @@ public class MainActivity extends AppCompatActivity
 
                 }
 
-                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                final DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
+
                 return true;
             }
         });
@@ -150,33 +168,34 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
 
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            } else if(currentFragment instanceof ResultsPager){
+                loadMainFragment();
+            }
 
-
-
-        } else{
-            new MaterialDialog.Builder(this)
-                    .title("Exit")
-                    .content("Are you sure you want to exit?")
-                    .positiveText("Yes")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            onYesClick();
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            onNoClick();
-                        }
-                    })
-                    .negativeText("No")
-                    .show();
+            else{
+                new MaterialDialog.Builder(this)
+                        .title("Exit")
+                        .content("Are you sure you want to exit?")
+                        .positiveText("Yes")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                onYesClick();
+                            }
+                        })
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                onNoClick();
+                            }
+                        })
+                        .negativeText("No")
+                        .show();
             /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Exit");
             builder.setMessage("Are you sure you want to exit?").setCancelable(false)
@@ -198,7 +217,7 @@ public class MainActivity extends AppCompatActivity
                     });
             AlertDialog alert = builder.create();
             alert.show();*/
-        }
+            }
     }
     private void onYesClick() {
         Intent setIntent = new Intent(Intent.ACTION_MAIN);
@@ -265,10 +284,12 @@ public class MainActivity extends AppCompatActivity
 
 
     public void loadMainFragment(){
-        fn.beginTransaction().replace(R.id.content_frame, RoleHelper.getMainFragment(role)).commit();
+        currentFragment = RoleHelper.getMainFragment(role);
+        fn.beginTransaction().replace(R.id.content_frame, currentFragment).commit();
         slidingUpPanelLayout.setEnabled(true);
         slidingUpPanelLayout.setClickable(true);
         slidingUpPanelLayout.setTouchEnabled(true);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
     }
 
@@ -313,6 +334,26 @@ public class MainActivity extends AppCompatActivity
             case "PL":
                 fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,arrayList.get(0))).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                //TODO NETWORKING
+                //TEST AF NETWORKING
+                Appointment appointment = arrayList.get(0);
+                appointment.setGestationsalder("ksndfkjn");
+                appointment.setInitialer("BOESBOI");
+                ServerClient client = ServiceGenerator.createService(ServerClient.class);
+                Call<User> call = client.addAppointment("addAppointment.php", appointment);
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        Toast.makeText(MainActivity.this, "success", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onResponse: "+response.body().getUserID());
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "Network failure", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
                 break;
             case "MW":
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
@@ -371,7 +412,8 @@ public class MainActivity extends AppCompatActivity
                        @Override
                        public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
                            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-                           fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role), "sliding").addToBackStack(null).commit();
+                           currentFragment = ResultsPager.newInstance(role);
+                           fn.beginTransaction().replace(R.id.content_frame, currentFragment, "sliding").addToBackStack(null).commit();
                            dialog = null;
 
                        }

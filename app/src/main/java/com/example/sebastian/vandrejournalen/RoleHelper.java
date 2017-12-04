@@ -83,13 +83,13 @@ public class RoleHelper {
     public static ArrayList<Appointment> getAllAppointments(String role){
 
         ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
-        final Appointment event = new Appointment(17,11,2017,"13.00","Læge");
-        event.setDate(17,11,2017, 13,00);
-        final Appointment event2 = new Appointment(24,11,2017,"11.00","Jordemoder");
-        event2.setDate(24,11,2017,11,00);
+        final Appointment event = new Appointment(3,12,2017,"13.00","Læge");
+        event.setDate(3,12,2017, 13,00);
+        final Appointment event2 = new Appointment(1,12,2017,"11.00","Jordemoder");
+        event2.setDate(1,12,2017,11,00);
 
-        final Appointment event3 = new Appointment(27,11,2017,"11.00","Jordemoder");
-        event3.setDate(27,11,2017,11,00);
+        final Appointment event3 = new Appointment(28,11,2017,"11.00","Jordemoder");
+        event3.setDate(28,11,2017,11,00);
 
         final Appointment event4 = new Appointment(27,11,2017,"11.00","Jordemoder");
         event4.setDate(27,11,2017,11,00);

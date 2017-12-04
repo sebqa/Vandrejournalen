@@ -3,6 +3,7 @@ package com.example.sebastian.vandrejournalen.authentication;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -39,7 +40,11 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment).commit();
         }
-        secureUtil = new SecureUtil(this);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // only for gingerbread and newer versions
+            secureUtil = new SecureUtil(this);
+
+        }
 
 
     }
@@ -115,7 +120,10 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     protected void onResume() {
         super.onResume();
-        secureUtil.checkLockScreen();
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            secureUtil.checkLockScreen();
+
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

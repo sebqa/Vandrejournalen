@@ -1,6 +1,7 @@
 package com.example.sebastian.vandrejournalen.networking;
 
 import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.calendar.Appointment;
 
 import java.util.List;
 
@@ -22,4 +23,13 @@ public interface ServerClient {
             @Path("page") String page,
             @Body User body
     );
+
+    @POST("/{page}")
+    Call<User> addAppointment(
+            @Path("page") String page,
+            @Body Appointment body
+    );
+
+
+
 }

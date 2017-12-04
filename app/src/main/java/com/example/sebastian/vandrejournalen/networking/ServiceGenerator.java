@@ -1,5 +1,6 @@
 package com.example.sebastian.vandrejournalen.networking;
 
+
 import java.security.cert.CertificateException;
 
 import javax.net.ssl.SSLContext;
