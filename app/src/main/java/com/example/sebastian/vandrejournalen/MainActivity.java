@@ -27,6 +27,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
+import com.example.sebastian.vandrejournalen.authentication.RegisterPatient;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
@@ -114,6 +115,19 @@ public class MainActivity extends AppCompatActivity
                 } else if (id == R.id.nav_manage) {
 
                 } else if (id == R.id.nav_share) {
+
+                } else if (id == R.id.nav_register_patient) {
+
+                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                    slidingUpPanelLayout.setEnabled(false);
+                    constraintLayout.removeView(slidingUpPanelLayout);
+                    slidingUpPanelLayout.setEnabled(false);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fn.beginTransaction().replace(R.id.content_frame, RegisterPatient.newInstance(role)).addToBackStack(null).commit();
+                        }},400);
 
                 } else if (id == R.id.nav_send) {
 
