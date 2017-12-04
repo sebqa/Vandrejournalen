@@ -24,7 +24,7 @@ public class RoleHelper {
             case "MW":
                 return R.menu.mw_drawer;
             case "DR":
-                return R.menu.mw_drawer;
+                return R.menu.dr_drawer;
             default:
                 return R.menu.activity_main_drawer;
         }

@@ -11,4 +11,5 @@
     <string name="Back">Afslut</string>
     <string name="patients">Patienter</string>
     <string name="search_patients">Søg efter patient</string>
+    <string name="exuser">Allerede oprettet?</string>
 </resources>

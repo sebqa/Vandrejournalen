@@ -30,6 +30,18 @@ public interface ServerClient {
             @Body Appointment body
     );
 
+    @POST("/{page}")
+    Call<User> checkKey(
+            @Path("page") String page,
+            @Body String key
+    );
+
+    @POST("/{page}")
+    Call<String> checkCPR(
+            @Path("page") String page,
+            @Body String cpr
+    );
+
 
 
 }

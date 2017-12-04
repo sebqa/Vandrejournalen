@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name="com.example.sebastian.vandrejournalen.MainActivity"
             android:label="@string/app_name"
@@ -24,7 +25,8 @@
         <activity
             android:name="com.example.sebastian.vandrejournalen.authentication.AuthenticationActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan|adjustResize">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
