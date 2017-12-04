@@ -6,10 +6,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SlidingPaneLayout;
@@ -103,10 +105,15 @@ public class MainActivity extends AppCompatActivity
 
                 int id = item.getItemId();
                 Log.d(""+id, "onNavigationItemSelected: ");
+                navigationView.getMenu().getItem(0).setChecked(false);
 
                 if (id == R.id.nav_camera) {
                     // Handle the camera action
-                    loadMainFragment();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadMainFragment();
+                        }},300);
 
                 } else if (id == R.id.nav_results) {
                     slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
@@ -117,7 +124,7 @@ public class MainActivity extends AppCompatActivity
                         public void run() {
                             currentFragment = ResultsPager.newInstance(role);
                             fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
-                        }},400);
+                        }},300);
 
                 } else if (id == R.id.nav_slideshow) {
 
@@ -129,8 +136,9 @@ public class MainActivity extends AppCompatActivity
 
                 }
 
-                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                final DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
+
                 return true;
             }
         });
@@ -146,10 +154,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
             } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            } else if(currentFragment instanceof ResultsPager){
+                loadMainFragment();
             }
 
             else{
@@ -309,7 +320,9 @@ public class MainActivity extends AppCompatActivity
             case "PL":
                 fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,arrayList.get(0))).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                Appointment appointment = arrayList.get(0);
+                //TODO NETWORKING
+                //TEST AF NETWORKING
+                /*Appointment appointment = arrayList.get(0);
                 appointment.setGestationsalder("ksndfkjn");
                 appointment.setInitialer("BOESBOI");
                 ServerClient client = ServiceGenerator.createService(ServerClient.class);
@@ -326,7 +339,7 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, "Network failure", Toast.LENGTH_SHORT).show();
 
                     }
-                });
+                });*/
                 break;
             case "MW":
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
@@ -385,7 +398,8 @@ public class MainActivity extends AppCompatActivity
                        @Override
                        public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
                            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-                           fn.beginTransaction().replace(R.id.content_frame, ResultsPager.newInstance(role), "sliding").addToBackStack(null).commit();
+                           currentFragment = ResultsPager.newInstance(role);
+                           fn.beginTransaction().replace(R.id.content_frame, currentFragment, "sliding").addToBackStack(null).commit();
                            dialog = null;
 
                        }

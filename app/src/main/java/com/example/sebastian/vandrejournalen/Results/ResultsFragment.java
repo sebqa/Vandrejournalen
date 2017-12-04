@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,16 +32,12 @@ public class ResultsFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private String apDate, apText,role;
-    private TextView previewDate, appointText;
-    RecyclerAdapter adapter;
-    private EditText etName;
-    RecyclerView.LayoutManager layoutManager;
+    private TextView tvShowNotes;
     private View rootView;
-    private ResultsFragment.OnFragmentInteractionListener mListener;
-    private RecyclerView recyclerView;
+    boolean notesShowing = false;
     Context context;
-    LinearLayout cLinearLayout;
-    LinearLayout hLinearLayout;
+    LinearLayout cLinearLayout,hLinearLayout,notesLayout;
+
 
     Appointment appointment;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer;
@@ -84,17 +82,20 @@ public class ResultsFragment extends Fragment  {
         //etName = rootView.findViewById(R.id.name);
         cLinearLayout = rootView.findViewById(R.id.resultsLayout);
         hLinearLayout = rootView.findViewById(R.id.hLayout);
-        etGestationsalder = new MaterialEditText(getContext());
-        etVaegt = new MaterialEditText(getContext());
-        etBlodtryk = new MaterialEditText(getContext());
-        etUrinASLeuNit= new MaterialEditText(getContext());
-        etOedem= new MaterialEditText(getContext());
-        etSymfyseFundus= new MaterialEditText(getContext());
-        etFosterpraes = new MaterialEditText(getContext());
-        etFosterskoen = new MaterialEditText(getContext());
-        etFosteraktivitet = new MaterialEditText(getContext());
-        etUndersoegelsessted = new MaterialEditText(getContext());
-        etInitialer = new MaterialEditText(getContext());
+        tvShowNotes = rootView.findViewById(R.id.tvShowNotes);
+        notesLayout = rootView.findViewById(R.id.notesLayout);
+
+        etGestationsalder = new MaterialEditText(context);
+        etVaegt = new MaterialEditText(context);
+        etBlodtryk = new MaterialEditText(context);
+        etUrinASLeuNit= new MaterialEditText(context);
+        etOedem= new MaterialEditText(context);
+        etSymfyseFundus= new MaterialEditText(context);
+        etFosterpraes = new MaterialEditText(context);
+        etFosterskoen = new MaterialEditText(context);
+        etFosteraktivitet = new MaterialEditText(context);
+        etUndersoegelsessted = new MaterialEditText(context);
+        etInitialer = new MaterialEditText(context);
 
 
         //Get all appointments for this person
@@ -231,6 +232,40 @@ public class ResultsFragment extends Fragment  {
         etInitialer.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etInitialer.setFloatingLabelText("Initialer");
         cLinearLayout.addView(etInitialer);
+
+        final RecyclerView recyclerView = new RecyclerView(getActivity());
+        recyclerView.addItemDecoration(new DividerItemDecoration(context,
+                DividerItemDecoration.VERTICAL));
+
+        //Get notes for this appointment
+        RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), context);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+        final TextView notesTitle = new TextView(context);
+        notesTitle.setText("NOTER");
+        notesTitle.setTextSize(20);
+        notesTitle.setLayoutParams(params);
+
+        tvShowNotes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (notesShowing) {
+                    cLinearLayout.removeView(notesTitle);
+                    cLinearLayout.removeView(recyclerView);
+                    tvShowNotes.setText("Vis noter");
+
+                    notesShowing = false;
+                } else {
+                    cLinearLayout.addView(notesTitle);
+                    cLinearLayout.addView(recyclerView);
+                    recyclerView.requestFocus();
+                    tvShowNotes.setText("Skjul noter");
+                    notesShowing = true;
+                }
+            }
+        });
 
     }
     public void setEditable() {

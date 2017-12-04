@@ -95,6 +95,7 @@ public class ResultsPager extends Fragment {
         adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,role);
 
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(arrayList.size()-1);
         viewPagerArrowIndicator.bind(viewPager);
         viewPagerArrowIndicator.setArrowColor(getResources().getColor(color));
 
@@ -166,6 +167,8 @@ public class ResultsPager extends Fragment {
 
 
     public void afterToday(Date closest){
+        Log.d(TAG, "afterToday: "+closest);
+
         if(!closest.after(today)) {
             viewPager.setCurrentItem(dates.indexOf(closest));
 
