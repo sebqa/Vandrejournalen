@@ -54,13 +54,6 @@ public class ResultsFragment extends Fragment  {
         ResultsFragment fragment = new ResultsFragment();
         Bundle args = new Bundle();
         Log.d(TAG, "newInstance: "+user.getRole());
-
-        Gson gson = new Gson();
-        String obj2 = gson.toJson(user);
-        args.putString("user" , obj2);
-        Log.d(TAG, "newInstance: "+obj2);
-        String obj = gson.toJson(appointment);
-        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,10 +62,10 @@ public class ResultsFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("user"), User.class);
+            user = new Gson().fromJson(getArguments().getString("user","Midwife"),User.class);
+            user.setRole("Midwife");
             Log.d(TAG, "onCreate: "+user.getRole());
-            appointment = gson.fromJson(getArguments().getString("obj"), Appointment.class);
+            appointment = new Gson().fromJson(getArguments().getString("obj"), Appointment.class);
 
         }
     }
@@ -83,13 +76,7 @@ public class ResultsFragment extends Fragment  {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_results, container, false);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("user"), User.class);
-            Log.d(TAG, "onCreate: "+user.getRole());
-            appointment = gson.fromJson(getArguments().getString("obj"), Appointment.class);
 
-        }
         Log.d(TAG, "onCreateView: "+user.getRole());
         //etName = rootView.findViewById(R.id.name);
         cLinearLayout = rootView.findViewById(R.id.resultsLayout);

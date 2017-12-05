@@ -2,21 +2,15 @@ package com.example.sebastian.vandrejournalen.calendar;
 
 import android.content.Context;
 import android.os.Bundle;
-
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.google.gson.Gson;
-
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -28,6 +22,7 @@ public class CalendarTab extends Fragment {
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     private CalendarTab.OnFragmentInteractionListener mListener;
     User user;
+    Context context;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +39,14 @@ public class CalendarTab extends Fragment {
         setHasOptionsMenu(true);
         calendarView =  rootView.findViewById(R.id.calendarView);
 
-        setUpCalendar();
+        getActivity().runOnUiThread(new Runnable(){
+            @Override
+            public void run(){
+                setUpCalendar();
+
+            }
+        });
+
         return rootView;
 
     }
@@ -52,7 +54,6 @@ public class CalendarTab extends Fragment {
     private void setUpCalendar() {
         //Get appointments based on role somehow. Maybe from rolehelper.
         User user = new User();
-
 
         arrayList = RoleHelper.getAllAppointments(user);
 
@@ -137,6 +138,7 @@ public class CalendarTab extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
         if (context instanceof CalendarTab.OnFragmentInteractionListener) {
             mListener = (CalendarTab.OnFragmentInteractionListener) context;
         } else {

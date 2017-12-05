@@ -2,11 +2,13 @@ package com.example.sebastian.vandrejournalen;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -58,12 +60,17 @@ public class MainActivity extends AppCompatActivity
     FrameLayout constraintLayout;
     Fragment currentFragment;
     NavigationView navigationView;
-
+    SharedPreferences prefs;
     User user;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        theme = prefs.getInt("theme",0);
+
+
+
         if (theme == 0){
             setTheme(R.style.BlueTheme);
         } else{
@@ -76,9 +83,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         String jsonUser = getIntent().getStringExtra("user");
-        Gson gson = new Gson();
-        user = gson.fromJson(jsonUser, User.class);
 
+        Gson gson = new Gson();
+        if(jsonUser ==null){
+            jsonUser = prefs.getString("userMain","");
+        } else{
+            prefs.edit().putString("userMain",jsonUser).apply();
+
+        }
+        user = gson.fromJson(jsonUser, User.class);
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
         constraintLayout = findViewById(R.id.sliding);
         if(user.getRole() == null){
@@ -257,8 +270,10 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             if(theme == 1){
+                prefs.edit().putInt("theme",0).apply();
                 theme = 0;
             } else{
+                prefs.edit().putInt("theme",1).apply();
                 theme = 1;
             }
 

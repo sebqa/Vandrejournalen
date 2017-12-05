@@ -1,10 +1,12 @@
 package com.example.sebastian.vandrejournalen;
 
+import java.io.Serializable;
+
 /**
  * Created by Sebastian on 10-11-2017.
  */
 
-public class User {
+public class User implements Serializable {
     String role;
     String name;
     String token;

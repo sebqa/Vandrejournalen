@@ -32,6 +32,10 @@ public class ResultsPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Bundle args = new Bundle();
         Fragment fragment = ResultsFragment.newInstance(user, arraylist.get(position));
+        String obj2 = new Gson().toJson(user);
+        args.putString("user" , obj2);
+        String obj = new Gson().toJson(arraylist.get(position));
+        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }

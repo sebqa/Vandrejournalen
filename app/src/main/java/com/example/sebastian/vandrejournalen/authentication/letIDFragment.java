@@ -76,7 +76,7 @@ public class letIDFragment extends Fragment {
         tvLetTag = rootView.findViewById(R.id.letTag);
         tvLetID = rootView.findViewById(R.id.letID);
         etLetInput = rootView.findViewById(R.id.letInput);
-
+        etLetInput.setTransformationMethod(null);
         continueBtn = rootView.findViewById(R.id.continueBtn);
 
         continueBtn.setOnClickListener(new View.OnClickListener() {
