@@ -9,9 +9,41 @@ public class User {
     String name;
     String token;
     String cpr;
-    String pass;
+    String password;
+    String address;
+    String email;
+    int tlf;
+    String institution;
+    String userID;
+    boolean response;
 
-    public User(){
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getTlf() {
+        return tlf;
+    }
+
+    public void setTlf(int tlf) {
+        this.tlf = tlf;
+    }
+
+
+
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }public User(){
 
     }
 
@@ -23,7 +55,6 @@ public class User {
         this.institution = institution;
     }
 
-    String institution;
 
 
     public String getName() {
@@ -50,8 +81,8 @@ public class User {
         this.cpr = cpr;
     }
 
-    public String getPass() {
-        return pass;
+    public String getPassword() {
+        return password;
     }
 
     public String getUserID() {
@@ -62,14 +93,11 @@ public class User {
         this.userID = userID;
     }
 
-    String userID;
 
-    boolean response;
-
-    public User(String role, String cpr, String pass){
+    public User(String role, String cpr, String password){
         this.role = role;
         this.cpr = cpr;
-        this.pass = pass;
+        this.password = password;
     }
 
     public String getRole() {
@@ -88,7 +116,7 @@ public class User {
         this.response = response;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

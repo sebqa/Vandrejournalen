@@ -53,7 +53,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     }
 
     @Override
-    public void login(String role) {
+    public void loginSuccessful(String role) {
         if(role.equals("")){
             role = "PL";
         }
@@ -123,6 +123,12 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     public void goToLogin() {
         Fragment fragment = LoginFragment.newInstance("","");
+        fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void goToInfo(User user) {
+        Fragment fragment = RegisterInfoFragment.newInstance(user);
         fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
     }
 
