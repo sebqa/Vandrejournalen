@@ -23,7 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener{
+public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterInfoFragment.OnFragmentInteractionListener{
     SecureUtil secureUtil;
     FragmentManager fm = getSupportFragmentManager();
     @Override
@@ -53,13 +53,13 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     }
 
     @Override
-    public void login(String role) {
-        if(role.equals("")){
-            role = "PL";
+    public void loginSuccessful(User user) {
+        if(user.getRole()==null){
+            user.setRole("PL");
         }
         Intent intent = new Intent(this,MainActivity.class);
         //Get role from server and put here
-        intent.putExtra("role",role.toUpperCase());
+        intent.putExtra("role",user.getRole().toUpperCase());
         startActivity(intent);
         finish();
     }
@@ -123,6 +123,12 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     public void goToLogin() {
         Fragment fragment = LoginFragment.newInstance("","");
+        fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void goToInfo(User user) {
+        Fragment fragment = RegisterInfoFragment.newInstance(user);
         fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
     }
 

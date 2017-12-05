@@ -43,5 +43,12 @@ public interface ServerClient {
     );
 
 
+    @POST("/{page}")
+    Call<String> registerInfo(
+            @Path("page") String page,
+            @Body User user
+    );
+
+
 
 }

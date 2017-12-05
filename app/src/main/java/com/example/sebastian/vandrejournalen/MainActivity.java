@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 //TODO NETWORKING
                 //TEST AF NETWORKING
-                Appointment appointment = arrayList.get(0);
+               /* Appointment appointment = arrayList.get(0);
                 appointment.setGestationsalder("ksndfkjn");
                 appointment.setInitialer("BOESBOI");
                 ServerClient client = ServiceGenerator.createService(ServerClient.class);
@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(MainActivity.this, "Network failure", Toast.LENGTH_SHORT).show();
 
                     }
-                });
+                });*/
                 break;
             case "MW":
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();

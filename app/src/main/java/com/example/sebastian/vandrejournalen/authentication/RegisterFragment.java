@@ -1,6 +1,7 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -146,6 +147,7 @@ public class RegisterFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
         void goToLogin();
+        void goToInfo(User user);
     }
 
 
@@ -157,29 +159,39 @@ public class RegisterFragment extends Fragment {
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.body() != null) {
+                        final User user = response.body();
+                        Log.d(TAG, "onClick: " + user.getInstitution());
 
-                    User user = response.body();
-                    Log.d(TAG, "onClick: " + user.getInstitution());
 
-                                new MaterialDialog.Builder(getActivity())
-                                        .title("Verification")
-                                        .content("Please verify that you are a " + user.getRole() + " at " + user.getInstitution())
-                                        .positiveText("Yes, continue")
-                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                                            }
-                                        })
-                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                etInput.setEnabled(true);
-                                            }
-                                        })
-                                        .negativeText("No, exit")
-                                        .show();
-                                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                        new MaterialDialog.Builder(getActivity())
+                                .title("Verification")
+                                .content("Please verify that you are a " +user.getRole() + " at " + user.getInstitution())
+                                .positiveText("Yes, continue")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        mListener.goToInfo(user);
+
+                                    }
+                                })
+                                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        etInput.setEnabled(true);
+                                    }
+                                })
+                                .negativeText("No, exit")
+                                .dismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialogInterface) {
+                                        etInput.setEnabled(true);
+                                    }
+                                })
+                                .show();
+                        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
 
@@ -199,6 +211,9 @@ public class RegisterFragment extends Fragment {
                     Log.d(TAG, "onResponse: "+response.body().trim());
                     if(response.body().trim().equals("1")){
                         Toast.makeText(getActivity(), "Match!", Toast.LENGTH_SHORT).show();
+                    } else{
+                        Toast.makeText(getActivity(), "No Match!", Toast.LENGTH_SHORT).show();
+
                     }
 
                 }
