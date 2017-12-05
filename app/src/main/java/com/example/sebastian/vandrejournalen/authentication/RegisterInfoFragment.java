@@ -85,7 +85,7 @@ public class RegisterInfoFragment extends Fragment {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if(response.body().trim().equals("TRUE")){
-                            mListener.loginSuccessful(user);
+                            mListener.loginExists(user);
                         }
                         Log.d(TAG, "onResponse: "+response.body().trim());
                     }
@@ -129,6 +129,6 @@ public class RegisterInfoFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-        void loginSuccessful(User user);
+        void loginExists(User user);
     }
 }

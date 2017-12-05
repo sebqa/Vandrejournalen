@@ -18,4 +18,5 @@
     <string name="patients">Patients</string>
     <string name="search_patients">Search for patient</string>
     <string name="exuser">Already signed up?</string>
+    <string name="insKey">Insert corresponding key</string>
 </resources>

@@ -50,7 +50,7 @@ public class RoleHelper {
             case "PL":
                 return Schedule.newInstance(role);
             case "Midwife":
-                return SearchFragment.newInstance(role);
+                return SearchFragment.newInstance(user);
             case "DR":
                 return Schedule.newInstance(role);
             default:
@@ -63,7 +63,7 @@ public class RoleHelper {
             case "PL":
                 return AppointmentFragment.newInstance(role,appointment);
             case "Midwife":
-                return ResultsPager.newInstance(role);
+                return ResultsPager.newInstance(user);
             case "DR":
                 return Schedule.newInstance(role);
             default:

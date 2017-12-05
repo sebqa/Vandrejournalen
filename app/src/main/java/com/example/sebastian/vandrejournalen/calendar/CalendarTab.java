@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
+import com.google.gson.Gson;
 
 
 import java.util.ArrayList;
@@ -26,12 +27,13 @@ public class CalendarTab extends Fragment {
     public CalendarView calendarView;
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     private CalendarTab.OnFragmentInteractionListener mListener;
-    String role;
+    User user;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            role = getArguments().getString("role");
+            Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("obj"), User.class);
         }
 
     }
@@ -50,7 +52,7 @@ public class CalendarTab extends Fragment {
     private void setUpCalendar() {
         //Get appointments based on role somehow. Maybe from rolehelper.
         User user = new User();
-        user.setRole("PL");
+
 
         arrayList = RoleHelper.getAllAppointments(user);
 
@@ -116,10 +118,11 @@ public class CalendarTab extends Fragment {
     }
 
 
-    public static CalendarTab newInstance(String role) {
+    public static CalendarTab newInstance(User user) {
         CalendarTab fragment = new CalendarTab();
-        Bundle args = new Bundle();
-        args.putString("role",role);
+        Bundle args = new Bundle();Gson gson = new Gson();
+        String obj = gson.toJson(user);
+        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }

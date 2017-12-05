@@ -12,6 +12,11 @@ public class User {
     String password;
     String address;
     String email;
+    int phoneprivate;
+    int phonework;
+    String institution;
+    String userID;
+    boolean response;
 
     public int getPhoneprivate() {
         return phoneprivate;
@@ -28,13 +33,6 @@ public class User {
     public void setPhonework(int phonework) {
         this.phonework = phonework;
     }
-
-    int phoneprivate;
-    int phonework;
-    String institution;
-    String userID;
-    boolean response;
-
 
     public String getEmail() {
         return email;

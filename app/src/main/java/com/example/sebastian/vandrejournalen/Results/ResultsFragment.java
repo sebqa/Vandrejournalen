@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,17 +29,18 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
+
 
 public class ResultsFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private String apDate, apText,role;
     private TextView tvShowNotes;
     private View rootView;
     boolean notesShowing = false;
     Context context;
     LinearLayout cLinearLayout,hLinearLayout,notesLayout;
-
+    User user;
 
     Appointment appointment;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer;
@@ -48,11 +50,15 @@ public class ResultsFragment extends Fragment  {
         // Required empty public constructor
     }
 
-    public static ResultsFragment newInstance(String role, Appointment appointment) {
+    public static ResultsFragment newInstance(User user, Appointment appointment) {
         ResultsFragment fragment = new ResultsFragment();
         Bundle args = new Bundle();
-        args.putString("role",role);
+        Log.d(TAG, "newInstance: "+user.getRole());
+
         Gson gson = new Gson();
+        String obj2 = gson.toJson(user);
+        args.putString("user" , obj2);
+        Log.d(TAG, "newInstance: "+obj2);
         String obj = gson.toJson(appointment);
         args.putString("obj" , obj);
         fragment.setArguments(args);
@@ -63,10 +69,9 @@ public class ResultsFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            apDate = getArguments().getString("date");
-            apText = getArguments().getString("text");
-            role = getArguments().getString("role");
             Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("user"), User.class);
+            Log.d(TAG, "onCreate: "+user.getRole());
             appointment = gson.fromJson(getArguments().getString("obj"), Appointment.class);
 
         }
@@ -78,8 +83,14 @@ public class ResultsFragment extends Fragment  {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_results, container, false);
         setHasOptionsMenu(true);
-        Bundle args = getArguments();
-        role = args.getString("role");
+        if (getArguments() != null) {
+            Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("user"), User.class);
+            Log.d(TAG, "onCreate: "+user.getRole());
+            appointment = gson.fromJson(getArguments().getString("obj"), Appointment.class);
+
+        }
+        Log.d(TAG, "onCreateView: "+user.getRole());
         //etName = rootView.findViewById(R.id.name);
         cLinearLayout = rootView.findViewById(R.id.resultsLayout);
         hLinearLayout = rootView.findViewById(R.id.hLayout);
@@ -235,8 +246,7 @@ public class ResultsFragment extends Fragment  {
                 DividerItemDecoration.VERTICAL));
 
         //Get notes for this appointment
-        User user = new User();
-        user.setRole("PL");
+
         RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
@@ -268,8 +278,9 @@ public class ResultsFragment extends Fragment  {
 
     }
     public void setEditable() {
+        String role = user.getRole();
         switch(role) {
-            case "MW":
+            case "Midwife":
 
                 return;
 

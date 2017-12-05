@@ -15,7 +15,7 @@ import com.example.sebastian.vandrejournalen.MainActivity;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
-
+import com.google.gson.Gson;
 
 
 import retrofit2.Call;
@@ -23,7 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterInfoFragment.OnFragmentInteractionListener{
+public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterInfoFragment.OnFragmentInteractionListener, letIDFragment.OnFragmentInteractionListener{
     SecureUtil secureUtil;
     FragmentManager fm = getSupportFragmentManager();
     @Override
@@ -53,36 +53,19 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     }
 
     @Override
-    public void loginSuccessful(User user) {
+    public void loginExists(User user) {
         if(user.getRole()==null){
-            user.setRole("PL");
+            Fragment fragment = letIDFragment.newInstance(user);
+            fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+            //user.setRole("Midwife");
+        } else {
+
+
         }
-        Intent intent = new Intent(this,MainActivity.class);
-        //Get role from server and put here
-        intent.putExtra("role",user.getRole().toUpperCase());
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void startQR() {
-
-
-
-/*
-
-        QRReader fragment = QRReader.newInstance("","");
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment).commit();*/
     }
 
 
 
-    @Override
-    public void notSuccessful() {
-        Toast.makeText(this,"Unsuccessful",Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public String encrypt(String passwordString) {
@@ -97,7 +80,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     public void register(User user) {
         ServerClient client = ServiceGenerator.createService(ServerClient.class);
-        Call<User> call = client.addUser("testtest.php",user);
+        Call<User> call = client.addUser("loginCprPw.php",user);
         // Execute the call asynchronously. Get a positive or negative callback.
         call.enqueue(new Callback<User>() {
             @Override
@@ -118,6 +101,18 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onSuccessfulLogin(User user) {
+        Intent intent = new Intent(this, MainActivity.class);
+        //Get role from server and put here
+        Gson gson = new Gson();
+        String obj = gson.toJson(user);
+
+        intent.putExtra("user", obj);
+        startActivity(intent);
+        finish();
     }
 
     @Override

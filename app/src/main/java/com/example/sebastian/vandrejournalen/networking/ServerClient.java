@@ -1,6 +1,7 @@
 package com.example.sebastian.vandrejournalen.networking;
 
 import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.authentication.LetID;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 
 import java.util.List;
@@ -47,6 +48,25 @@ public interface ServerClient {
     Call<String> registerInfo(
             @Path("page") String page,
             @Body User user
+    );
+
+
+    @POST("/{page}")
+    Call<User> login(
+            @Path("page") String page,
+            @Body User user
+    );
+
+    @POST("/{page}")
+    Call<LetID> getLetTag(
+            @Path("page") String page,
+            @Body String id
+    );
+
+    @POST("/{page}")
+    Call<User> checkLet(
+            @Path("page") String page,
+            @Body LetID letID
     );
 
 

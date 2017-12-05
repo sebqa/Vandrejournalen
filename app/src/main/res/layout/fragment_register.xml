@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:text="@string/exuser"
-        android:id="@+id/tvSignedUp"/>
+        android:id="@+id/tvSignedUp"
+        android:padding="16dp"/>
 </LinearLayout>
 </LinearLayout>

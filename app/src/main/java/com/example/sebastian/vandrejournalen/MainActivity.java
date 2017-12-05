@@ -37,6 +37,7 @@ import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
+import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
@@ -57,8 +58,8 @@ public class MainActivity extends AppCompatActivity
     FrameLayout constraintLayout;
     Fragment currentFragment;
     NavigationView navigationView;
-    Menu menu;
-    User user = new User();
+
+    User user;
 
 
     @Override
@@ -74,14 +75,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        role = getIntent().getStringExtra("role");
+        String jsonUser = getIntent().getStringExtra("user");
+        Gson gson = new Gson();
+        user = gson.fromJson(jsonUser, User.class);
+
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
         constraintLayout = findViewById(R.id.sliding);
         if(user.getRole() == null){
             user.setRole("PL");
         }
 
-        if(role.equals("PL")){
+        if(user.getRole().equals("PL")){
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
             slidingUpPanelLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -125,7 +129,7 @@ public class MainActivity extends AppCompatActivity
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            currentFragment = ResultsPager.newInstance(role);
+                            currentFragment = ResultsPager.newInstance(user);
                             fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
                         }},300);
 
@@ -286,7 +290,6 @@ public class MainActivity extends AppCompatActivity
 
 
     public void loadMainFragment(){
-        user.setRole("PL");
         currentFragment = RoleHelper.getMainFragment(user);
         fn.beginTransaction().replace(R.id.content_frame, currentFragment).commit();
         slidingUpPanelLayout.setEnabled(true);
@@ -327,7 +330,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDateClick(ArrayList<Appointment> arrayList) {
         //Delay showing new panel to see it animate
-        user.setRole("PL");
         String role = user.getRole();
         /*slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         final Handler handler = new Handler();
@@ -416,7 +418,7 @@ public class MainActivity extends AppCompatActivity
                        @Override
                        public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
                            Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-                           currentFragment = ResultsPager.newInstance(role);
+                           currentFragment = ResultsPager.newInstance(user);
                            fn.beginTransaction().replace(R.id.content_frame, currentFragment, "sliding").addToBackStack(null).commit();
                            dialog = null;
 

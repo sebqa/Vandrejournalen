@@ -12,4 +12,5 @@
     <string name="patients">Patienter</string>
     <string name="search_patients">Søg efter patient</string>
     <string name="exuser">Allerede oprettet?</string>
+    <string name="insKey">Indtast nøgle</string>
 </resources>

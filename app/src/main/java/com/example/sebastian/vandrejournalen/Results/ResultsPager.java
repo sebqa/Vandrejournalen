@@ -20,6 +20,7 @@ import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
+import com.google.gson.Gson;
 import com.sembozdemir.viewpagerarrowindicator.library.ViewPagerArrowIndicator;
 
 import java.text.SimpleDateFormat;
@@ -43,23 +44,25 @@ public class ResultsPager extends Fragment {
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
     ViewPagerArrowIndicator viewPagerArrowIndicator;
-    Schedule schedule = new Schedule();
-    String role;
+
     ArrayList<Date> dates = new ArrayList<Date>();
     long now;
     Date today;
     ViewPager viewPager;
     Context context;
     ResultsPagerAdapter adapter;
+    User user;
     public ResultsPager() {
         // Required empty public constructor
     }
 
 
-    public static ResultsPager newInstance(String role) {
+    public static ResultsPager newInstance(User user) {
         ResultsPager fragment = new ResultsPager();
         Bundle args = new Bundle();
-        args.putString("role",role);
+        Gson gson = new Gson();
+        String obj = gson.toJson(user);
+        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,8 +70,8 @@ public class ResultsPager extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            role = getArguments().getString("role");
-        }
+            Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("obj"), User.class);        }
 
     }
 
@@ -78,8 +81,6 @@ public class ResultsPager extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_results_pager, container, false);
         viewPager = rootView.findViewById(R.id.resultsPager);
-        User user = new User();
-        user.setRole("PL");
         arrayList = RoleHelper.getAllAppointments(user);
         final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         today = calendar.getTime();
@@ -95,7 +96,8 @@ public class ResultsPager extends Fragment {
         TypedArray ta = context.obtainStyledAttributes(attrs);
         int color = ta.getResourceId(0, android.R.color.black);
         ta.recycle();
-        adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,role);
+        Log.d(TAG, "onCreateView: "+user.getRole());
+        adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,user);
 
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(arrayList.size()-1);
@@ -104,7 +106,7 @@ public class ResultsPager extends Fragment {
 
         getNearestDate();
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
-
+        String role = user.getRole();
         switch(role) {
             case "PL":
                 fab.hide();
@@ -137,9 +139,6 @@ public class ResultsPager extends Fragment {
     public void getNearestDate(){
         now = System.currentTimeMillis();
 
-        Log.d(TAG, "getNearestDate: "+today);
-
-
         //Check if it's today
         for (int i=0; i< arrayList.size();i++){
             dates.add(arrayList.get(i).getDate());
@@ -170,8 +169,6 @@ public class ResultsPager extends Fragment {
 
 
     public void afterToday(Date closest){
-        Log.d(TAG, "afterToday: "+closest);
-
         if(!closest.after(today)) {
             viewPager.setCurrentItem(dates.indexOf(closest));
 

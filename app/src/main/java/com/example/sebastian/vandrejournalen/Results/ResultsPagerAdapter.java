@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
+import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.google.gson.Gson;
 
@@ -16,24 +18,20 @@ import java.util.ArrayList;
  */
 
 public class ResultsPagerAdapter extends FragmentStatePagerAdapter {
-    String role;
+    private static final String TAG = "RESULTSPAGERADAPTER";
+    User user;
     ArrayList<Appointment> arraylist;
     Context context;
-    public ResultsPagerAdapter(FragmentManager fragmentManager, Context mContext, ArrayList<Appointment> arraylist, String role) {
+    public ResultsPagerAdapter(FragmentManager fragmentManager, Context mContext, ArrayList<Appointment> arraylist, User user) {
         super(fragmentManager);
         this.arraylist = arraylist;
-        this.role = role;
+        this.user = user;
         this.context = mContext;
     }
     @Override
     public Fragment getItem(int position) {
         Bundle args = new Bundle();
-        args.putInt("position", position);
-        args.putString("role",role);
-        Gson gson = new Gson();
-        String obj = gson.toJson(arraylist.get(position));
-        args.putString("obj", obj);
-        Fragment fragment = ResultsFragment.newInstance(role, arraylist.get(position));
+        Fragment fragment = ResultsFragment.newInstance(user, arraylist.get(position));
         fragment.setArguments(args);
         return fragment;
     }

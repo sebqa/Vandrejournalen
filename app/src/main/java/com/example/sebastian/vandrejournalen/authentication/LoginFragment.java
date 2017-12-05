@@ -1,24 +1,35 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.networking.ServerClient;
+import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 
 public class LoginFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    EditText passwordInput, usernameInput;
+    MaterialEditText passwordInput, usernameInput;
     private String mParam1;
     private String mParam2;
     Button button,qrbutton, drbutton, mwbutton;
@@ -26,6 +37,8 @@ public class LoginFragment extends Fragment {
     TextView cipherText;
     String encryptedString;
     String decryptedString;
+    User user = new User();
+    ServerClient client;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,8 +78,9 @@ public class LoginFragment extends Fragment {
         drbutton = rootView.findViewById(R.id.drbutton);
         mwbutton = rootView.findViewById(R.id.mwbutton);
 
+        client = ServiceGenerator.createService(ServerClient.class);
 
-        mwbutton.setOnClickListener(new View.OnClickListener() {
+        /*mwbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
@@ -84,31 +98,60 @@ public class LoginFragment extends Fragment {
                     cipherText.setText(decryptedString);
                 }
             }
-        });
+        });*/
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    User user = new User();
+                    checkCred();
+                }
+            }
+        });
 
-                    mListener.loginSuccessful(user);
-                }
-            }
-        });
-        qrbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String cpr = usernameInput.getText().toString();
-                String pass = passwordInput.getText().toString();
-                if (mListener != null && !cpr.equals("") && !pass.equals("")){
-                    User user = new User("PL",cpr, pass);
-                    mListener.register(user);
-                }
-            }
-        });
         return rootView;
     }
 
+    private void checkCred() {
+        user.setCpr(usernameInput.getText().toString().trim());
+        user.setPassword(passwordInput.getText().toString().trim());
+
+        passwordInput.setHelperTextAlwaysShown(false);
+
+        Call<User> call = client.login("logInCprPw.php", user);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+                if (response.body() !=null) {
+                    if(response.body().getUserID() ==null){
+                        passwordInput.setHelperTextColor(Color.parseColor("#D50000"));
+                        passwordInput.setHelperTextAlwaysShown(true);
+                        passwordInput.setHelperText("Wrong CPR or Password");
+
+                    } else {
+                        Log.d(TAG, "onResponse: " + response.body().getUserID());
+                        user.setUserID(response.body().getUserID());
+                        mListener.loginExists(user);
+                        passwordInput.setHelperText("");
+                    }
+
+                }else {
+                    Log.d(TAG, "onResponse: "+"Den er null");
+                    Toast.makeText(getActivity(), "Wrong CPR or password", Toast.LENGTH_SHORT).show();
+                }
+                //                    mListener.loginExists(user);
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+    }
 
 
     @Override
@@ -129,10 +172,7 @@ public class LoginFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void loginSuccessful(User user);
-
-        void startQR();
-        void notSuccessful();
+        void loginExists(User user);
         String encrypt(String passwordString);
         String decrypt(String passwordString);
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
+import com.google.gson.Gson;
 
 
 public class SearchFragment extends Fragment {
@@ -22,16 +23,18 @@ public class SearchFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private SearchView searchView;
-    String role;
+    User user;
     public SearchFragment() {
         // Required empty public constructor
     }
 
 
-    public static SearchFragment newInstance(String role) {
+    public static SearchFragment newInstance(User user) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString("role",role);
+        Gson gson = new Gson();
+        String obj = gson.toJson(user);
+        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,7 +42,9 @@ public class SearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            role = getArguments().getString("role");
+            Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("obj"), User.class);
+
         }
 
     }
@@ -58,7 +63,7 @@ public class SearchFragment extends Fragment {
 
     private void loadFragment() {
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(R.id.content_search, CalendarTab.newInstance(role)).commit();
+        fm.beginTransaction().replace(R.id.content_search, CalendarTab.newInstance(user)).commit();
 
     }
 
