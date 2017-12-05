@@ -89,7 +89,9 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.loginSuccessful(passwordInput.getText().toString());
+                    User user = new User();
+
+                    mListener.loginSuccessful(user);
                 }
             }
         });
@@ -127,7 +129,7 @@ public class LoginFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void loginSuccessful(String role);
+        void loginSuccessful(User user);
 
         void startQR();
         void notSuccessful();

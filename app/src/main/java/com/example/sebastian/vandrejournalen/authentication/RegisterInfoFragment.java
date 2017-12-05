@@ -28,13 +28,9 @@ import static android.content.ContentValues.TAG;
 public class RegisterInfoFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     ServerClient client;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     Button sendButton;
     private OnFragmentInteractionListener mListener;
     User user;
@@ -74,18 +70,24 @@ public class RegisterInfoFragment extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                user.setInstitution(mParam1);
-                user.setAddress(mParam2);
+                if(user.getInstitution() == null) {
+                    user.setInstitution(user.getInstitution());
+                    user.setAddress(user.getAddress());
+                }
                 user.setCpr("111111-9999");
                 user.setName("Lars Larsen");
-                user.setTlf(82837182);
+                user.setPhoneprivate(82837182);
+                user.setPhonework(18461826);
                 user.setPassword("kodeord");
 
-                Call<String> call = client.registerInfo("checkKey.php", user);
+                Call<String> call = client.registerInfo("registerInformation.php", user);
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        Log.d(TAG, "onResponse: "+response.body());
+                        if(response.body().trim().equals("1")){
+                            mListener.loginSuccessful(user);
+                        }
+                        Log.d(TAG, "onResponse: "+response.body().trim());
                     }
 
                     @Override
@@ -124,5 +126,6 @@ public class RegisterInfoFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        void loginSuccessful(User user);
     }
 }

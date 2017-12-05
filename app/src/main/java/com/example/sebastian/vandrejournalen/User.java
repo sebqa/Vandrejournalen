@@ -12,7 +12,25 @@ public class User {
     String password;
     String address;
     String email;
-    int tlf;
+
+    public int getPhoneprivate() {
+        return phoneprivate;
+    }
+
+    public void setPhoneprivate(int phoneprivate) {
+        this.phoneprivate = phoneprivate;
+    }
+
+    public int getPhonework() {
+        return phonework;
+    }
+
+    public void setPhonework(int phonework) {
+        this.phonework = phonework;
+    }
+
+    int phoneprivate;
+    int phonework;
     String institution;
     String userID;
     boolean response;
@@ -25,17 +43,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public int getTlf() {
-        return tlf;
-    }
-
-    public void setTlf(int tlf) {
-        this.tlf = tlf;
-    }
-
-
-
 
     public String getAddress() {
         return address;

@@ -163,9 +163,11 @@ public class RegisterFragment extends Fragment {
                         final User user = response.body();
                         Log.d(TAG, "onClick: " + user.getInstitution());
 
+
+
                         new MaterialDialog.Builder(getActivity())
                                 .title("Verification")
-                                .content("Please verify that you are a " + user.getRole() + " at " + user.getInstitution())
+                                .content("Please verify that you are a " +user.getRole() + " at " + user.getInstitution())
                                 .positiveText("Yes, continue")
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override

@@ -23,7 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener{
+public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterInfoFragment.OnFragmentInteractionListener{
     SecureUtil secureUtil;
     FragmentManager fm = getSupportFragmentManager();
     @Override
@@ -53,13 +53,13 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     }
 
     @Override
-    public void loginSuccessful(String role) {
-        if(role.equals("")){
-            role = "PL";
+    public void loginSuccessful(User user) {
+        if(user.getRole()==null){
+            user.setRole("PL");
         }
         Intent intent = new Intent(this,MainActivity.class);
         //Get role from server and put here
-        intent.putExtra("role",role.toUpperCase());
+        intent.putExtra("role",user.getRole().toUpperCase());
         startActivity(intent);
         finish();
     }
