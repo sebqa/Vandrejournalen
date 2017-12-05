@@ -42,9 +42,6 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements CalendarTab.OnFragmentInteractionListener{
@@ -61,6 +58,8 @@ public class MainActivity extends AppCompatActivity
     Fragment currentFragment;
     NavigationView navigationView;
     Menu menu;
+    User user = new User();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +77,9 @@ public class MainActivity extends AppCompatActivity
         role = getIntent().getStringExtra("role");
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
         constraintLayout = findViewById(R.id.sliding);
+        if(user.getRole() == null){
+            user.setRole("PL");
+        }
 
         if(role.equals("PL")){
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView = findViewById(R.id.nav_view);
-        navigationView.inflateMenu(RoleHelper.getOptionsMenu(role));
+        navigationView.inflateMenu(RoleHelper.getOptionsMenu(user));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -284,7 +286,8 @@ public class MainActivity extends AppCompatActivity
 
 
     public void loadMainFragment(){
-        currentFragment = RoleHelper.getMainFragment(role);
+        user.setRole("PL");
+        currentFragment = RoleHelper.getMainFragment(user);
         fn.beginTransaction().replace(R.id.content_frame, currentFragment).commit();
         slidingUpPanelLayout.setEnabled(true);
         slidingUpPanelLayout.setClickable(true);
@@ -324,7 +327,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDateClick(ArrayList<Appointment> arrayList) {
         //Delay showing new panel to see it animate
-
+        user.setRole("PL");
+        String role = user.getRole();
         /*slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -332,7 +336,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {*/
         switch(role){
             case "PL":
-                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,arrayList.get(0))).commit();
+                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(user,arrayList.get(0))).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 //TODO NETWORKING
                 //TEST AF NETWORKING
@@ -355,7 +359,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });*/
                 break;
-            case "MW":
+            case "Midwife":
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);*/
 
@@ -375,10 +379,10 @@ public class MainActivity extends AppCompatActivity
     public void onToday(ArrayList<Appointment> arrayList, int pos) {
         switch(role){
             case "PL":
-                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(role,arrayList.get(pos))).commit();
+                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(user,arrayList.get(pos))).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 break;
-            case "MW":
+            case "Midwife":
 
                 //fn.beginTransaction().add(R.id.content_frame,RoleHelper.getSlidingFragment(role,appointment)).commit();
 

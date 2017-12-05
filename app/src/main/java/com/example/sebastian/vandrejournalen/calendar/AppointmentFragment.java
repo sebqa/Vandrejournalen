@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
+import com.example.sebastian.vandrejournalen.User;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -60,7 +61,10 @@ public class AppointmentFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(RoleHelper.getAppointmentLayout(role), container, false);
+        User user = new User();
+        user.setRole("PL");
+
+        rootView = inflater.inflate(RoleHelper.getAppointmentLayout(user), container, false);
         Log.d(appointment.fullName, "onCreateView: ");
         if(role.equals("PL")) {
             previewDate = rootView.findViewById(R.id.previewDate);
@@ -77,8 +81,7 @@ public class AppointmentFragment extends Fragment  {
             recyclerView = rootView.findViewById(R.id.apNotesList);
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                     DividerItemDecoration.VERTICAL));
-
-            adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), getActivity());
+            adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), getActivity());
             layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);

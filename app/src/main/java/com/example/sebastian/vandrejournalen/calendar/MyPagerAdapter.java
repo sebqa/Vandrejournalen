@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.User;
 
 /**
  * Created by Sebastian on 03-02-2017.
@@ -14,12 +15,12 @@ import com.example.sebastian.journalapp.R;
 public class MyPagerAdapter extends FragmentPagerAdapter {
     private static int NUM_ITEMS = 2;
     Context context;
-    String role;
+    User user;
 
-    public MyPagerAdapter(FragmentManager fragmentManager, Context mContext, String role) {
+    public MyPagerAdapter(FragmentManager fragmentManager, Context mContext, User user) {
         super(fragmentManager);
         context = mContext;
-        this.role = role;
+        this.user = user;
     }
 
     // Returns total number of pages
@@ -31,6 +32,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
+        String role = user.getRole();
         switch (position) {
             case 0: // Fragment # 0 - This will show FirstFragment
                 return CalendarTab.newInstance(role);

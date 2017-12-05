@@ -17,11 +17,12 @@ import java.util.ArrayList;
 
 public class RoleHelper {
 
-    public static int getOptionsMenu(String role){
+    public static int getOptionsMenu(User user){
+        String role = user.getRole();
         switch(role){
             case "PL":
                 return R.menu.pl_drawer;
-            case "MW":
+            case "Midwife":
                 return R.menu.mw_drawer;
             case "DR":
                 return R.menu.dr_drawer;
@@ -29,11 +30,12 @@ public class RoleHelper {
                 return R.menu.activity_main_drawer;
         }
     }
-    public static int getContentmain(String role){
+    public static int getContentmain(User user){
+        String role = user.getRole();
         switch(role){
             case "PL":
                 return R.layout.content_main;
-            case "MW":
+            case "Midwife":
                 return R.layout.mw_content_main;
             case "DR":
                 return R.menu.mw_drawer;
@@ -42,11 +44,12 @@ public class RoleHelper {
         }
     }
 
-    public static Fragment getMainFragment(String role) {
+    public static Fragment getMainFragment(User user) {
+        String role = user.getRole();
         switch (role) {
             case "PL":
                 return Schedule.newInstance(role);
-            case "MW":
+            case "Midwife":
                 return SearchFragment.newInstance(role);
             case "DR":
                 return Schedule.newInstance(role);
@@ -54,11 +57,12 @@ public class RoleHelper {
                 return null;
         }
     }
-    public static Fragment getSlidingFragment(String role, Appointment appointment) {
+    public static Fragment getSlidingFragment(User user, Appointment appointment) {
+        String role = user.getRole();
         switch (role) {
             case "PL":
                 return AppointmentFragment.newInstance(role,appointment);
-            case "MW":
+            case "Midwife":
                 return ResultsPager.newInstance(role);
             case "DR":
                 return Schedule.newInstance(role);
@@ -67,11 +71,12 @@ public class RoleHelper {
         }
     }
 
-    public static int getAppointmentLayout(String role){
+    public static int getAppointmentLayout(User user){
+        String role = user.getRole();
         switch(role){
             case "PL":
                 return R.layout.fragment_appointment;
-            case "MW":
+            case "Midwife":
                 return R.layout.mw_content_main;
             case "DR":
                 return R.menu.mw_drawer;
@@ -80,8 +85,8 @@ public class RoleHelper {
         }
     }
 
-    public static ArrayList<Appointment> getAllAppointments(String role){
-
+    public static ArrayList<Appointment> getAllAppointments(User user){
+        String role = user.getRole();
         ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
         final Appointment event = new Appointment(3,12,2017,"13.00","Læge");
         event.setDate(3,12,2017, 13,00);

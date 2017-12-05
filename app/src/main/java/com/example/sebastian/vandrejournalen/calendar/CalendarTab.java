@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
+import com.example.sebastian.vandrejournalen.User;
 
 
 import java.util.ArrayList;
@@ -48,7 +49,10 @@ public class CalendarTab extends Fragment {
 
     private void setUpCalendar() {
         //Get appointments based on role somehow. Maybe from rolehelper.
-        arrayList = RoleHelper.getAllAppointments(role);
+        User user = new User();
+        user.setRole("PL");
+
+        arrayList = RoleHelper.getAllAppointments(user);
 
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
