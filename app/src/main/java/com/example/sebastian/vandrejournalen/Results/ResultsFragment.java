@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
+import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
 import com.google.gson.Gson;
@@ -96,10 +97,6 @@ public class ResultsFragment extends Fragment  {
         etFosteraktivitet = new MaterialEditText(context);
         etUndersoegelsessted = new MaterialEditText(context);
         etInitialer = new MaterialEditText(context);
-
-
-        //Get all appointments for this person
-        ArrayList<Appointment> someText = RoleHelper.getAllAppointments(role);
 
         //txt.setText(appointment.getDay()+"/"+appointment.getMonth()+"/"+appointment.getYear());
         setEditable();
@@ -238,7 +235,9 @@ public class ResultsFragment extends Fragment  {
                 DividerItemDecoration.VERTICAL));
 
         //Get notes for this appointment
-        RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), context);
+        User user = new User();
+        user.setRole("PL");
+        RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

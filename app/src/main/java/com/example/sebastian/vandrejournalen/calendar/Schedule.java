@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.User;
 
 import java.util.ArrayList;
 
@@ -32,9 +33,10 @@ public class Schedule extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_schedule,container,false);
-
+        User user = new User();
+        user.setRole("PL");
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext(),role);
+        adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext(),user);
         vpPager.setAdapter(adapterViewPager);
         vpPager.setOffscreenPageLimit(3);
 

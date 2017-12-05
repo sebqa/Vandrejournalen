@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
+import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.sembozdemir.viewpagerarrowindicator.library.ViewPagerArrowIndicator;
@@ -77,7 +78,9 @@ public class ResultsPager extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_results_pager, container, false);
         viewPager = rootView.findViewById(R.id.resultsPager);
-        arrayList = RoleHelper.getAllAppointments(role);
+        User user = new User();
+        user.setRole("PL");
+        arrayList = RoleHelper.getAllAppointments(user);
         final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         today = calendar.getTime();
         viewPagerArrowIndicator =  rootView.findViewById(R.id.viewPagerArrowIndicator);

@@ -20,6 +20,7 @@ import android.widget.EditText;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
+import com.example.sebastian.vandrejournalen.User;
 
 import java.util.ArrayList;
 
@@ -83,8 +84,9 @@ public class NotesListTab extends Fragment {
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
-
-        adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), getActivity());
+        User user = new User();
+        user.setRole("PL");
+        adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

@@ -84,7 +84,7 @@ public class RegisterInfoFragment extends Fragment {
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        if(response.body().trim().equals("1")){
+                        if(response.body().trim().equals("TRUE")){
                             mListener.loginSuccessful(user);
                         }
                         Log.d(TAG, "onResponse: "+response.body().trim());
@@ -110,10 +110,13 @@ public class RegisterInfoFragment extends Fragment {
         }
     }
 
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
 
+        }
     }
 
     @Override
