@@ -17,4 +17,5 @@
     <string name="back">Back</string>
     <string name="patients">Patients</string>
     <string name="search_patients">Search for patient</string>
+    <string name="exuser">Already signed up?</string>
 </resources>

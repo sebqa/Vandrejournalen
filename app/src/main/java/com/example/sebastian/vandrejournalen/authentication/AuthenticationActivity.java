@@ -3,7 +3,10 @@ package com.example.sebastian.vandrejournalen.authentication;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 import com.example.sebastian.journalapp.R;
@@ -20,8 +23,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener{
+public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener{
     SecureUtil secureUtil;
+    FragmentManager fm = getSupportFragmentManager();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +38,16 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
                 return;
             }
 
-            LoginFragment fragment = LoginFragment.newInstance("","");
+            Fragment fragment= RegisterFragment.newInstance("","");
 
-            getSupportFragmentManager().beginTransaction()
+            fm.beginTransaction()
                     .add(R.id.fragment_container, fragment).commit();
         }
-        secureUtil = new SecureUtil(this);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // only for gingerbread and newer versions
+            secureUtil = new SecureUtil(this);
+
+        }
 
 
     }
@@ -113,9 +121,18 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     }
 
     @Override
+    public void goToLogin() {
+        Fragment fragment = LoginFragment.newInstance("","");
+        fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        secureUtil.checkLockScreen();
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //secureUtil.checkLockScreen();
+
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

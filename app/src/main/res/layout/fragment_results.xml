@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:clickable="true">
+    android:clickable="true"
+    android:id="@+id/hLayout">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,6 +13,8 @@
         android:scrollbarSize="3dp"
         android:scrollbarStyle="outsideInset"
         android:paddingEnd="16dp"
+        android:layout_weight="4"
+        android:layout_marginTop="16dp"
         >
 
     <LinearLayout
@@ -19,9 +22,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/resultsLayout"
-        android:layout_marginTop="16dp">
+        android:animateLayoutChanges="true"
+        >
 
     </LinearLayout>
     </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/notesLayout"
+
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vis noter"
+            android:textColor="?attr/colorPrimaryDark"
+            android:id="@+id/tvShowNotes"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
 
 </LinearLayout>

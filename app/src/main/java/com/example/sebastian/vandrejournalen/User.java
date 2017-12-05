@@ -11,6 +11,21 @@ public class User {
     String cpr;
     String pass;
 
+    public User(){
+
+    }
+
+    public String getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
+    }
+
+    String institution;
+
+
     public String getName() {
         return name;
     }
