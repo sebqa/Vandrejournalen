@@ -4,15 +4,21 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import static android.widget.Toast.LENGTH_SHORT;
 
 
 public class RegisterPatient extends Fragment {
@@ -28,8 +34,9 @@ public class RegisterPatient extends Fragment {
     private OnFragmentInteractionListener mListener;
     LinearLayout vLinearLayout;
     Context context;
-
+    MaterialEditText etCPR;
     MaterialEditText etRegisterPatient;
+    Button btnCreateUser;
 
     public RegisterPatient() {
         // Required empty public constructor
@@ -51,6 +58,7 @@ public class RegisterPatient extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+
     }
 
     @Override
@@ -62,8 +70,44 @@ public class RegisterPatient extends Fragment {
         vLinearLayout = rootView.findViewById(R.id.layoutRegisterPatient);
 
         etRegisterPatient = new MaterialEditText(context);
+
+        etCPR = rootView.findViewById(R.id.etCPR);
+        btnCreateUser = rootView.findViewById(R.id.btnCreateUser);
+
+        // Get CPR number from EditText to string
+        btnCreateUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String cprnumber = etCPR.getText().toString();
+            }
+        });
+
+        // Re-make
+        // Insert "-" after 6 numbers in CPR number
+        /*etCPR.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (etCPR.length() == 6) {
+                    etCPR.append("-");
+                }
+
+            }
+        }); */
+
         return rootView;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -85,10 +129,15 @@ public class RegisterPatient extends Fragment {
         mListener = null;
     }
 
+
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
+
 
    /* public void initLayout() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
