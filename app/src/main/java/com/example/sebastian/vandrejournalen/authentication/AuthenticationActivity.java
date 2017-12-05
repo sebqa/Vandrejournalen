@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 import com.example.sebastian.journalapp.R;
@@ -33,12 +34,21 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     FragmentManager fm = getSupportFragmentManager();
     SharedPreferences prefs;
     User user;
+    public static int theme;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        theme = prefs.getInt("theme",0);
+        //Set theme
+        if (theme == 0){
+            setTheme(R.style.BlueTheme);
+        } else{
+            setTheme(R.style.PinkTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
-        /*Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         if (findViewById(R.id.fragment_container) != null) {
             if (savedInstanceState != null) {
@@ -50,7 +60,8 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment).commit();
         }
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+
         String userString = prefs.getString("user","");
         if (!userString.equals("")){
             user = new Gson().fromJson(userString,User.class);

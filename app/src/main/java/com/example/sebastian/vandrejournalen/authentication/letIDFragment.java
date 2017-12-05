@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ public class letIDFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     ServerClient client;
     User user;
-    TextView tvLetTag,tvLetID;
+    TextView tvLetTag,tvLetID, tvName;
     Button continueBtn;
     MaterialEditText etLetInput;
     LetID letID;
@@ -75,16 +76,36 @@ public class letIDFragment extends Fragment {
         client = ServiceGenerator.createService(ServerClient.class);
         tvLetTag = rootView.findViewById(R.id.letTag);
         tvLetID = rootView.findViewById(R.id.letID);
+        tvName = rootView.findViewById(R.id.tvUserName);
         etLetInput = rootView.findViewById(R.id.letInput);
         etLetInput.setTransformationMethod(null);
-        continueBtn = rootView.findViewById(R.id.continueBtn);
+        etLetInput.setEnabled(false);
 
+
+        if(user.getName() != null){
+            tvName.setText(user.getName());
+        }
+        continueBtn = rootView.findViewById(R.id.continueBtn);
+        etLetInput.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (i == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    checkLet();
+                    return true;
+                }
+                return false;
+            }
+        });
         continueBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
+                continueBtn.setEnabled(false);
                 checkLet();
+                continueBtn.setEnabled(true);
+
             }
         });
         getLetIDKeyTag();
@@ -108,13 +129,15 @@ public class letIDFragment extends Fragment {
                         tvLetID.setText("Card ID: "+letID.getKeyID());
                         tvLetTag.setText(""+letID.getKeyTag());
                         letID.setUserID(user.getUserID());
+
+                        etLetInput.setEnabled(true);
+
                     } else {
                         Log.d(TAG, "onResponse: "+"Den er null");
                     }
 
                 }else {
                     Log.d(TAG, "onResponse: "+"Den er null");
-                    Toast.makeText(getActivity(), "Wrong CPR or password", Toast.LENGTH_SHORT).show();
                 }
                 //                    mListener.loginExists(user);
 
@@ -126,62 +149,68 @@ public class letIDFragment extends Fragment {
             }
 
         });
+
     }
 
     private void checkLet() {
         String rawInput = etLetInput.getText().toString();
 
-         int input= validate(rawInput);
 
 
             //TODO VALIDATION OF INPUT
-            if (input != 0) {
-                letID.setInKeyCode(Integer.parseInt(etLetInput.getText().toString()));
 
-                Call<User> call = client.checkLet("logInCheckLetIdKeyCode.php", letID);
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
+                if((validate(rawInput))) {
+                    letID.setInKeyCode(Integer.parseInt(rawInput));
+                    Call<User> call = client.checkLet("logInCheckLetIdKeyCode.php", letID);
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
 
-                        Log.d(TAG, "onResponse: " + response.body());
-                        if (response.body() != null) {
-                            if (response.body().getRole() != null) {
-                                user.setRole(response.body().getRole());
-                                user.setName(response.body().getName());
-                                mListener.onSuccessfulLogin(user);
+                            Log.d(TAG, "onResponse: " + response.body());
+                            if (response.body() != null) {
+                                if (response.body().getRole() != null) {
+                                    user.setRole(response.body().getRole());
+                                    user.setName(response.body().getName());
+                                    mListener.onSuccessfulLogin(user);
+
+                                } else {
+                                    Toast toast = Toast.makeText(getActivity(), "Incorrect LET-ID key code\n Key has changed", Toast.LENGTH_SHORT);
+                                    ((TextView) ((LinearLayout) toast.getView()).getChildAt(0))
+                                            .setGravity(Gravity.CENTER_HORIZONTAL);
+                                    toast.show();
+                                    etLetInput.setText("");
+                                    getLetIDKeyTag();
+                                }
 
                             } else {
-                                Toast toast = Toast.makeText(getActivity(), "Incorrect LET-ID key code\n Key has changed", Toast.LENGTH_SHORT);
-                                ((TextView)((LinearLayout)toast.getView()).getChildAt(0))
-                                        .setGravity(Gravity.CENTER_HORIZONTAL);
-                                toast.show();
-                                getLetIDKeyTag();
+                                Toast.makeText(getActivity(), "Wrong CPR or password", Toast.LENGTH_SHORT).show();
                             }
 
-                        } else {
-                            Toast.makeText(getActivity(), "Wrong CPR or password", Toast.LENGTH_SHORT).show();
                         }
 
-                    }
-
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
     }
 
-    private int validate(String input) {
-        int validated= 0;
-        try{
-            validated = Integer.parseInt(input);
+    private boolean validate(String input) {
+        int validated = 0;
+        if (!input.equals("")) {
+            try {
+                validated = Integer.parseInt(input);
 
-        }catch (NumberFormatException e ){
-            Toast.makeText(getContext(), "Numbers only, pls", Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Numbers only, pls", Toast.LENGTH_SHORT).show();
+            }
+        } else{
+            Toast.makeText(getActivity(), "Field is empty", Toast.LENGTH_SHORT).show();
+            return false;
         }
-        return validated;
+        return true;
     }
 
     @Override

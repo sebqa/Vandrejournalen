@@ -32,6 +32,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
+import com.example.sebastian.vandrejournalen.authentication.AuthenticationActivity;
 import com.example.sebastian.vandrejournalen.authentication.RegisterPatient;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
@@ -66,24 +67,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Get saved preferences
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         theme = prefs.getInt("theme",0);
 
 
-
+        //Set theme
         if (theme == 0){
             setTheme(R.style.BlueTheme);
         } else{
             setTheme(R.style.PinkTheme);
-
         }
         super.onCreate(savedInstanceState);
-        //setLanguage("da");
+        String language = prefs.getString("language","en");
+        setLanguage(language);
         setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        String jsonUser = getIntent().getStringExtra("user");
 
+
+        String jsonUser = getIntent().getStringExtra("user");
         Gson gson = new Gson();
         if(jsonUser ==null){
             jsonUser = prefs.getString("userMain","");
@@ -92,8 +95,14 @@ public class MainActivity extends AppCompatActivity
 
         }
         user = gson.fromJson(jsonUser, User.class);
+
+        //Layout
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
         constraintLayout = findViewById(R.id.sliding);
+        navigationView = findViewById(R.id.nav_view);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+
         if(user.getRole() == null){
             user.setRole("PL");
         }
@@ -110,13 +119,11 @@ public class MainActivity extends AppCompatActivity
         } else {
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = findViewById(R.id.nav_view);
         navigationView.inflateMenu(RoleHelper.getOptionsMenu(user));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -162,11 +169,15 @@ public class MainActivity extends AppCompatActivity
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            fn.beginTransaction().replace(R.id.content_frame, RegisterPatient.newInstance(role)).addToBackStack(null).commit();
+                            fn.beginTransaction().replace(R.id.content_frame, RegisterPatient.newInstance(user)).addToBackStack(null).commit();
                         }},400);
 
                 } else if (id == R.id.nav_send) {
+                    prefs.edit().remove("user").apply();
+                    prefs.edit().remove("userMain").apply();
 
+                    startActivity(new Intent(MainActivity.this, AuthenticationActivity.class));
+                    finish();
                 }
 
                 final DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -281,7 +292,6 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         if (id == R.id.change_lang) {
-            Log.d(""+mylocale, "onOptionsItemSelected: ");
             if(mylocale == null ){
                 setLanguage("da");
             } else if(mylocale.getLanguage().equals("en")){
@@ -289,7 +299,7 @@ public class MainActivity extends AppCompatActivity
             } else{
                 setLanguage("en");
             }
-
+            restartActivity();
         }
 
         return super.onOptionsItemSelected(item);
@@ -334,12 +344,12 @@ public class MainActivity extends AppCompatActivity
 
     protected void setLanguage(String language){
         mylocale=new Locale(language);
+        prefs.edit().putString("language",language).apply();
         Resources resources=getResources();
         DisplayMetrics dm=resources.getDisplayMetrics();
         Configuration conf= resources.getConfiguration();
         conf.locale=mylocale;
         resources.updateConfiguration(conf,dm);
-        restartActivity();
     }
 
     @Override
@@ -394,6 +404,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onToday(ArrayList<Appointment> arrayList, int pos) {
+        String role = user.getRole();
         switch(role){
             case "PL":
                 fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(user,arrayList.get(pos))).commit();

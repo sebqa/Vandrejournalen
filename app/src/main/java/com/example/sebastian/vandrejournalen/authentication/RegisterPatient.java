@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.User;
+import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -24,11 +26,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class RegisterPatient extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private View rootView;
     private OnFragmentInteractionListener mListener;
@@ -37,17 +34,17 @@ public class RegisterPatient extends Fragment {
     MaterialEditText etCPR;
     MaterialEditText etRegisterPatient;
     Button btnCreateUser;
-
+    User user;
     public RegisterPatient() {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static RegisterPatient newInstance(String role) {
+    public static RegisterPatient newInstance(User user) {
         RegisterPatient fragment = new RegisterPatient();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, role);
-
+        Gson gson = new Gson();
+        String obj = gson.toJson(user);
+        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +53,7 @@ public class RegisterPatient extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            user = new Gson().fromJson(getArguments().getString("obj"), User.class);
         }
 
     }
