@@ -131,7 +131,14 @@ public class MainActivity extends AppCompatActivity
         View headerview = navigationView.getHeaderView(0);
         TextView tvRole = headerview.findViewById(R.id.tvRole);
         TextView tvName = headerview.findViewById(R.id.tvName);
-        tvRole.setText(user.getRole());
+
+        if(mylocale == null ){
+            tvRole.setText(user.getRole());
+        } else if(mylocale.getLanguage().equals("en")){
+            tvRole.setText(user.getRole());
+        } else{
+            tvRole.setText(RoleHelper.translateRole(user.getRole()));
+        }
         tvName.setText(user.getName());
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
