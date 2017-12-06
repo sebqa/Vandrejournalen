@@ -3,6 +3,7 @@ package com.example.sebastian.vandrejournalen.Results;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
@@ -39,12 +41,13 @@ import java.util.TimeZone;
 
 import br.com.jpttrindade.calendarview.view.CalendarView;
 
-public class ResultsPager extends Fragment implements DatePickerFragment.OnFragmentInteractionListener {
+public class ResultsPager extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "RESULTSPAGER";
+    int day,month,year,hour, min;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -138,9 +141,49 @@ public class ResultsPager extends Fragment implements DatePickerFragment.OnFragm
 
     }
     public void showDatePickerDialog() {
-        DatePickerFragment newFragment = new DatePickerFragment();
-        newFragment.show(getFragmentManager(), "datePicker");
+        final Calendar c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
+
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int nyear,
+                                          int monthOfYear, int dayOfMonth) {
+                        year = nyear;
+                        month = monthOfYear;
+                        day = dayOfMonth;
+                        Log.d(TAG, "showDatePickerDialog: "+year+month+day);
+                        showTimePickerDialog(c);
+
+
+                    }
+                }, year, month, day);
+        datePickerDialog.show();
+
     }
+    public void showTimePickerDialog(Calendar c){
+        hour = c.get(Calendar.HOUR_OF_DAY);
+        min = c.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay,
+                                          int minute) {
+                        hour = hourOfDay;
+                        min = minute;
+                        setDate();
+                    }
+                }, hour, min, false);
+        timePickerDialog.show();
+    }
+
 
     public void getNearestDate(){
         now = System.currentTimeMillis();
@@ -191,8 +234,8 @@ public class ResultsPager extends Fragment implements DatePickerFragment.OnFragm
     }
 
 
-    @Override
-    public void setDate(int day,int month, int year, int hour, int min) {
+
+    public void setDate() {
 
         Date date = new Date();
         Appointment appointment = new Appointment(date, "Læge");

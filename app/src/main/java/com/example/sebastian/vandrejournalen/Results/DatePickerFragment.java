@@ -6,15 +6,14 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.View;
+import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import com.example.sebastian.vandrejournalen.authentication.RegisterFragment;
-
 import java.util.Calendar;
 
-import br.com.jpttrindade.calendarview.view.CalendarView;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Sebastian on 06-12-2017.
@@ -23,13 +22,9 @@ import br.com.jpttrindade.calendarview.view.CalendarView;
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     Calendar c;
-    private CalendarView calendarView;
     int day,month,year,hour, min;
-    private DatePickerFragment.OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
-    public void setCalendarView(CalendarView calendarView) {
-        this.calendarView = calendarView;
-    }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
@@ -57,10 +52,10 @@ public class DatePickerFragment extends DialogFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof RegisterFragment.OnFragmentInteractionListener) {
-            mListener = (DatePickerFragment.OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
-
+            Log.d(TAG, "onAttach: Not instance of");
         }
     }
 
@@ -68,7 +63,8 @@ public class DatePickerFragment extends DialogFragment
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
         this.hour = i;
         this.min = i1;
-        mListener.setDate(day,month,year,hour,min);
+        Log.d(TAG, "onTimeSet: "+day+month+year+hour+day);
+        //mListener.setDate(day,month,year,hour,min);
     }
 
     public interface OnFragmentInteractionListener {
