@@ -61,6 +61,11 @@ dependencies {
 
     //Material dialogs
     compile 'com.afollestad.material-dialogs:core:0.9.5.0'
+    //Material EditText - https://github.com/rengwuxian/MaterialEditText
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+
+    //Material spinner - https://github.com/ganfra/MaterialSpinner
+    compile 'com.jaredrummler:material-spinner:1.2.2'
 
     //Viewpager arrows
     //compile 'com.github.sembozdemir:ViewPagerArrowIndicator:1.0.0'
@@ -68,8 +73,7 @@ dependencies {
     //Edited version
     compile 'com.github.sebqa:ViewPagerArrowIndicator:fix-SNAPSHOT'
 
-    //Material EditText - https://github.com/rengwuxian/MaterialEditText
-    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+
 
 
 }

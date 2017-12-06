@@ -2,9 +2,12 @@ package com.example.sebastian.vandrejournalen.Results;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,20 +17,27 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
 import com.google.gson.Gson;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 
 import static android.content.ContentValues.TAG;
 
@@ -39,11 +49,12 @@ public class ResultsFragment extends Fragment  {
     private View rootView;
     boolean notesShowing = false;
     Context context;
+    MaterialDialog dialog;
     LinearLayout cLinearLayout,hLinearLayout,notesLayout;
     User user;
-
+    MaterialSpinner typeSpinner;
     Appointment appointment;
-    MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer;
+    MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
 
 
     public ResultsFragment() {
@@ -96,6 +107,7 @@ public class ResultsFragment extends Fragment  {
         etUndersoegelsessted = new MaterialEditText(context);
         etInitialer = new MaterialEditText(context);
 
+
         //txt.setText(appointment.getDay()+"/"+appointment.getMonth()+"/"+appointment.getYear());
         setEditable();
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -143,6 +155,7 @@ public class ResultsFragment extends Fragment  {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.topMargin = 16;
+
         // Fullname
         TextView tvDate = new TextView(context);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -150,6 +163,22 @@ public class ResultsFragment extends Fragment  {
         tvDate.setText(dateFormat.format(appointment.getDate()));
 
         hLinearLayout.addView(tvDate,0);
+
+        //Type of consultation
+        if(appointment.getEvent() == null){
+            initSpinner();
+            cLinearLayout.addView(typeSpinner);
+        } else{
+            etType = new MaterialEditText(context);
+            etType.setText(appointment.getEvent());
+            etType.setFloatingLabelAlwaysShown(true);
+            etType.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+            etType.setFloatingLabelText(getString(R.string.responsible));
+            etType.setFocusable(false);
+            cLinearLayout.addView(etType);
+        }
+
+
 
         // Gestationsalder
         etGestationsalder.setText("" + appointment.getGestationsalder());
@@ -264,6 +293,56 @@ public class ResultsFragment extends Fragment  {
         });
 
     }
+
+    private void initSpinner() {
+        typeSpinner = new MaterialSpinner(context);
+        String[] ITEMS = {getString(R.string.gp), getString(R.string.mw), getString(R.string.sp)};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, ITEMS);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(adapter);
+        typeSpinner.setTextSize(12);
+        typeSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+
+            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                if(item.equals(user.getRole()) || item.equals(RoleHelper.translateRole(user.getRole()))){
+                    Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+                } else{
+                    if(dialog == null) {
+                        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+                                .title(getResources().getString(R.string.choose) +" "+item)
+                                .items("Person","Anden person","Tredje person")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .dismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialogInterface) {
+                                        dialog = null;
+                                    }
+                                })
+                                .itemsCallback(new MaterialDialog.ListCallback() {
+                                    @Override
+                                    public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
+                                        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+
+                                        dialog = null;
+
+                                    }
+                                });
+                        dialog = builder.build();
+                        dialog.show();
+                    } else if(dialog.isShowing()){
+                        dialog = null;
+                    }
+                }
+
+            }
+        });
+    }
+
     public void setEditable() {
         String role = user.getRole();
         switch(role) {

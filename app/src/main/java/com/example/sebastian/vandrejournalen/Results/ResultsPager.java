@@ -13,15 +13,17 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
@@ -30,13 +32,13 @@ import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
 import com.sembozdemir.viewpagerarrowindicator.library.ViewPagerArrowIndicator;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import br.com.jpttrindade.calendarview.view.CalendarView;
@@ -48,6 +50,12 @@ public class ResultsPager extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "RESULTSPAGER";
     int day,month,year,hour, min;
+
+    boolean headerChangeFlag = true;
+    TextView headerTextView;
+    String headerDatePatternLocale;
+    SimpleDateFormat monthDayFormatLocale;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -145,7 +153,8 @@ public class ResultsPager extends Fragment {
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
-
+        Locale locale = getResources().getConfiguration().locale;
+        Locale.setDefault(locale);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                 new DatePickerDialog.OnDateSetListener() {
@@ -163,6 +172,7 @@ public class ResultsPager extends Fragment {
                     }
                 }, year, month, day);
         datePickerDialog.show();
+
 
     }
     public void showTimePickerDialog(Calendar c){
@@ -238,11 +248,12 @@ public class ResultsPager extends Fragment {
     public void setDate() {
 
         Date date = new Date();
-        Appointment appointment = new Appointment(date, "Læge");
+        Appointment appointment = new Appointment(date, null);
         appointment.setDate(day, month, year, hour, min);
         arrayList.add(appointment);
         adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(arrayList.size(), true);
         Toast.makeText(getActivity(), "New appointment", Toast.LENGTH_SHORT).show();
     }
+
 }

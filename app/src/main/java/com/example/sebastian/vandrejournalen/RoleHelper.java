@@ -1,5 +1,7 @@
 package com.example.sebastian.vandrejournalen;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 
 import com.example.sebastian.journalapp.R;
@@ -93,6 +95,18 @@ public class RoleHelper {
             default:
                 return R.menu.activity_main_drawer;
         }
+    }
+
+
+    public static String translateRole(String role){
+        switch(role){
+            case "Midwife":
+                return "Jordemoder";
+            case "General Practitioner":
+                return "Praktiserende læge";
+
+        }
+        return "Specialist";
     }
 
     public static ArrayList<Appointment> getAllAppointments(User user){

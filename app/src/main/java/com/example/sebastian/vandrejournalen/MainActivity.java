@@ -19,12 +19,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,12 +40,15 @@ import com.example.sebastian.vandrejournalen.authentication.RegisterPatient;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
+import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -367,26 +372,6 @@ public class MainActivity extends AppCompatActivity
             case "PL":
                 fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(user,arrayList.get(0))).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                //TODO NETWORKING
-                //TEST AF NETWORKING
-               /* Appointment appointment = arrayList.get(0);
-                appointment.setGestationsalder("ksndfkjn");
-                appointment.setInitialer("BOESBOI");
-                ServerClient client = ServiceGenerator.createService(ServerClient.class);
-                Call<User> call = client.addAppointment("addAppointment.php", appointment);
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        Toast.makeText(MainActivity.this, "success", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onResponse: "+response.body().getUserID());
-                    }
-
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(MainActivity.this, "Network failure", Toast.LENGTH_SHORT).show();
-
-                    }
-                });*/
                 break;
             case "Midwife":
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
@@ -430,12 +415,12 @@ public class MainActivity extends AppCompatActivity
 
     public void createDialog(ArrayList<Appointment> arrayList){
         for (int i=0; i< arrayList.size();i++){
-            patients.add(arrayList.get(i).fullName+" + CPR + Tid");
-
+            patients.add(arrayList.get(i).getFullName()+" - "+arrayList.get(i).getTime()+" + CPR ");
         }
+        DateFormat formatter = new SimpleDateFormat("EEE dd/MM");
        if(dialog == null) {
            MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                   .title(getResources().getString(R.string.patients)+" - "+patients.size()).items(patients)
+                   .title(patients.size()+" "+getResources().getString(R.string.patients)+" - "+formatter.format(arrayList.get(0).getDate())).items(patients)
                    .dismissListener(new DialogInterface.OnDismissListener() {
                        @Override
                        public void onDismiss(DialogInterface dialogInterface) {
@@ -451,7 +436,7 @@ public class MainActivity extends AppCompatActivity
                            dialog = null;
 
                        }
-                   });
+                   }).negativeText(getResources().getString(R.string.canc));
            dialog = builder.build();
            dialog.show();
        } else if(dialog.isShowing()){

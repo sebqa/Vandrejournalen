@@ -20,6 +20,13 @@
     <string name="exuser">Already signed up?</string>
     <string name="insKey">Insert corresponding key</string>
     <string name="log_out">Log out</string>
+    <string name="gp">General Practitioner</string>
+    <string name="mw">Midwife</string>
+    <string name="sp">Specialist</string>
+    <string name="responsible">Responsible</string>
+    <string name="choose">Choose a</string>
+    <string name="cont">Continue</string>
+    <string name="canc">Cancel</string>
 
 
     <string-array name="monthsda">
