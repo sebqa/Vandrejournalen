@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.MainActivity;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.google.gson.Gson;
@@ -38,6 +39,7 @@ public class CalendarTab extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_calendartab,container,false);
         setHasOptionsMenu(true);
         calendarView =  rootView.findViewById(R.id.calendarView);
+        calendarView.setLanguage(MainActivity.language);
 
         getActivity().runOnUiThread(new Runnable(){
             @Override

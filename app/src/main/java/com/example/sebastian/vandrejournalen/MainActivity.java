@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     SharedPreferences prefs;
     User user;
-
+    public static String language;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
             setTheme(R.style.PinkTheme);
         }
         super.onCreate(savedInstanceState);
-        String language = prefs.getString("language","en");
+         language = prefs.getString("language","en");
         setLanguage(language);
         String jsonUser = getIntent().getStringExtra("user");
         Gson gson = new Gson();

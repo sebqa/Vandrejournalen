@@ -33,7 +33,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //calendar
-    compile 'com.github.sebqa:CalendarView:master-SNAPSHOT'
+    compile 'com.github.sebqa:CalendarView:enda-SNAPSHOT'
 
     //flexbox
     compile 'com.google.android:flexbox:0.3.1'
