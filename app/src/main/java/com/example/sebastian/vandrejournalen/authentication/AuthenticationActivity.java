@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 import com.example.sebastian.journalapp.R;
@@ -22,6 +26,8 @@ import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
 
+
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +40,8 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     FragmentManager fm = getSupportFragmentManager();
     SharedPreferences prefs;
     User user;
+    FragmentTransaction ft;
+    public static Locale mylocale;
     public static int theme;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,14 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             setTheme(R.style.PinkTheme);
         }
         super.onCreate(savedInstanceState);
+        ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
+        String language = prefs.getString("language","en");
+        setLanguage(language);
+
         setContentView(R.layout.activity_authentication);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,8 +73,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
             Fragment fragment= RegisterFragment.newInstance("","");
 
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment).commit();
+            fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
 
 
@@ -84,7 +99,12 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     public void loginExists(User user) {
             Fragment fragment = letIDFragment.newInstance(user);
-            fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+            ft = fm.beginTransaction();
+            ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
+            ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
             //user.setRole("Midwife");
     }
 
@@ -138,17 +158,36 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         startActivity(intent);
         finish();
     }
+    protected void setLanguage(String language){
+        mylocale=new Locale(language);
+        prefs.edit().putString("language",language).apply();
+        Resources resources=getResources();
+        DisplayMetrics dm=resources.getDisplayMetrics();
+        Configuration conf= resources.getConfiguration();
+        conf.locale=mylocale;
+        resources.updateConfiguration(conf,dm);
+    }
 
     @Override
     public void goToLogin() {
         Fragment fragment = LoginFragment.newInstance("","");
-        fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+        ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
+        ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
     }
 
     @Override
     public void goToInfo(User user) {
         Fragment fragment = RegisterInfoFragment.newInstance(user);
-        fm.beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+        ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
+        ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
     }
 
     @Override

@@ -1,10 +1,14 @@
 package com.example.sebastian.vandrejournalen.Results;
 
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -13,11 +17,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.authentication.RegisterFragment;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
@@ -31,7 +37,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class ResultsPager extends Fragment {
+import br.com.jpttrindade.calendarview.view.CalendarView;
+
+public class ResultsPager extends Fragment implements DatePickerFragment.OnFragmentInteractionListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -117,13 +125,8 @@ public class ResultsPager extends Fragment {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Date date = new Date();
-                    Appointment appointment = new Appointment(date, "Læge");
-                    appointment.setDate(8, 12, 2017, 13, 00);
-                    arrayList.add(appointment);
-                    adapter.notifyDataSetChanged();
-                    viewPager.setCurrentItem(arrayList.size(), true);
-                    Toast.makeText(getActivity(), "New appointment", Toast.LENGTH_SHORT).show();
+                    showDatePickerDialog();
+
 
 
                 }
@@ -134,7 +137,10 @@ public class ResultsPager extends Fragment {
 
 
     }
-
+    public void showDatePickerDialog() {
+        DatePickerFragment newFragment = new DatePickerFragment();
+        newFragment.show(getFragmentManager(), "datePicker");
+    }
 
     public void getNearestDate(){
         now = System.currentTimeMillis();
@@ -184,4 +190,16 @@ public class ResultsPager extends Fragment {
         this.context = context;
     }
 
+
+    @Override
+    public void setDate(int day,int month, int year, int hour, int min) {
+
+        Date date = new Date();
+        Appointment appointment = new Appointment(date, "Læge");
+        appointment.setDate(day, month, year, hour, min);
+        arrayList.add(appointment);
+        adapter.notifyDataSetChanged();
+        viewPager.setCurrentItem(arrayList.size(), true);
+        Toast.makeText(getActivity(), "New appointment", Toast.LENGTH_SHORT).show();
+    }
 }

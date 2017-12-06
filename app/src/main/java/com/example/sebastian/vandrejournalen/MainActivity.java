@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity
     String role;
     MaterialDialog dialog;
     ArrayList<String> patients = new ArrayList<>();
-    SlidingUpPanelLayout.PanelSlideListener panelSlideListener;
     FrameLayout constraintLayout;
     Fragment currentFragment;
     NavigationView navigationView;
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         theme = prefs.getInt("theme",0);
 
-
         //Set theme
         if (theme == 0){
             setTheme(R.style.BlueTheme);
@@ -81,11 +80,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         String language = prefs.getString("language","en");
         setLanguage(language);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar =  findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
         String jsonUser = getIntent().getStringExtra("user");
         Gson gson = new Gson();
         if(jsonUser ==null){
@@ -95,6 +89,10 @@ public class MainActivity extends AppCompatActivity
 
         }
         user = gson.fromJson(jsonUser, User.class);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         //Layout
         slidingUpPanelLayout = findViewById(R.id.sliding_layout);
@@ -125,7 +123,11 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.inflateMenu(RoleHelper.getOptionsMenu(user));
-
+        View headerview = navigationView.getHeaderView(0);
+        TextView tvRole = headerview.findViewById(R.id.tvRole);
+        TextView tvName = headerview.findViewById(R.id.tvName);
+        tvRole.setText(user.getRole());
+        tvName.setText(user.getName());
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

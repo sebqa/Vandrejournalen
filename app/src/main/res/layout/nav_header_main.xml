@@ -20,16 +20,19 @@
         app:srcCompat="@android:drawable/sym_def_app_icon" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Role"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-    <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name" />
+        android:text="Name"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Role"
+        android:id="@+id/tvRole"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
 
 </LinearLayout>

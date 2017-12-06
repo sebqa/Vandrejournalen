@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +33,8 @@ public class LoginFragment extends Fragment {
     MaterialEditText passwordInput, usernameInput;
     private String mParam1;
     private String mParam2;
-    Button button,qrbutton, drbutton, mwbutton;
+    Button button;
     private View rootView;
-    TextView cipherText;
-    String encryptedString;
-    String decryptedString;
     User user = new User();
     ServerClient client;
 
@@ -73,10 +71,23 @@ public class LoginFragment extends Fragment {
         passwordInput = rootView.findViewById(R.id.passwordInput);
         usernameInput = rootView.findViewById(R.id.usernameInput);
         button = rootView.findViewById(R.id.button);
-        qrbutton = rootView.findViewById(R.id.qrbutton);
+
+        passwordInput.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (i == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    checkCred();
+                    return true;
+                }
+                return false;
+            }
+        });
+        /*qrbutton = rootView.findViewById(R.id.qrbutton);
         cipherText = rootView.findViewById(R.id.cipherText);
         drbutton = rootView.findViewById(R.id.drbutton);
-        mwbutton = rootView.findViewById(R.id.mwbutton);
+        mwbutton = rootView.findViewById(R.id.mwbutton);*/
 
         client = ServiceGenerator.createService(ServerClient.class);
 

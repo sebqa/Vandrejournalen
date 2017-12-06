@@ -24,7 +24,9 @@ public class RoleHelper {
                 return R.menu.pl_drawer;
             case "Midwife":
                 return R.menu.mw_drawer;
-            case "DR":
+            case "General Practitioner":
+                return R.menu.dr_drawer;
+            case "Specialist":
                 return R.menu.dr_drawer;
             default:
                 return R.menu.activity_main_drawer;
@@ -37,8 +39,10 @@ public class RoleHelper {
                 return R.layout.content_main;
             case "Midwife":
                 return R.layout.mw_content_main;
-            case "DR":
+            case "General Practitioner":
                 return R.menu.mw_drawer;
+            case "Specialist":
+                return R.menu.dr_drawer;
             default:
                 return R.menu.activity_main_drawer;
         }
@@ -51,8 +55,10 @@ public class RoleHelper {
                 return Schedule.newInstance(role);
             case "Midwife":
                 return SearchFragment.newInstance(user);
-            case "DR":
-                return Schedule.newInstance(role);
+            case "General Practitioner":
+                return SearchFragment.newInstance(user);
+            case "Specialist":
+                return SearchFragment.newInstance(user);
             default:
                 return null;
         }
@@ -64,8 +70,10 @@ public class RoleHelper {
                 return AppointmentFragment.newInstance(role,appointment);
             case "Midwife":
                 return ResultsPager.newInstance(user);
-            case "DR":
-                return Schedule.newInstance(role);
+            case "General Practitioner":
+                return ResultsPager.newInstance(user);
+            case "Specialist":
+                return ResultsPager.newInstance(user);
             default:
                 return null;
         }
@@ -78,8 +86,10 @@ public class RoleHelper {
                 return R.layout.fragment_appointment;
             case "Midwife":
                 return R.layout.mw_content_main;
-            case "DR":
-                return R.menu.mw_drawer;
+            case "General Practitioner":
+                return R.layout.mw_content_main;
+            case "Specialist":
+                return R.layout.mw_content_main;
             default:
                 return R.menu.activity_main_drawer;
         }

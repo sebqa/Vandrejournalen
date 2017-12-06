@@ -1,6 +1,7 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -80,6 +81,7 @@ public class letIDFragment extends Fragment {
         etLetInput = rootView.findViewById(R.id.letInput);
         etLetInput.setTransformationMethod(null);
         etLetInput.setEnabled(false);
+        etLetInput.setHelperTextColor(Color.parseColor("#D50000"));
 
 
         if(user.getName() != null){
@@ -174,10 +176,7 @@ public class letIDFragment extends Fragment {
                                     mListener.onSuccessfulLogin(user);
 
                                 } else {
-                                    Toast toast = Toast.makeText(getActivity(), "Incorrect LET-ID key code\n Key has changed", Toast.LENGTH_SHORT);
-                                    ((TextView) ((LinearLayout) toast.getView()).getChildAt(0))
-                                            .setGravity(Gravity.CENTER_HORIZONTAL);
-                                    toast.show();
+                                    etLetInput.setHelperText("Incorrect LET-ID key code. Key has changed");
                                     etLetInput.setText("");
                                     getLetIDKeyTag();
                                 }
@@ -204,10 +203,11 @@ public class letIDFragment extends Fragment {
                 validated = Integer.parseInt(input);
 
             } catch (NumberFormatException e) {
-                Toast.makeText(getContext(), "Numbers only, pls", Toast.LENGTH_SHORT).show();
+                etLetInput.setHelperText("Numbers only, pls");
             }
         } else{
-            Toast.makeText(getActivity(), "Field is empty", Toast.LENGTH_SHORT).show();
+            etLetInput.setHelperText("Field is empty");
+
             return false;
         }
         return true;
