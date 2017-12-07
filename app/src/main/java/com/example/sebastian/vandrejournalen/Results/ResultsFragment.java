@@ -55,6 +55,8 @@ public class ResultsFragment extends Fragment  {
     MaterialSpinner typeSpinner;
     Appointment appointment;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
+    boolean persSelected = false;
+    ArrayList<String> ITEMS = new ArrayList<String>();
 
 
     public ResultsFragment() {
@@ -87,7 +89,9 @@ public class ResultsFragment extends Fragment  {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_results, container, false);
         setHasOptionsMenu(true);
-
+        ITEMS.add(getString(R.string.gp)+ " - id 12323437198");
+        ITEMS.add(getString(R.string.mw));
+        ITEMS.add(getString(R.string.sp));
         Log.d(TAG, "onCreateView: "+user.getRole());
         //etName = rootView.findViewById(R.id.name);
         cLinearLayout = rootView.findViewById(R.id.resultsLayout);
@@ -296,21 +300,20 @@ public class ResultsFragment extends Fragment  {
 
     private void initSpinner() {
         typeSpinner = new MaterialSpinner(context);
-        String[] ITEMS = {getString(R.string.gp), getString(R.string.mw), getString(R.string.sp)};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, ITEMS);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, ITEMS);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(adapter);
-        typeSpinner.setTextSize(12);
+        typeSpinner.setTextSize(16);
         typeSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                if(item.equals(user.getRole()) || item.equals(RoleHelper.translateRole(user.getRole()))){
+                if(item.equals(user.getRole()) || item.equals(RoleHelper.translateRole(user.getRole()))||position == 0 || item.length() > 20){
                     Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
-                } else{
+                } else {
                     if(dialog == null) {
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                                 .title(getResources().getString(R.string.choose) +" "+item)
-                                .items("Person","Anden person","Tredje person")
+                                .items("Person - id 292837567198","Anden person - id 12323437198","Tredje person - id 077287234818")
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -320,6 +323,12 @@ public class ResultsFragment extends Fragment  {
                                 .dismissListener(new DialogInterface.OnDismissListener() {
                                     @Override
                                     public void onDismiss(DialogInterface dialogInterface) {
+                                        if(persSelected){
+                                            persSelected = false;
+                                        }else {
+
+                                            typeSpinner.setSelectedIndex(0);
+                                        }
                                         dialog = null;
                                     }
                                 })
@@ -327,6 +336,16 @@ public class ResultsFragment extends Fragment  {
                                     @Override
                                     public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
                                         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+                                        persSelected = true;
+                                        if(!ITEMS.contains(text.toString())){
+                                            ITEMS.add(0,text.toString());
+                                            adapter.notifyDataSetChanged();
+                                            typeSpinner.setDropdownHeight(600);
+
+                                            typeSpinner.setSelectedIndex(0);
+                                        } else{
+                                            typeSpinner.setSelectedIndex(ITEMS.indexOf(text.toString()));
+                                        }
 
                                         dialog = null;
 

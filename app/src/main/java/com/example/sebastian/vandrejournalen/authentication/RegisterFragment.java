@@ -196,8 +196,18 @@ public class RegisterFragment extends Fragment {
 
                 }
             });
-        } else if(input.length() == 11) {
-            Call<String> call = client.checkCPR("checkCPR.php", etInput.getText().toString());
+        } else if(input.length() <= 11) {
+            String cpr = etInput.getText().toString().trim();
+            if(input.length() == 10){
+                if (cpr.contains("-")){
+
+                } else{
+                    StringBuilder str = new StringBuilder(cpr);
+                    str.insert(6,"-");
+                    cpr = str.toString();
+                }
+            }
+            Call<String> call = client.checkCPR("checkCPR.php", cpr);
 
             call.enqueue(new Callback<String>() {
                 @Override
@@ -207,7 +217,7 @@ public class RegisterFragment extends Fragment {
                         Toast.makeText(getActivity(), "Match!", Toast.LENGTH_SHORT).show();
                     } else{
                         Toast.makeText(getActivity(), "No Match!", Toast.LENGTH_SHORT).show();
-
+                        etInput.setEnabled(true);
                     }
 
                 }
@@ -219,7 +229,7 @@ public class RegisterFragment extends Fragment {
                 }
             });
         } else {
-            Toast.makeText(getActivity(), "Wrong key length!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Wrong input length!", Toast.LENGTH_SHORT).show();
             etInput.setEnabled(true);
         }
 

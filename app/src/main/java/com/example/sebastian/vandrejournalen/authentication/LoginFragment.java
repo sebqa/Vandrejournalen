@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -37,6 +40,8 @@ public class LoginFragment extends Fragment {
     private View rootView;
     User user = new User();
     ServerClient client;
+
+    int keyDel;
 
     private OnFragmentInteractionListener mListener;
 
@@ -119,11 +124,20 @@ public class LoginFragment extends Fragment {
             }
         });
 
+
         return rootView;
     }
 
     private void checkCred() {
-        user.setCpr(usernameInput.getText().toString().trim());
+        String cpr = usernameInput.getText().toString().trim();
+        if (cpr.contains("-")){
+            user.setCpr(cpr);
+        } else{
+            StringBuilder str = new StringBuilder(cpr);
+            str.insert(6,"-");
+            user.setCpr(str.toString());
+            Log.d(TAG, "checkCred: "+user.getCpr());
+        }
         user.setPassword(passwordInput.getText().toString().trim());
 
         passwordInput.setHelperTextAlwaysShown(false);

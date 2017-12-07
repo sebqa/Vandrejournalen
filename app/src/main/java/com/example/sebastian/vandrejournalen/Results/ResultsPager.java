@@ -158,15 +158,21 @@ public class ResultsPager extends Fragment {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                 new DatePickerDialog.OnDateSetListener() {
+                    boolean mFirst = true;
 
                     @Override
                     public void onDateSet(DatePicker view, int nyear,
                                           int monthOfYear, int dayOfMonth) {
-                        year = nyear;
-                        month = monthOfYear;
-                        day = dayOfMonth;
-                        Log.d(TAG, "showDatePickerDialog: "+year+month+day);
-                        showTimePickerDialog(c);
+
+                        if (mFirst) {
+                            mFirst = false;
+                            year = nyear;
+                            month = monthOfYear;
+                            day = dayOfMonth;
+                            Log.d(TAG, "showDatePickerDialog: "+year+month+day);
+                            showTimePickerDialog(c);
+                        }
+
 
 
                     }
@@ -182,13 +188,17 @@ public class ResultsPager extends Fragment {
         // Launch Time Picker Dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
                 new TimePickerDialog.OnTimeSetListener() {
+                    boolean mFirst = true;
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay,
                                           int minute) {
-                        hour = hourOfDay;
-                        min = minute;
-                        setDate();
+                        if (mFirst) {
+                            mFirst = false;
+                            hour = hourOfDay;
+                            min = minute;
+                            setDate();
+                        }
                     }
                 }, hour, min, false);
         timePickerDialog.show();
