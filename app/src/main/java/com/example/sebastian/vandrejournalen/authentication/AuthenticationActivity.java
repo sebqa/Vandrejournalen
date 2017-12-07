@@ -76,7 +76,6 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
 
-
         String userString = prefs.getString("user","");
         if (!userString.equals("")){
             user = new Gson().fromJson(userString,User.class);
@@ -87,6 +86,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             Log.d(TAG, "onCreate: no user set");
 
         }
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // only for gingerbread and newer versions
             secureUtil = new SecureUtil(this);

@@ -117,6 +117,8 @@ public class letIDFragment extends Fragment {
     }
 
     private void getLetIDKeyTag() {
+        final int[] retry = {0};
+
         Call<LetID> call = client.getLetTag("logInLetIdKeytag.php", user.getUserID());
         call.enqueue(new Callback<LetID>() {
             @Override
@@ -147,7 +149,12 @@ public class letIDFragment extends Fragment {
 
             @Override
             public void onFailure(Call<LetID> call, Throwable t) {
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                if(retry[0] < 3){
+                    getLetIDKeyTag();
+                    retry[0]++;
+                } else{
+                    Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                }
             }
 
         });

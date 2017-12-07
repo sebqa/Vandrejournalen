@@ -32,6 +32,8 @@ import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
 import com.sembozdemir.viewpagerarrowindicator.library.ViewPagerArrowIndicator;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,11 +52,6 @@ public class ResultsPager extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "RESULTSPAGER";
     int day,month,year,hour, min;
-
-    boolean headerChangeFlag = true;
-    TextView headerTextView;
-    String headerDatePatternLocale;
-    SimpleDateFormat monthDayFormatLocale;
 
 
     // TODO: Rename and change types of parameters
@@ -136,8 +133,11 @@ public class ResultsPager extends Fragment {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showDatePickerDialog();
-
+                    try {
+                        showDatePickerDialog();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
 
 
                 }
@@ -148,7 +148,7 @@ public class ResultsPager extends Fragment {
 
 
     }
-    public void showDatePickerDialog() {
+    public void showDatePickerDialog() throws ParseException {
         final Calendar c = Calendar.getInstance();
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
@@ -167,7 +167,7 @@ public class ResultsPager extends Fragment {
                         if (mFirst) {
                             mFirst = false;
                             year = nyear;
-                            month = monthOfYear;
+                            month = monthOfYear+1;
                             day = dayOfMonth;
                             Log.d(TAG, "showDatePickerDialog: "+year+month+day);
                             showTimePickerDialog(c);
@@ -177,6 +177,10 @@ public class ResultsPager extends Fragment {
 
                     }
                 }, year, month, day);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date d = sdf.parse(day+"/"+(month+1)+"/"+year);
+        datePickerDialog.getDatePicker().setMinDate(d.getTime());
         datePickerDialog.show();
 
 
