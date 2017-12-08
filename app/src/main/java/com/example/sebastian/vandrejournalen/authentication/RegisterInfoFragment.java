@@ -105,8 +105,9 @@ public class RegisterInfoFragment extends Fragment {
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        if(response.body().trim().equals("TRUE")){
-                            mListener.loginExists(user);
+                        if(!response.body().trim().equals("FALSE")){
+                            user.setUserID(response.body().trim());
+                            mListener.onSuccessfulLogin(user);
                         }
                         Log.d(TAG, "onResponse: "+response.body().trim());
                     }
@@ -162,16 +163,20 @@ public class RegisterInfoFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
         void loginExists(User user);
+        void onSuccessfulLogin(User user);
     }
 
     public void initLayout() {
-
         etCPR.setFloatingLabelAlwaysShown(true);
         etCPR.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etCPR.setInputType(InputType.TYPE_CLASS_NUMBER);
         etCPR.setFloatingLabelText("CPR-number");
         cLayout.addView(etCPR);
-
+        if(user.getCpr() != null){
+            etCPR.setText(user.getCpr());
+            etCPR.setFocusable(false);
+            user.setRole("Patient");
+        }
         etName.setFloatingLabelAlwaysShown(true);
         etName.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etName.setFloatingLabelText("Name");

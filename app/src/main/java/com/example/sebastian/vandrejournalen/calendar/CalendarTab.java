@@ -123,7 +123,8 @@ public class CalendarTab extends Fragment {
 
     public static CalendarTab newInstance(User user) {
         CalendarTab fragment = new CalendarTab();
-        Bundle args = new Bundle();Gson gson = new Gson();
+        Bundle args = new Bundle();
+        Gson gson = new Gson();
         String obj = gson.toJson(user);
         args.putString("obj" , obj);
         fragment.setArguments(args);

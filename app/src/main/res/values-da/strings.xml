@@ -21,5 +21,7 @@
     <string name="choose">Vælg en</string>
     <string name="cont">Fortsæt</string>
     <string name="canc">Afbryd</string>
+    <string name="new_appointment">Færdiggør aftale</string>
+    <string name="register_patient">Register patient</string>
 
 </resources>

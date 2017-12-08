@@ -74,6 +74,4 @@ dependencies {
     compile 'com.github.sebqa:ViewPagerArrowIndicator:fix-SNAPSHOT'
 
 
-
-
 }

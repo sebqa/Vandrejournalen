@@ -27,6 +27,8 @@
     <string name="choose">Choose a</string>
     <string name="cont">Continue</string>
     <string name="canc">Cancel</string>
+    <string name="new_appointment">Create appointment</string>
+    <string name="register_patient">Register patient</string>
 
 
     <string-array name="monthsda">

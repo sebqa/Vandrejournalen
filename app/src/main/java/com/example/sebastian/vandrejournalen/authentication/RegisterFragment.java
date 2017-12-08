@@ -209,12 +209,18 @@ public class RegisterFragment extends Fragment {
             }
             Call<String> call = client.checkCPR("checkCPR.php", cpr);
 
+            final String finalCpr = cpr;
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
-                    Log.d(TAG, "onResponse: "+response.body().trim());
+                    Log.d(TAG, "onResponse: "+response.body());
                     if(response.body().trim().equals("1")){
                         Toast.makeText(getActivity(), "Match!", Toast.LENGTH_SHORT).show();
+                        User user = new User();
+                        user.setCpr(finalCpr);
+                        mListener.goToInfo(user);
+
+
                     } else{
                         Toast.makeText(getActivity(), "No Match!", Toast.LENGTH_SHORT).show();
                         etInput.setEnabled(true);

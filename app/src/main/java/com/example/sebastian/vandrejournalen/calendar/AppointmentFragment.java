@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
+import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,7 +25,7 @@ import java.util.Locale;
 public class AppointmentFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private String apDate, apTitle,role;
+    private String apDate, apTitle;
     private TextView previewDate, appointTitle;
     RecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
@@ -32,16 +33,15 @@ public class AppointmentFragment extends Fragment  {
     private RecyclerView recyclerView;
     TextView apText;
     Appointment appointment;
+    User user;
 
     public AppointmentFragment() {
         // Required empty public constructor
     }
 
-    public static AppointmentFragment newInstance(String role, Appointment appointment) {
+    public static AppointmentFragment newInstance(User user, Appointment appointment) {
         AppointmentFragment fragment = new AppointmentFragment();
         Bundle args = new Bundle();
-        args.putString("role",role);
-        args.putSerializable("obj",appointment);
 
         fragment.setArguments(args);
         return fragment;
@@ -51,8 +51,9 @@ public class AppointmentFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            role = getArguments().getString("role");
-            appointment = (Appointment) getArguments().getSerializable("obj");
+            appointment = new Gson().fromJson(getArguments().getString("appointment","Midwife"),Appointment.class);
+
+            user = new Gson().fromJson(getArguments().getString("user","Midwife"),User.class);
 
         }
     }
@@ -61,12 +62,8 @@ public class AppointmentFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        User user = new User();
-        user.setRole("PL");
-
         rootView = inflater.inflate(RoleHelper.getAppointmentLayout(user), container, false);
-        Log.d(appointment.fullName, "onCreateView: ");
-        if(role.equals("PL")) {
+        if(user.getRole().equals("Patient")) {
             previewDate = rootView.findViewById(R.id.previewDate);
             appointTitle = rootView.findViewById(R.id.appointTitle);
 

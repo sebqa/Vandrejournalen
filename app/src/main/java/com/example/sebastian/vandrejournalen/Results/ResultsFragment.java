@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,6 +58,7 @@ public class ResultsFragment extends Fragment  {
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
     boolean persSelected = false;
     ArrayList<String> ITEMS = new ArrayList<String>();
+    Button addButton;
 
 
     public ResultsFragment() {
@@ -172,6 +174,10 @@ public class ResultsFragment extends Fragment  {
         if(appointment.getEvent() == null){
             initSpinner();
             cLinearLayout.addView(typeSpinner);
+
+            addButton = new Button(context);
+            addButton.setText(R.string.new_appointment);
+            cLinearLayout.addView(addButton);
         } else{
             etType = new MaterialEditText(context);
             etType.setText(appointment.getEvent());
@@ -180,6 +186,7 @@ public class ResultsFragment extends Fragment  {
             etType.setFloatingLabelText(getString(R.string.responsible));
             etType.setFocusable(false);
             cLinearLayout.addView(etType);
+
         }
 
 

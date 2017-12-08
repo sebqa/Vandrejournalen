@@ -7,26 +7,20 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,15 +29,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
+import com.example.sebastian.vandrejournalen.Results.StartJournalFragment;
 import com.example.sebastian.vandrejournalen.authentication.AuthenticationActivity;
-import com.example.sebastian.vandrejournalen.authentication.RegisterPatient;
+import com.example.sebastian.vandrejournalen.authentication.RegisterPatientFragment;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
-import com.example.sebastian.vandrejournalen.calendar.NotesListTab;
-import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
-import com.example.sebastian.vandrejournalen.calendar.Schedule;
-import com.example.sebastian.vandrejournalen.networking.ServerClient;
-import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -54,7 +44,7 @@ import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity
-        implements CalendarTab.OnFragmentInteractionListener{
+        implements CalendarTab.OnFragmentInteractionListener, RegisterPatientFragment.OnFragmentInteractionListener{
     private static final String TAG = "MAINACTIVITY" ;
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
@@ -183,7 +173,7 @@ public class MainActivity extends AppCompatActivity
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            fn.beginTransaction().replace(R.id.content_frame, RegisterPatient.newInstance(user)).addToBackStack(null).commit();
+                            fn.beginTransaction().replace(R.id.content_frame, RegisterPatientFragment.newInstance(user)).addToBackStack(null).commit();
                         }},400);
 
                 } else if (id == R.id.nav_send) {
@@ -376,11 +366,19 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {*/
         switch(role){
-            case "PL":
-                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(user,arrayList.get(0))).commit();
+            case "Patient":
+                Bundle args = new Bundle();
+                Fragment fragment = RoleHelper.getSlidingFragment(user, arrayList.get(0));
+                String obj2 = new Gson().toJson(user);
+                args.putString("user" , obj2);
+                String obj1 = new Gson().toJson(arrayList.get(0));
+                args.putString("appointment" , obj1);
+                fragment.setArguments(args);
+
+                fn.beginTransaction().replace(R.id.sliding,fragment).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 break;
-            case "Midwife":
+            default:
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);*/
 
@@ -453,5 +451,17 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void startJournal(Patient patient, User user) {
+        currentFragment = StartJournalFragment.newInstance();
+        Bundle args = new Bundle();
+
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
+        String obj1 = new Gson().toJson(patient);
+        args.putString("patient" , obj1);
+        currentFragment.setArguments(args);
+        fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
+    }
 }
 

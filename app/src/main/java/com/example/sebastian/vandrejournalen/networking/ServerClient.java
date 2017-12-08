@@ -2,15 +2,11 @@ package com.example.sebastian.vandrejournalen.networking;
 
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.authentication.LetID;
+import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -69,6 +65,22 @@ public interface ServerClient {
             @Body LetID letID
     );
 
+    @POST("/{page}")
+    Call<String> cprExp(
+            @Path("page") String page,
+            @Body Patient patient
+            );
+    @POST("/{page}")
 
+    Call<Patient> checkPatientExists(
+            @Path("page") String page,
+            @Body String cpr
+    );
+
+    @POST("/{page}")
+    Call<User> startJournal(
+            @Path("page") String page,
+            @Body String userID
+    );
 
 }

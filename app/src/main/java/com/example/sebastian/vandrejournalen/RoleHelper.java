@@ -22,7 +22,7 @@ public class RoleHelper {
     public static int getOptionsMenu(User user){
         String role = user.getRole();
         switch(role){
-            case "PL":
+            case "Patient":
                 return R.menu.pl_drawer;
             case "Midwife":
                 return R.menu.mw_drawer;
@@ -37,7 +37,7 @@ public class RoleHelper {
     public static int getContentmain(User user){
         String role = user.getRole();
         switch(role){
-            case "PL":
+            case "Patient":
                 return R.layout.content_main;
             case "Midwife":
                 return R.layout.mw_content_main;
@@ -53,7 +53,7 @@ public class RoleHelper {
     public static Fragment getMainFragment(User user) {
         String role = user.getRole();
         switch (role) {
-            case "PL":
+            case "Patient":
                 return Schedule.newInstance(role);
             case "Midwife":
                 return SearchFragment.newInstance(user);
@@ -68,8 +68,8 @@ public class RoleHelper {
     public static Fragment getSlidingFragment(User user, Appointment appointment) {
         String role = user.getRole();
         switch (role) {
-            case "PL":
-                return AppointmentFragment.newInstance(role,appointment);
+            case "Patient":
+                return AppointmentFragment.newInstance(user,appointment);
             case "Midwife":
                 return ResultsPager.newInstance(user);
             case "General Practitioner":
@@ -84,7 +84,7 @@ public class RoleHelper {
     public static int getAppointmentLayout(User user){
         String role = user.getRole();
         switch(role){
-            case "PL":
+            case "Patient":
                 return R.layout.fragment_appointment;
             case "Midwife":
                 return R.layout.mw_content_main;
@@ -100,6 +100,8 @@ public class RoleHelper {
 
     public static String translateRole(String role){
         switch(role){
+            case "Patient":
+                return "Patient";
             case "Midwife":
                 return "Jordemoder";
             case "General Practitioner":
