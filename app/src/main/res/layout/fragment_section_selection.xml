@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.sebastian.vandrejournalen.Results.SectionSelectionFragment">
+    tools:context="com.example.sebastian.vandrejournalen.Results.SectionSelectionFragment"
+    android:animateLayoutChanges="true">
 
 
     <TextView
@@ -13,7 +14,8 @@
         android:text="Journal"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:id="@+id/tvHeadline"/>
+        android:id="@+id/tvHeadline"
+        android:padding="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +55,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email:"
+                android:layout_weight="1"
+                android:id="@+id/tvEmail"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,12 +68,7 @@
                 android:layout_weight="1"
                 android:id="@+id/tvPhone"/>
             
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Email:"
-                android:layout_weight="1"
-                android:id="@+id/tvEmail"/>
+
             
         </LinearLayout>
 

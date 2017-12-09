@@ -42,6 +42,24 @@
     <string name="exit">Exit</string>
     <string name="patient_not_registered">Patient not registered</string>
     <string name="my_patients">My patients</string>
+    <string name="last_mens">Last 1. day of period</string>
+    <string name="cycle">Cycle</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="is_the_calculation_certain">Is the calculation certain?</string>
+    <string name="pre_pregnancy_weight_kg">Pre pregnancy weight - kg</string>
+    <string name="height">Height cm</string>
+    <string name="bloodtype">Bloodtype determined</string>
+    <string name="mother_s_rhesus_type">Mother\'s Rhesus type</string>
+    <string name="irregular_antibodies_in_weeks_6_10">Irregular antibodies in weeks 6.-10.</string>
+    <string name="child_s_rhesus_type_week_25">Child\'s Rhesus type (week 25)</string>
+    <string name="antibody_with_rh_neg_in_week_25">Antibody with rh.neg. in week 25</string>
+    <string name="week_29_anti_d_immunoglobulin_given">Week 29 anti-D immunoglobulin given</string>
+    <string name="found">Found</string>
+    <string name="urine_culture_mark_if_group_b_streptococci_are_found">Urine culture: Mark if group B streptococci are found</string>
+    <string name="save_exit">Save and exit</string>
+    <string name="schedule">Schedule</string>
+    <string name="info_saved">Information saved</string>
 
 
     <string-array name="monthsda">

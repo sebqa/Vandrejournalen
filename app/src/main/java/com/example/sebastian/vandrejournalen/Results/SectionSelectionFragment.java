@@ -42,12 +42,9 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     }
 
     // TODO: Rename and change types and number of parameters
-    public static SectionSelectionFragment newInstance(User user) {
+    public static SectionSelectionFragment newInstance() {
         SectionSelectionFragment fragment = new SectionSelectionFragment();
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("user" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +53,9 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            patient = new Gson().fromJson(getArguments().getString("patient","Patient"),Patient.class);
+            if(getArguments().getString("patient",null)!= null) {
+                patient = new Gson().fromJson(getArguments().getString("patient", "Patient"), Patient.class);
+            }
             user = new Gson().fromJson(getArguments().getString("user","Patient"),User.class);        }
     }
 
@@ -90,9 +89,21 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
 
         if(user.getRole().equals("Patient")) {
             getProfInfo();
+        } else{
+            getPatientInfo();
         }
 
+
         return rootView;
+    }
+
+    private void getPatientInfo() {
+        tvHeadline.append(" - "+patient.getCpr());
+        tvRole.setText("Patient");
+        tvName.append(patient.getName());
+        tvAddress.append(patient.getAddress());
+        tvEmail.append(patient.getEmail());
+        tvPhone.append("" + patient.getPhonework()+"\n"+patient.getPhoneprivate() );
     }
 
     private void getProfInfo() {

@@ -36,5 +36,25 @@
     <string name="exit">Afslut</string>
     <string name="patient_not_registered">Patient ikke registreret</string>
     <string name="my_patients">Mine patienter</string>
+    <string name="last_mens">Sidste mens. 1.dag</string>
+    <string name="cycle">Cyklus</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="is_the_calculation_certain">Er beregning sikker?</string>
+    <string name="pre_pregnancy_weight_kg">Før-graviditetsvægt - kg</string>
+    <string name="height">Højde cm</string>
+    <string name="bloodtype">Blodtype taget</string>
+    <string name="mother_s_rhesus_type">Moderens Rhesustype</string>
+    <string name="irregular_antibodies_in_weeks_6_10">Irregulære antistoffer i 6.-10. uge </string>
+    <string name="child_s_rhesus_type_week_25">Barnets Rhesustype (uge 25)</string>
+    <string name="antibody_with_rh_neg_in_week_25">Antistof hos rh.neg. i 25. uge</string>
+    <string name="week_29_anti_d_immunoglobulin_given">Uge 29 anti-D immunglobulin er givet</string>
+    <string name="found">Fundet</string>
+    <string name="urine_culture_mark_if_group_b_streptococci_are_found">Urindyrkning: markér ved fund af
+gruppe B-streptokokker uanset
+hvornår i graviditeten </string>
+    <string name="save_exit">Gem og afslut</string>
+    <string name="schedule">Kalender</string>
+    <string name="info_saved">Information gemt</string>
 
 </resources>

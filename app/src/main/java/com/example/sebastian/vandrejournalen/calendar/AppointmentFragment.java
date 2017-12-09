@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 
 public class AppointmentFragment extends Fragment  {
@@ -27,7 +25,7 @@ public class AppointmentFragment extends Fragment  {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private String apDate, apTitle;
     private TextView previewDate, appointTitle;
-    RecyclerAdapter adapter;
+    RecyclerAdapterNotesList adapter;
     RecyclerView.LayoutManager layoutManager;
     private View rootView;
     private RecyclerView recyclerView;
@@ -78,7 +76,7 @@ public class AppointmentFragment extends Fragment  {
             recyclerView = rootView.findViewById(R.id.apNotesList);
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                     DividerItemDecoration.VERTICAL));
-            adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), getActivity());
+            adapter = new RecyclerAdapterNotesList(RoleHelper.getAllAppointments(user), getActivity());
             layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);

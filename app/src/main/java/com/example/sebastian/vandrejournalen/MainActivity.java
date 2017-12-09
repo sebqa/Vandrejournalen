@@ -29,6 +29,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.PatientsList;
+import com.example.sebastian.vandrejournalen.Results.RecyclerAdapterPatientList;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
 import com.example.sebastian.vandrejournalen.Results.SectionSelectionFragment;
 import com.example.sebastian.vandrejournalen.Results.BasicHealthInfoFragment;
@@ -47,7 +48,7 @@ import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity
-        implements CalendarTab.OnFragmentInteractionListener, RegisterPatientFragment.OnFragmentInteractionListener, SectionSelectionFragment.OnFragmentInteractionListener{
+        implements CalendarTab.OnFragmentInteractionListener, RegisterPatientFragment.OnFragmentInteractionListener, BasicHealthInfoFragment.OnFragmentInteractionListener, SectionSelectionFragment.OnFragmentInteractionListener, RecyclerAdapterPatientList.OnFragmentInteractionListener{
     private static final String TAG = "MAINACTIVITY" ;
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
@@ -157,7 +158,14 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void run() {
 
-                            currentFragment = SectionSelectionFragment.newInstance(user);
+                            Bundle args = new Bundle();
+                            String obj = new Gson().toJson(user);
+                            args.putString("user" , obj);
+                            Patient patient = new Patient();
+                            String obj1 = new Gson().toJson(patient);
+                            args.putString("patient" , obj1);
+                            currentFragment = SectionSelectionFragment.newInstance();
+                            currentFragment.setArguments(args);
                             fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
                         }},300);
 
@@ -216,7 +224,7 @@ public class MainActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
             } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            } else if(currentFragment instanceof Schedule || currentFragment instanceof SearchFragment|| currentFragment instanceof CalendarTab || fn.getBackStackEntryCount() <1){
+            } else if(currentFragment instanceof Schedule || currentFragment instanceof SearchFragment|| currentFragment instanceof CalendarTab || fn.getBackStackEntryCount() <2){
                 new MaterialDialog.Builder(this)
                         .title(R.string.exit)
                         .content("Are you sure you want to exit?")
@@ -463,7 +471,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void startJournal(Patient patient, User user) {
-        currentFragment = SectionSelectionFragment.newInstance(user);
+        currentFragment = SectionSelectionFragment.newInstance();
         Bundle args = new Bundle();
 
         String obj = new Gson().toJson(user);
@@ -491,6 +499,24 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateFragment(Fragment fragment) {
         fn.beginTransaction().replace(R.id.content_frame,fragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void sectionSelection(Patient patient) {
+
+        Bundle args = new Bundle();
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
+        String obj1 = new Gson().toJson(patient);
+        args.putString("patient" , obj1);
+        currentFragment = SectionSelectionFragment.newInstance();
+        currentFragment.setArguments(args);
+        fn.beginTransaction().replace(R.id.content_frame,currentFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void popStack() {
+        fn.popBackStack();
     }
 }
 

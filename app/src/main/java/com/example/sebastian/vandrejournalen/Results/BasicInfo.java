@@ -5,50 +5,6 @@ package com.example.sebastian.vandrejournalen.Results;
  */
 
 public class BasicInfo {
-    String mensDag;
-    String cyklus;
-    boolean bSikker;
-    String grav;
-    String hojde;
-    String BMI;
-    boolean hep;
-    boolean blodTaget;
-    boolean rhesus;
-    boolean irreg;
-    boolean barnRhes;
-    boolean antiStof;
-    boolean antiD;
-    String antiDDate;
-    String antiDIni;
-
-    public String getAntiDDate() {
-        return antiDDate;
-    }
-
-    public void setAntiDDate(String antiDDate) {
-        this.antiDDate = antiDDate;
-    }
-
-    public boolean isUrin() {
-        return urin;
-    }
-
-    public void setUrin(boolean urin) {
-        this.urin = urin;
-    }
-
-    public String getUrinDate() {
-        return urinDate;
-    }
-
-    public void setUrinDate(String urinDate) {
-        this.urinDate = urinDate;
-    }
-
-    boolean urin;
-    String urinDate;
-    String urinIni;
-
     public String getMensDag() {
         return mensDag;
     }
@@ -73,27 +29,27 @@ public class BasicInfo {
         this.bSikker = bSikker;
     }
 
-    public String getGrav() {
+    public int getGrav() {
         return grav;
     }
 
-    public void setGrav(String grav) {
+    public void setGrav(int grav) {
         this.grav = grav;
     }
 
-    public String getHojde() {
+    public int getHojde() {
         return hojde;
     }
 
-    public void setHojde(String hojde) {
+    public void setHojde(int hojde) {
         this.hojde = hojde;
     }
 
-    public String getBMI() {
+    public float getBMI() {
         return BMI;
     }
 
-    public void setBMI(String BMI) {
+    public void setBMI(float BMI) {
         this.BMI = BMI;
     }
 
@@ -153,12 +109,52 @@ public class BasicInfo {
         this.antiD = antiD;
     }
 
+    public String getAntiDDate() {
+        return antiDDate;
+    }
+
+    public void setAntiDDate(String antiDDate) {
+        this.antiDDate = antiDDate;
+    }
+
     public String getAntiDIni() {
         return antiDIni;
     }
 
     public void setAntiDIni(String antiDIni) {
         this.antiDIni = antiDIni;
+    }
+
+    public String getNaegel() {
+        return naegel;
+    }
+
+    public void setNaegel(String naegel) {
+        this.naegel = naegel;
+    }
+
+    public String getUltralydtermin() {
+        return ultralydtermin;
+    }
+
+    public void setUltralydtermin(String ultralydtermin) {
+        this.ultralydtermin = ultralydtermin;
+    }
+
+    public boolean isUrin() {
+        return urin;
+    }
+
+    public void setUrin(boolean urin) {
+        this.urin = urin;
+    }
+
+    public String getUrinDate() {
+        return urinDate;
+    }
+
+    public void setUrinDate(String urinDate) {
+        this.urinDate = urinDate;
     }
 
     public String getUrinIni() {
@@ -168,6 +164,39 @@ public class BasicInfo {
     public void setUrinIni(String urinIni) {
         this.urinIni = urinIni;
     }
+
+
+
+    public String getJournalID() {
+        return journalID;
+    }
+
+    public void setJournalID(String journalID) {
+        this.journalID = journalID;
+    }
+
+    String mensDag;
+    String cyklus;
+    boolean bSikker;
+    int grav;
+    int hojde;
+    float BMI;
+    boolean hep;
+    boolean blodTaget;
+    boolean rhesus;
+    boolean irreg;
+    boolean barnRhes;
+    boolean antiStof;
+    boolean antiD;
+    String antiDDate;
+    String antiDIni;
+    String naegel;
+    String ultralydtermin;
+    boolean urin;
+    String urinDate;
+    String urinIni;
+    String journalID;
+
 
     public BasicInfo() {
     }

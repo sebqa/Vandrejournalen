@@ -6,6 +6,8 @@ import com.example.sebastian.vandrejournalen.authentication.LetID;
 import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -73,7 +75,7 @@ public interface ServerClient {
             );
     @POST("/{page}")
 
-    Call<Patient> checkPatientExists(
+    Call<Patient> getPatientInfo(
             @Path("page") String page,
             @Body String cpr
     );
@@ -91,10 +93,20 @@ public interface ServerClient {
     );
 
     @POST("/{page}")
-    Call<String> cprExp(
+    Call<String> sendBasic(
             @Path("page") String page,
             @Body BasicInfo basicInfo
             );
 
+    @POST("/{page}")
+    Call<ArrayList<Patient>> getPatients(
+            @Path("page") String page,
+            @Body String userID
+    );
 
+    @POST("/{page}")
+    Call<BasicInfo> getBasicInfo(
+            @Path("page") String page,
+            @Body String journalID
+    );
 }

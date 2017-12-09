@@ -1,12 +1,9 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,8 +20,6 @@ import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 /**
  * Created by Sebastian on 30-12-2016.
  */
@@ -35,7 +30,7 @@ public class NotesListTab extends Fragment {
     Button showBtn;
 
     RecyclerView recyclerView;
-    RecyclerAdapter adapter;
+    RecyclerAdapterNotesList adapter;
     RecyclerView.LayoutManager layoutManager;
     User user;
     public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +80,7 @@ public class NotesListTab extends Fragment {
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
-        adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), getActivity());
+        adapter = new RecyclerAdapterNotesList(RoleHelper.getAllAppointments(user), getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
