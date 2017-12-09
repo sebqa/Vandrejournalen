@@ -24,6 +24,7 @@
             android:padding="2dp"
             app:met_floatingLabel="highlight"
             android:hint="@string/last_mens"
+            android:focusableInTouchMode="false"
             android:id="@+id/lastMens"/>
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -67,7 +68,8 @@
             android:padding="2dp"
             app:met_floatingLabel="highlight"
             android:hint="@string/pre_pregnancy_weight_kg"
-            android:id="@+id/grav"/>
+            android:id="@+id/grav"
+            android:inputType="number"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -75,7 +77,8 @@
             android:padding="2dp"
             app:met_floatingLabel="highlight"
             android:hint="@string/height"
-            android:id="@+id/hojde"/>
+            android:id="@+id/hojde"
+            android:inputType="number"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
@@ -83,7 +86,8 @@
             android:padding="2dp"
             app:met_floatingLabel="highlight"
             android:hint="BMI"
-            android:id="@+id/BMI"/>
+            android:id="@+id/BMI"
+            android:inputType="number"/>
 
         <TextView
             android:layout_width="match_parent"

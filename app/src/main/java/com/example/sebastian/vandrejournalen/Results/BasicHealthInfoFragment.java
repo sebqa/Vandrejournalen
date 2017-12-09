@@ -1,5 +1,6 @@
 package com.example.sebastian.vandrejournalen.Results;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -21,7 +23,12 @@ import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +48,9 @@ public class BasicHealthInfoFragment extends Fragment {
     User user;
     Button button;
     ServerClient client;
+    int day,month,year;
+    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     BasicInfo basicInfo;
 
     public BasicHealthInfoFragment() {
@@ -89,6 +99,7 @@ public class BasicHealthInfoFragment extends Fragment {
         etBMI.setFocusable(false);
         calcYes.setFocusable(false);
         calcNo.setFocusable(false);
+        button.setVisibility(View.INVISIBLE);
     }
 
     private void getBasicInfo() {
@@ -198,6 +209,12 @@ public class BasicHealthInfoFragment extends Fragment {
     private void initLayout(View rootView) {
         etMensDag = rootView.findViewById(R.id.lastMens);
         etMensDag.setHint(R.string.last_mens);
+        etMensDag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePicker();
+            }
+        });
         etCyklus  = rootView.findViewById(R.id.cycle);
         etCyklus.setText(R.string.cycle);
         calcYes = rootView.findViewById(R.id.calcYes);
@@ -262,15 +279,56 @@ public class BasicHealthInfoFragment extends Fragment {
             basicInfo.setUrinIni("OKOS");
         }*/
 
+        basicInfo.setCyklus(etCyklus.getText().toString());
+        if(calcNo.isChecked()){
+            basicInfo.setbSikker(false);
+        } else{
+            basicInfo.setbSikker(true);
+        }
+        basicInfo.setGrav(Integer.parseInt(etGrav.getText().toString()));
+        basicInfo.setHojde(Integer.parseInt(ethojde.getText().toString()));
+        basicInfo.setBMI(Float.parseFloat(etBMI.getText().toString()));
 
-        Call<String> call = client.sendBasic("returnJournalBasicHealth.php",basicInfo);
+        basicInfo.setHep(hepYes.isChecked());
+        basicInfo.setBlodTaget(bloodyes.isChecked());
+        basicInfo.setRhesus(mrhesYes.isChecked());
+        basicInfo.setIrreg(iregYes.isChecked());
+        basicInfo.setBarnRhes(crhesYes.isChecked());
+        basicInfo.setAntiStof(antiYes.isChecked());
+        basicInfo.setAntiD(antiDYes.isChecked());
+
+        basicInfo.setUrin(urinDyrk.isChecked());
+
+
+        Log.d(TAG, "onResponse: "+basicInfo.getMensDag());
+        Log.d(TAG, "onResponse: "+basicInfo.getCyklus());
+        Log.d(TAG, "onResponse: "+basicInfo.isbSikker());
+        Log.d(TAG, "onResponse: "+basicInfo.getGrav());
+        Log.d(TAG, "onResponse: "+basicInfo.getHojde());
+        Log.d(TAG, "onResponse: "+basicInfo.getBMI());
+        Log.d(TAG, "onResponse: "+basicInfo.isRhesus());
+        Log.d(TAG, "onResponse: "+basicInfo.isIrreg());
+        Log.d(TAG, "onResponse: "+basicInfo.isAntiD());
+        Log.d(TAG, "onResponse: "+basicInfo.getAntiDDate());
+        Log.d(TAG, "onResponse: "+basicInfo.getAntiDIni());
+        Log.d(TAG, "onResponse: "+basicInfo.getNaegel());
+        Log.d(TAG, "onResponse: "+basicInfo.getUltralydtermin());
+        Log.d(TAG, "onResponse: "+basicInfo.isHep());
+        Log.d(TAG, "onResponse: "+basicInfo.isBlodTaget());
+        Log.d(TAG, "onResponse: "+basicInfo.isBarnRhes());
+        Log.d(TAG, "onResponse: "+basicInfo.isAntiStof());
+        Log.d(TAG, "onResponse: "+basicInfo.isUrin());
+        Log.d(TAG, "onResponse: "+basicInfo.getUrinDate());
+        Log.d(TAG, "onResponse: "+basicInfo.getUrinIni());
+        
+        Call<String> call = client.sendBasic("addJournalBasicHealth.php",basicInfo);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if(response.body() != null){
-
+                    Log.d(TAG, "onResponse: "+response.body());
                     try {
-                        if(response.body().equals("TRUE")) {
+                        if(response.body().trim().equals("TRUE")) {
                             Toast.makeText(context, R.string.info_saved, Toast.LENGTH_SHORT).show();
                         } else{
                             Toast.makeText(context, "Something happened", Toast.LENGTH_SHORT).show();
@@ -288,6 +346,50 @@ public class BasicHealthInfoFragment extends Fragment {
             }
         });
 
+    }
+
+    private void showDatePicker() {
+        final Calendar c = Calendar.getInstance();
+
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
+        Locale locale = getResources().getConfiguration().locale;
+        Locale.setDefault(locale);
+
+
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                new DatePickerDialog.OnDateSetListener() {
+                    boolean mFirst = true;
+
+                    @Override
+                    public void onDateSet(DatePicker view, int nyear,
+                                          int monthOfYear, int dayOfMonth) {
+
+                        if (mFirst) {
+                            mFirst = false;
+                            year = nyear;
+                            month = monthOfYear+1;
+                            day = dayOfMonth;
+                            Log.d(TAG, "showDatePickerDialog: "+year+month+day);
+                            try {
+                                Date d = sdf.parse(year+"-"+(month)+"-"+day);
+                                basicInfo.setMensDag(sdf.format(d));
+                                etMensDag.setText(sdf.format(d));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+
+
+                    }
+                }, year, month, day);
+
+        datePickerDialog.show();
     }
 
 
