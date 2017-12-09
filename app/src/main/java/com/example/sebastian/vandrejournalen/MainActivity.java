@@ -35,7 +35,7 @@ import com.example.sebastian.vandrejournalen.Results.SectionSelectionFragment;
 import com.example.sebastian.vandrejournalen.Results.BasicHealthInfoFragment;
 import com.example.sebastian.vandrejournalen.authentication.AuthenticationActivity;
 import com.example.sebastian.vandrejournalen.authentication.RegisterPatientFragment;
-import com.example.sebastian.vandrejournalen.calendar.Appointment;
+import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
@@ -152,6 +152,11 @@ public class MainActivity extends AppCompatActivity
 
                 } else if (id == R.id.nav_results) {
                     slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+
+
+                    if(user.getRole().equals("Patient")){
+
+                    }
 
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -375,7 +380,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDateClick(ArrayList<Appointment> arrayList) {
+    public void onDateClick(ArrayList<Consultation> arrayList) {
         //Delay showing new panel to see it animate
         String role = user.getRole();
         /*slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
@@ -390,7 +395,7 @@ public class MainActivity extends AppCompatActivity
                 String obj2 = new Gson().toJson(user);
                 args.putString("user" , obj2);
                 String obj1 = new Gson().toJson(arrayList.get(0));
-                args.putString("appointment" , obj1);
+                args.putString("consultation" , obj1);
                 fragment.setArguments(args);
 
                 fn.beginTransaction().replace(R.id.sliding,fragment).commit();
@@ -413,7 +418,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onToday(ArrayList<Appointment> arrayList, int pos) {
+    public void onToday(ArrayList<Consultation> arrayList, int pos) {
         String role = user.getRole();
         switch(role){
             case "PL":
@@ -436,7 +441,7 @@ public class MainActivity extends AppCompatActivity
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
-    public void createDialog(ArrayList<Appointment> arrayList){
+    public void createDialog(ArrayList<Consultation> arrayList){
         for (int i=0; i< arrayList.size();i++){
             patients.add(arrayList.get(i).getFullName()+" - "+arrayList.get(i).getTime()+" + CPR ");
         }
@@ -498,6 +503,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateFragment(Fragment fragment) {
+
         fn.beginTransaction().replace(R.id.content_frame,fragment).addToBackStack(null).commit();
     }
 

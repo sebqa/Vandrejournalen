@@ -79,6 +79,16 @@ public class Patient {
     int phoneprivate;
     int phonework;
 
+    public String getPatientJournalID() {
+        return patientJournalID;
+    }
+
+    public void setPatientJournalID(String patientJournalID) {
+        this.patientJournalID = patientJournalID;
+    }
+
+    String patientJournalID;
+
     public String getJournalID() {
         return journalID;
     }

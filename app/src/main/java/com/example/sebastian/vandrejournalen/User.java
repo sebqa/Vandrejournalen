@@ -19,7 +19,15 @@ public class User implements Serializable {
     String institution;
     String userID;
     boolean response;
+    String journalID;
 
+    public String getJournalID() {
+        return journalID;
+    }
+
+    public void setJournalID(String journalID) {
+        this.journalID = journalID;
+    }
     public int getPhoneprivate() {
         return phoneprivate;
     }

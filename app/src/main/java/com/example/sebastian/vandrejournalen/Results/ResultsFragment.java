@@ -28,7 +28,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
-import com.example.sebastian.vandrejournalen.calendar.Appointment;
+import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
 import com.google.gson.Gson;
 import com.jaredrummler.materialspinner.MaterialSpinner;
@@ -52,7 +52,7 @@ public class ResultsFragment extends Fragment  {
     LinearLayout cLinearLayout,hLinearLayout,notesLayout;
     User user;
     MaterialSpinner typeSpinner;
-    Appointment appointment;
+    Consultation consultation;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
     boolean persSelected = false;
     ArrayList<String> ITEMS = new ArrayList<String>();
@@ -63,7 +63,7 @@ public class ResultsFragment extends Fragment  {
         // Required empty public constructor
     }
 
-    public static ResultsFragment newInstance(User user, Appointment appointment) {
+    public static ResultsFragment newInstance(User user, Consultation consultation) {
         ResultsFragment fragment = new ResultsFragment();
         Bundle args = new Bundle();
         Log.d(TAG, "newInstance: "+user.getRole());
@@ -77,7 +77,7 @@ public class ResultsFragment extends Fragment  {
         if (getArguments() != null) {
             user = new Gson().fromJson(getArguments().getString("user","Midwife"),User.class);
             Log.d(TAG, "onCreate: "+user.getRole());
-            appointment = new Gson().fromJson(getArguments().getString("obj"), Appointment.class);
+            consultation = new Gson().fromJson(getArguments().getString("obj"), Consultation.class);
 
         }
     }
@@ -100,7 +100,7 @@ public class ResultsFragment extends Fragment  {
 
 
 
-        //txt.setText(appointment.getDay()+"/"+appointment.getMonth()+"/"+appointment.getYear());
+        //txt.setText(consultation.getDay()+"/"+consultation.getMonth()+"/"+consultation.getYear());
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -115,7 +115,7 @@ public class ResultsFragment extends Fragment  {
 
 
 
-        //etName.setText(appointment.getEvent());
+        //etName.setText(consultation.getEvent());
         return rootView;
 
     }
@@ -164,12 +164,12 @@ public class ResultsFragment extends Fragment  {
         TextView tvDate = new TextView(context);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         tvDate.setLayoutParams(params);
-        tvDate.setText(dateFormat.format(appointment.getDate()));
+        tvDate.setText(dateFormat.format(consultation.getDate()));
 
         hLinearLayout.addView(tvDate,0);
 
         //Type of consultation
-        if(appointment.getEvent() == null){
+        if(consultation.getEvent() == null){
             initSpinner();
             cLinearLayout.addView(typeSpinner);
 
@@ -178,7 +178,7 @@ public class ResultsFragment extends Fragment  {
             cLinearLayout.addView(addButton);
         } else{
             etType = new MaterialEditText(context);
-            etType.setText(appointment.getEvent());
+            etType.setText(consultation.getEvent());
             etType.setFloatingLabelAlwaysShown(true);
             etType.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
             etType.setFloatingLabelText(getString(R.string.responsible));
@@ -190,77 +190,77 @@ public class ResultsFragment extends Fragment  {
 
 
         // Gestationsalder
-        etGestationsalder.setText("" + appointment.getGestationsalder());
+        etGestationsalder.setText("" + consultation.getGestationsalder());
         etGestationsalder.setFloatingLabelAlwaysShown(true);
         etGestationsalder.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etGestationsalder.setFloatingLabelText("Gestationsalder");
         cLinearLayout.addView(etGestationsalder);
 
         // Vaegt
-        etVaegt.setText("" + appointment.vaegt);
+        etVaegt.setText("" + consultation.vaegt);
         etVaegt.setFloatingLabelAlwaysShown(true);
         etVaegt.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etVaegt.setFloatingLabelText("Vægt");
         cLinearLayout.addView(etVaegt);
 
         // Blodtryk
-        etBlodtryk.setText(appointment.getBlodtryk());
+        etBlodtryk.setText(consultation.getBlodtryk());
         etBlodtryk.setFloatingLabelAlwaysShown(true);
         etBlodtryk.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etBlodtryk.setFloatingLabelText("Blodtryk");
         cLinearLayout.addView(etBlodtryk);
 
         // UrinASLeuNit
-        etUrinASLeuNit.setText(appointment.getUrinASLeuNit());
+        etUrinASLeuNit.setText(consultation.getUrinASLeuNit());
         etUrinASLeuNit.setFloatingLabelAlwaysShown(true);
         etUrinASLeuNit.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etUrinASLeuNit.setFloatingLabelText("Urin: A, S, Leu, Nit");
         cLinearLayout.addView(etUrinASLeuNit);
 
         // Oedem
-        etOedem.setText(appointment.oedem);
+        etOedem.setText(consultation.oedem);
         etOedem.setFloatingLabelAlwaysShown(true);
         etOedem.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etOedem.setFloatingLabelText("Oedem");
         cLinearLayout.addView(etOedem);
 
         // SymfyseFundus
-        etSymfyseFundus.setText("" + appointment.symfyseFundus);
+        etSymfyseFundus.setText("" + consultation.symfyseFundus);
         etSymfyseFundus.setFloatingLabelAlwaysShown(true);
         etSymfyseFundus.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etSymfyseFundus.setFloatingLabelText("SymfyseFundus");
         cLinearLayout.addView(etSymfyseFundus);
 
         // Fosterpraes
-        etFosterpraes.setText("" + appointment.getFosterpraes());
+        etFosterpraes.setText("" + consultation.getFosterpraes());
         etFosterpraes.setFloatingLabelAlwaysShown(true);
         etFosterpraes.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosterpraes.setFloatingLabelText("Fosterpræs");
         cLinearLayout.addView(etFosterpraes);
 
         // Fosterskoen
-        etFosterskoen.setText(appointment.fosterskoen);
+        etFosterskoen.setText(consultation.fosterskoen);
         etFosterskoen.setFloatingLabelAlwaysShown(true);
         etFosterskoen.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosterskoen.setFloatingLabelText("Fosterskøn");
         cLinearLayout.addView(etFosterskoen);
 
         // Fosteraktivitet
-        etFosteraktivitet.setText(appointment.fosteraktivitet);
+        etFosteraktivitet.setText(consultation.fosteraktivitet);
         etFosteraktivitet.setFloatingLabelAlwaysShown(true);
         etFosteraktivitet.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosteraktivitet.setFloatingLabelText("Fosteraktivitet");
         cLinearLayout.addView(etFosteraktivitet);
 
         // Undersoegelsessted
-        etUndersoegelsessted.setText(appointment.undersoegelsessted);
+        etUndersoegelsessted.setText(consultation.undersoegelsessted);
         etUndersoegelsessted.setFloatingLabelAlwaysShown(true);
         etUndersoegelsessted.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etUndersoegelsessted.setFloatingLabelText("Undersøgelsessted");
         cLinearLayout.addView(etUndersoegelsessted);
 
         // Initialer
-        etInitialer.setText(appointment.initialer);
+        etInitialer.setText(consultation.initialer);
         etInitialer.setFloatingLabelAlwaysShown(true);
         etInitialer.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etInitialer.setFloatingLabelText("Initialer");
@@ -270,7 +270,7 @@ public class ResultsFragment extends Fragment  {
         recyclerView.addItemDecoration(new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL));
 
-        //Get notes for this appointment
+        //Get notes for this consultation
 
         RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);

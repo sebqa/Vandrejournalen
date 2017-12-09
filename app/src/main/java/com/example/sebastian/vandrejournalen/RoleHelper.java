@@ -1,14 +1,11 @@
 package com.example.sebastian.vandrejournalen;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
-import com.example.sebastian.vandrejournalen.calendar.Appointment;
+import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.AppointmentFragment;
-import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 
 import java.util.ArrayList;
@@ -65,11 +62,11 @@ public class RoleHelper {
                 return null;
         }
     }
-    public static Fragment getSlidingFragment(User user, Appointment appointment) {
+    public static Fragment getSlidingFragment(User user, Consultation consultation) {
         String role = user.getRole();
         switch (role) {
             case "Patient":
-                return AppointmentFragment.newInstance(user,appointment);
+                return AppointmentFragment.newInstance(user, consultation);
             case "Midwife":
                 return ResultsPager.newInstance(user);
             case "General Practitioner":
@@ -111,28 +108,28 @@ public class RoleHelper {
         return "Specialist";
     }
 
-    public static ArrayList<Appointment> getAllAppointments(User user){
+    public static ArrayList<Consultation> getAllAppointments(User user){
         String role = user.getRole();
-        ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
-        final Appointment event = new Appointment(3,12,2017,"13.00","Læge");
+        ArrayList<Consultation> allConsultations = new ArrayList<Consultation>();
+        final Consultation event = new Consultation(3,12,2017,"13.00","Læge");
         event.setDate(3,12,2017, 13,00);
-        final Appointment event2 = new Appointment(1,12,2017,"11.00","Jordemoder");
+        final Consultation event2 = new Consultation(1,12,2017,"11.00","Jordemoder");
         event2.setDate(1,12,2017,11,00);
 
-        final Appointment event3 = new Appointment(28,11,2017,"11.00","Jordemoder");
+        final Consultation event3 = new Consultation(28,11,2017,"11.00","Jordemoder");
         event3.setDate(28,11,2017,11,00);
 
-        final Appointment event4 = new Appointment(27,11,2017,"11.00","Jordemoder");
+        final Consultation event4 = new Consultation(27,11,2017,"11.00","Jordemoder");
         event4.setDate(27,11,2017,11,00);
 
-        final Appointment event5 = new Appointment(6,12,2017,"11.00","Jordemoder");
+        final Consultation event5 = new Consultation(6,12,2017,"11.00","Jordemoder");
         event5.setDate(6,12,2017,11,00);
 
-        allAppointments.add(event);
-        allAppointments.add(event2);
-        allAppointments.add(event3);
-        allAppointments.add(event4);
-        allAppointments.add(event5);
+        allConsultations.add(event);
+        allConsultations.add(event2);
+        allConsultations.add(event3);
+        allConsultations.add(event4);
+        allConsultations.add(event5);
 
                 event.setFullName("Lars");
                 event2.setFullName("Hanne");
@@ -140,7 +137,7 @@ public class RoleHelper {
                 event4.setFullName("Peter");
                 event5.setFullName("Jussi");
 
-        return allAppointments;
+        return allConsultations;
 
     }
 }

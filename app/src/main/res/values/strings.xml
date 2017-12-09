@@ -11,7 +11,7 @@
     <string name="change_language">Dansk</string>
     <string name="notes">Notes</string>
     <string name="overview">Overview</string>
-    <string name="appointment">Appointment</string>
+    <string name="consultation">Appointment</string>
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Suscipit tellus mauris At ultrices mi tempus imperdiet nulla malestibulum mattis. Diam maecenas ultricies mi eget mauris.</string>
     <string name="addNote">Add</string>
     <string name="back">Back</string>
@@ -27,7 +27,7 @@
     <string name="choose">Choose a</string>
     <string name="cont">Continue</string>
     <string name="canc">Cancel</string>
-    <string name="new_appointment">Create appointment</string>
+    <string name="new_appointment">Create consultation</string>
     <string name="register_patient">Register patient</string>
     <string name="my_journal">My journal</string>
     <string name="phone">Phone:</string>

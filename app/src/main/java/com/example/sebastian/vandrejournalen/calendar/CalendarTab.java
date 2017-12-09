@@ -20,7 +20,7 @@ import br.com.jpttrindade.calendarview.view.CalendarView;
 
 public class CalendarTab extends Fragment {
     public CalendarView calendarView;
-    ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
+    ArrayList<Consultation> arrayList = new ArrayList<Consultation>();
     private CalendarTab.OnFragmentInteractionListener mListener;
     User user;
     Context context;
@@ -63,13 +63,13 @@ public class CalendarTab extends Fragment {
 
         //Put all appointments in list
         for(int i=0; i<arrayList.size();i++){
-            Appointment appointment = arrayList.get(i);
-            calendarView.addEvent(appointment.getDay(),appointment.getMonth(),appointment.getYear());
-            //Check if appointment is today
-            if(appointment.getDay() ==calendar.get(Calendar.DAY_OF_MONTH)){
+            Consultation consultation = arrayList.get(i);
+            calendarView.addEvent(consultation.getDay(), consultation.getMonth(), consultation.getYear());
+            //Check if consultation is today
+            if(consultation.getDay() ==calendar.get(Calendar.DAY_OF_MONTH)){
 
-                if(appointment.getMonth()== calendar.get(Calendar.MONTH)+1){
-                    //show today's appointment
+                if(consultation.getMonth()== calendar.get(Calendar.MONTH)+1){
+                    //show today's consultation
                     mListener.onToday(arrayList,i);
                 }
             }
@@ -79,7 +79,7 @@ public class CalendarTab extends Fragment {
             @Override
             public void onClick(int day, int month, int year, boolean hasEvent) {
                 //Check if there is an event on this day
-                ArrayList<Appointment> thisDayList = new ArrayList<>();
+                ArrayList<Consultation> thisDayList = new ArrayList<>();
 
                 if (hasEvent) {
                     for (int i=0; i< arrayList.size();i++){
@@ -133,8 +133,8 @@ public class CalendarTab extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        void onDateClick(ArrayList<Appointment> arrayList);
-        void onToday(ArrayList<Appointment> arrayList, int pos);
+        void onDateClick(ArrayList<Consultation> arrayList);
+        void onToday(ArrayList<Consultation> arrayList, int pos);
         void removePreview();
     }
 

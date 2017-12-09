@@ -4,7 +4,7 @@ import com.example.sebastian.vandrejournalen.Results.BasicInfo;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.authentication.LetID;
 import com.example.sebastian.vandrejournalen.Patient;
-import com.example.sebastian.vandrejournalen.calendar.Appointment;
+import com.example.sebastian.vandrejournalen.calendar.Consultation;
 
 import java.util.ArrayList;
 
@@ -27,7 +27,7 @@ public interface ServerClient {
     @POST("/{page}")
     Call<User> addAppointment(
             @Path("page") String page,
-            @Body Appointment body
+            @Body Consultation body
     );
 
     @POST("/{page}")
@@ -106,6 +106,12 @@ public interface ServerClient {
 
     @POST("/{page}")
     Call<BasicInfo> getBasicInfo(
+            @Path("page") String page,
+            @Body String journalID
+    );
+
+    @POST("/{page}")
+    Call<ArrayList<Consultation>> getConsultations(
             @Path("page") String page,
             @Body String journalID
     );

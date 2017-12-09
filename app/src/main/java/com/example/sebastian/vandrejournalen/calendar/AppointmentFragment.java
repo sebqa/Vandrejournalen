@@ -30,17 +30,16 @@ public class AppointmentFragment extends Fragment  {
     private View rootView;
     private RecyclerView recyclerView;
     TextView apText;
-    Appointment appointment;
+    Consultation consultation;
     User user;
 
     public AppointmentFragment() {
         // Required empty public constructor
     }
 
-    public static AppointmentFragment newInstance(User user, Appointment appointment) {
+    public static AppointmentFragment newInstance(User user, Consultation consultation) {
         AppointmentFragment fragment = new AppointmentFragment();
         Bundle args = new Bundle();
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,8 +48,7 @@ public class AppointmentFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            appointment = new Gson().fromJson(getArguments().getString("appointment","Midwife"),Appointment.class);
-
+            consultation = new Gson().fromJson(getArguments().getString("consultation","Midwife"),Consultation.class);
             user = new Gson().fromJson(getArguments().getString("user","Midwife"),User.class);
 
         }
@@ -68,8 +66,8 @@ public class AppointmentFragment extends Fragment  {
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy\nkk:mm");
 
 
-            previewDate.setText(formatter.format(appointment.getDate()));
-            appointTitle.setText(appointment.getEvent());
+            previewDate.setText(formatter.format(consultation.getDate()));
+            appointTitle.setText(consultation.getEvent());
 
             apText = rootView.findViewById(R.id.appointText);
 

@@ -2,34 +2,27 @@ package com.example.sebastian.vandrejournalen.Results;
 
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
-import com.example.sebastian.vandrejournalen.authentication.RegisterFragment;
-import com.example.sebastian.vandrejournalen.calendar.Appointment;
-import com.example.sebastian.vandrejournalen.calendar.Schedule;
+import com.example.sebastian.vandrejournalen.calendar.Consultation;
+import com.example.sebastian.vandrejournalen.networking.ServerClient;
+import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
 import com.sembozdemir.viewpagerarrowindicator.library.ViewPagerArrowIndicator;
 
@@ -42,8 +35,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.zip.CheckedOutputStream;
 
-import br.com.jpttrindade.calendarview.view.CalendarView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ResultsPager extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -52,13 +48,12 @@ public class ResultsPager extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "RESULTSPAGER";
     int day,month,year,hour, min;
+    ServerClient client;
+    String journalID;
 
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
-    ArrayList<Appointment> allAppointments = new ArrayList<Appointment>();
+    ArrayList<Consultation> arrayList = new ArrayList<Consultation>();
     ViewPagerArrowIndicator viewPagerArrowIndicator;
 
     ArrayList<Date> dates = new ArrayList<Date>();
@@ -68,6 +63,7 @@ public class ResultsPager extends Fragment {
     Context context;
     ResultsPagerAdapter adapter;
     User user;
+    Patient patient;
     public ResultsPager() {
         // Required empty public constructor
     }
@@ -76,10 +72,6 @@ public class ResultsPager extends Fragment {
     public static ResultsPager newInstance(User user) {
         ResultsPager fragment = new ResultsPager();
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("obj" , obj);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -87,7 +79,11 @@ public class ResultsPager extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("obj"), User.class);        }
+            user = gson.fromJson(getArguments().getString("user"), User.class);
+            if(getArguments().getString("patient",null)!= null) {
+                patient = new Gson().fromJson(getArguments().getString("patient", "Patient"), Patient.class);
+            }
+        }
 
     }
 
@@ -97,30 +93,17 @@ public class ResultsPager extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_results_pager, container, false);
         viewPager = rootView.findViewById(R.id.resultsPager);
-        arrayList = RoleHelper.getAllAppointments(user);
+        //arrayList = RoleHelper.getAllAppointments(user);
         final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         today = calendar.getTime();
         viewPagerArrowIndicator =  rootView.findViewById(R.id.viewPagerArrowIndicator);
+        client = ServiceGenerator.createService(ServerClient.class);
 
+        getAppointments();
+        setUpPager();
         //Sort by date, low to high
-        Collections.sort(arrayList, new Comparator<Appointment>() {
-            public int compare(Appointment o1, Appointment o2) {
-                return o1.getDate().compareTo(o2.getDate());
-            }
-        });
-        int[] attrs = {R.attr.colorPrimary};
-        TypedArray ta = context.obtainStyledAttributes(attrs);
-        int color = ta.getResourceId(0, android.R.color.black);
-        ta.recycle();
-        Log.d(TAG, "onCreateView: "+user.getRole());
-        adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,user);
 
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(arrayList.size()-1);
-        viewPagerArrowIndicator.bind(viewPager);
-        viewPagerArrowIndicator.setArrowColor(getResources().getColor(color));
 
-        getNearestDate();
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
         String role = user.getRole();
         switch(role) {
@@ -129,7 +112,7 @@ public class ResultsPager extends Fragment {
                 break;
             default:
 
-                //Open dialog here to request appointment
+                //Open dialog here to request consultation
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -148,6 +131,57 @@ public class ResultsPager extends Fragment {
 
 
     }
+
+    private void setUpPager() {
+
+        int[] attrs = {R.attr.colorPrimary};
+        TypedArray ta = context.obtainStyledAttributes(attrs);
+        int color = ta.getResourceId(0, android.R.color.black);
+        ta.recycle();
+        Log.d(TAG, "onCreateView: "+user.getRole());
+
+        adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,user);
+
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(arrayList.size()-1);
+        viewPagerArrowIndicator.bind(viewPager);
+        viewPagerArrowIndicator.setArrowColor(getResources().getColor(color));
+
+    }
+
+    private void getAppointments() {
+        if(user.getRole().equals("Patient")){
+            journalID = user.getJournalID();
+        } else {
+            journalID = patient.getJournalID();
+        }
+            Call<ArrayList<Consultation>> call = client.getConsultations("returnJournalConsultations.php", journalID );
+
+            call.enqueue(new Callback<ArrayList<Consultation>>() {
+                @Override
+                public void onResponse(Call<ArrayList<Consultation>> call, Response<ArrayList<Consultation>> response) {
+                    if(response.body() != null){
+                        arrayList.clear();
+                        arrayList.addAll(response.body());
+                        Collections.sort(arrayList, new Comparator<Consultation>() {
+                            public int compare(Consultation o1, Consultation o2) {
+                                return o1.getDate().compareTo(o2.getDate());
+                            }
+                        });
+                        adapter.notifyDataSetChanged();
+                        getNearestDate();
+
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<Consultation>> call, Throwable t) {
+
+                }
+            });
+    }
+
     public void showDatePickerDialog() throws ParseException {
         final Calendar c = Calendar.getInstance();
         year = c.get(Calendar.YEAR);
@@ -262,12 +296,12 @@ public class ResultsPager extends Fragment {
     public void setDate() {
 
         Date date = new Date();
-        Appointment appointment = new Appointment(date, null);
-        appointment.setDate(day, month, year, hour, min);
-        arrayList.add(appointment);
+        Consultation consultation = new Consultation(date, null);
+        consultation.setDate(day, month, year, hour, min);
+        arrayList.add(consultation);
         adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(arrayList.size(), true);
-        Toast.makeText(getActivity(), "New appointment", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
     }
 
 }

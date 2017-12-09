@@ -18,13 +18,13 @@ import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
     int position;
-    private ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
+    private ArrayList<Consultation> arrayList = new ArrayList<Consultation>();
     private int selectedPos = 0;
 
     Context ctx;
 
     //Constructor for the RecyclerAdapter
-    public RecyclerAdapter(ArrayList<Appointment> arrayList, Context ctx){
+    public RecyclerAdapter(ArrayList<Consultation> arrayList, Context ctx){
         this.arrayList = arrayList;
         this.ctx =ctx;
 
@@ -45,7 +45,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
 
         //Attach the values we retrieve from the Item class to the values.
-        final Appointment event = arrayList.get(position);
+        final Consultation event = arrayList.get(position);
 
         holder.date.setText(event.getDay()+"/"+ event.getMonth()+"/"+ event.getYear()+"\n"+event.getTime());
         holder.event.setText(event.getEvent());
@@ -77,11 +77,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
         TextView date,event;
         private View container;
-        ArrayList<Appointment> events = new ArrayList<Appointment>();
+        ArrayList<Consultation> events = new ArrayList<Consultation>();
         Context ctx;
 
         //Constructor for the view holder.
-        public RecyclerViewHolder(View view, Context ctx, ArrayList<Appointment> events){
+        public RecyclerViewHolder(View view, Context ctx, ArrayList<Consultation> events){
             super(view);
             this.events = events;
             this.ctx = ctx;
@@ -102,7 +102,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
             //Find out which item was clicked
             int position = getAdapterPosition();
-            Appointment event = this.events.get(position);
+            Consultation event = this.events.get(position);
             if(event != null) {
                 //Create new intent that gets us to the next activity.
                 //Intent intent = new Intent(ctx, ItemDetails.class);

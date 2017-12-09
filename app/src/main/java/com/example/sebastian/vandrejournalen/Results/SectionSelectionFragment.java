@@ -114,13 +114,14 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
             public void onResponse(Call<Patient> call, Response<Patient> response) {
                 if(response.body() != null) {
                     prof = response.body();
-                    Log.d(TAG, "onResponse: "+prof.getName());
+                    Log.d(TAG, "onResponse: "+prof.getPatientJournalID());
                     try {
                         tvRole.setText(getResources().getString(R.string.gp));
                         tvName.append(prof.getName());
                         tvAddress.append(prof.getAddress());
                         tvEmail.append(prof.getEmail());
                         tvPhone.append("" + prof.getPhonework());
+                        user.setJournalID(prof.getPatientJournalID());
                     }catch (NullPointerException e){
                         Log.d(TAG, "onResponse: noget var null");
                     }
@@ -160,19 +161,19 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View view) {
         Fragment fragment = new Fragment();
+        Bundle args = new Bundle();
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
+        String obj1 = new Gson().toJson(patient);
+        args.putString("patient" , obj1);
         switch (view.getId()){
             case R.id.basicInfoLink:
-                Bundle args = new Bundle();
-                String obj = new Gson().toJson(user);
-                args.putString("user" , obj);
-                String obj1 = new Gson().toJson(patient);
-                args.putString("patient" , obj1);
                 fragment = BasicHealthInfoFragment.newInstance();
                 fragment.setArguments(args);
                 break;
             case R.id.consultationLink:
                 fragment = ResultsPager.newInstance(user);
-
+                fragment.setArguments(args);
                 break;
             case R.id.testLink:
                 break;

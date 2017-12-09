@@ -111,7 +111,7 @@ public class BasicHealthInfoFragment extends Fragment {
             public void onResponse(Call<BasicInfo> call, Response<BasicInfo> response) {
                 if(response.body() != null){
                     basicInfo = response.body();
-                    basicInfo.setJournalID(patient.getJournalID());/*
+                    basicInfo.setJournalID(patient.getJournalID());
                     Log.d(TAG, "onResponse: "+basicInfo.getMensDag());
                     Log.d(TAG, "onResponse: "+basicInfo.getCyklus());
                     Log.d(TAG, "onResponse: "+basicInfo.isbSikker());
@@ -131,7 +131,7 @@ public class BasicHealthInfoFragment extends Fragment {
                     Log.d(TAG, "onResponse: "+basicInfo.isAntiStof());
                     Log.d(TAG, "onResponse: "+basicInfo.isUrin());
                     Log.d(TAG, "onResponse: "+basicInfo.getUrinDate());
-                    Log.d(TAG, "onResponse: "+basicInfo.getUrinIni());*/
+                    Log.d(TAG, "onResponse: "+basicInfo.getUrinIni());
 
                     try {
                         etMensDag.setText(basicInfo.getMensDag());
@@ -289,7 +289,7 @@ public class BasicHealthInfoFragment extends Fragment {
         basicInfo.setHojde(Integer.parseInt(ethojde.getText().toString()));
         basicInfo.setBMI(Float.parseFloat(etBMI.getText().toString()));
 
-        basicInfo.setHep(hepYes.isChecked());
+        basicInfo.setHep(true);
         basicInfo.setBlodTaget(bloodyes.isChecked());
         basicInfo.setRhesus(mrhesYes.isChecked());
         basicInfo.setIrreg(iregYes.isChecked());
@@ -320,7 +320,7 @@ public class BasicHealthInfoFragment extends Fragment {
         Log.d(TAG, "onResponse: "+basicInfo.isUrin());
         Log.d(TAG, "onResponse: "+basicInfo.getUrinDate());
         Log.d(TAG, "onResponse: "+basicInfo.getUrinIni());
-        
+
         Call<String> call = client.sendBasic("addJournalBasicHealth.php",basicInfo);
         call.enqueue(new Callback<String>() {
             @Override

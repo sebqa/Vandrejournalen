@@ -5,10 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 import com.example.sebastian.vandrejournalen.User;
-import com.example.sebastian.vandrejournalen.calendar.Appointment;
+import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -20,9 +19,9 @@ import java.util.ArrayList;
 public class ResultsPagerAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = "RESULTSPAGERADAPTER";
     User user;
-    ArrayList<Appointment> arraylist;
+    ArrayList<Consultation> arraylist;
     Context context;
-    public ResultsPagerAdapter(FragmentManager fragmentManager, Context mContext, ArrayList<Appointment> arraylist, User user) {
+    public ResultsPagerAdapter(FragmentManager fragmentManager, Context mContext, ArrayList<Consultation> arraylist, User user) {
         super(fragmentManager);
         this.arraylist = arraylist;
         this.user = user;
