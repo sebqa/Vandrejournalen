@@ -115,4 +115,10 @@ public interface ServerClient {
             @Path("page") String page,
             @Body String journalID
     );
+
+    @POST("/{page}")
+    Call<String> postConsultation(
+            @Path("page") String page,
+            @Body Consultation consultation
+    );
 }

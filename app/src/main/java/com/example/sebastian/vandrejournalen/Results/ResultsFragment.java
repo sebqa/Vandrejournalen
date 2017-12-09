@@ -26,10 +26,13 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
+import com.example.sebastian.vandrejournalen.networking.ServerClient;
+import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -37,6 +40,10 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.ContentValues.TAG;
 
@@ -56,8 +63,10 @@ public class ResultsFragment extends Fragment  {
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
     boolean persSelected = false;
     ArrayList<String> ITEMS = new ArrayList<String>();
-    Button addButton;
-
+    Button saveExit;
+    OnFragmentInteractionListener mListener;
+    Patient patient;
+    ServerClient client;
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -78,6 +87,7 @@ public class ResultsFragment extends Fragment  {
             user = new Gson().fromJson(getArguments().getString("user","Midwife"),User.class);
             Log.d(TAG, "onCreate: "+user.getRole());
             consultation = new Gson().fromJson(getArguments().getString("obj"), Consultation.class);
+            patient = new Gson().fromJson(getArguments().getString("patient", "Patient"), Patient.class);
 
         }
     }
@@ -98,7 +108,7 @@ public class ResultsFragment extends Fragment  {
         tvShowNotes = rootView.findViewById(R.id.tvShowNotes);
         notesLayout = rootView.findViewById(R.id.notesLayout);
 
-
+        client = ServiceGenerator.createService(ServerClient.class);
 
         //txt.setText(consultation.getDay()+"/"+consultation.getMonth()+"/"+consultation.getYear());
 
@@ -140,7 +150,9 @@ public class ResultsFragment extends Fragment  {
     }
 
     public interface OnFragmentInteractionListener {
-        void makeScrollable(View view);
+        void showFab();
+        void hideFab();
+
     }
 
     public void consultationLayout() {
@@ -162,30 +174,42 @@ public class ResultsFragment extends Fragment  {
 
         // Fullname
         TextView tvDate = new TextView(context);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         tvDate.setLayoutParams(params);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         tvDate.setText(dateFormat.format(consultation.getDate()));
 
         hLinearLayout.addView(tvDate,0);
 
         //Type of consultation
-        if(consultation.getEvent() == null){
+       /* if(consultation.getConsultationID()== null){
             initSpinner();
             cLinearLayout.addView(typeSpinner);
+            consultation.setInitialer(user.getUserID());
 
             addButton = new Button(context);
             addButton.setText(R.string.new_appointment);
             cLinearLayout.addView(addButton);
-        } else{
-            etType = new MaterialEditText(context);
-            etType.setText(consultation.getEvent());
+        } else{*/
+       etType = new MaterialEditText(context);
+
+        if(consultation.getConsultationID()== null ||consultation.getConsultationID().equals(""
+        )){
+            consultation.setInitialer(user.getUserID());
+            consultation.setConsultationID("");
+            //mListener.hideFab();
+
+            etType.setText(user.getName());
+        } else if(consultation.getInitialer() != null){
+            Log.d(TAG, "consultationLayout: "+consultation.getConsultationID());
+            etType.setText(consultation.getInitialer());
+            //mListener.showFab();
+        }
             etType.setFloatingLabelAlwaysShown(true);
             etType.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
             etType.setFloatingLabelText(getString(R.string.responsible));
             etType.setFocusable(false);
             cLinearLayout.addView(etType);
 
-        }
 
 
 
@@ -259,12 +283,7 @@ public class ResultsFragment extends Fragment  {
         etUndersoegelsessted.setFloatingLabelText("Undersøgelsessted");
         cLinearLayout.addView(etUndersoegelsessted);
 
-        // Initialer
-        etInitialer.setText(consultation.initialer);
-        etInitialer.setFloatingLabelAlwaysShown(true);
-        etInitialer.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
-        etInitialer.setFloatingLabelText("Initialer");
-        cLinearLayout.addView(etInitialer);
+
 
         final RecyclerView recyclerView = new RecyclerView(getActivity());
         recyclerView.addItemDecoration(new DividerItemDecoration(context,
@@ -300,6 +319,56 @@ public class ResultsFragment extends Fragment  {
                 }
             }
         });
+        if(!user.getRole().equals("Patient")){
+            saveExit = new Button(context);
+            saveExit.setText(getResources().getString(R.string.save_exit));
+            hLinearLayout.addView(saveExit);
+            saveExit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sendConsultation();
+                }
+            });
+        }
+
+
+    }
+
+    private void sendConsultation() {
+        consultation.setJournalID(patient.getJournalID());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Log.d(TAG, "sendConsultation: "+consultation.getConsultationID());
+        consultation.setDateString(dateFormat.format(consultation.getDate()));
+        consultation.setBlodtryk(etBlodtryk.getText().toString());
+        consultation.setGestationsalder(Integer.parseInt(etGestationsalder.getText().toString()));
+        consultation.setVaegt(Float.parseFloat(etVaegt.getText().toString()));
+        consultation.setUrinASLeuNit(etUrinASLeuNit.getText().toString());
+        consultation.setOedem(etOedem.getText().toString());
+        consultation.setSymfyseFundus(Float.parseFloat(etSymfyseFundus.getText().toString()));
+        consultation.setFosterpraes(etFosterpraes.getText().toString());
+        consultation.setFosterskoen(etFosterskoen.getText().toString());
+        consultation.setFosteraktivitet(etFosteraktivitet.getText().toString());
+        consultation.setUndersoegelsessted(etUndersoegelsessted.getText().toString());
+
+
+        Call<String> call = client.postConsultation("addJournalConsultation.php", consultation);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: "+response.body().trim());
+                if(!response.body().trim().equals("FALSE")){
+
+                }
+                Log.d(TAG, "onResponse: "+response.body().trim());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 
     }
 
@@ -399,6 +468,20 @@ public class ResultsFragment extends Fragment  {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof ResultsFragment.OnFragmentInteractionListener) {
+            mListener = (ResultsFragment.OnFragmentInteractionListener) context;
+        } else {
+
+
+        }
         this.context = context;
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
 }

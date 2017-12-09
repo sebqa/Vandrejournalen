@@ -487,19 +487,6 @@ public class MainActivity extends AppCompatActivity
         fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
     }
 
-    @Override
-    public void openBasicHealth(Patient patient, User user) {
-        currentFragment = BasicHealthInfoFragment.newInstance();
-        Bundle args = new Bundle();
-
-        String obj = new Gson().toJson(user);
-        args.putString("user" , obj);
-        String obj1 = new Gson().toJson(patient);
-        args.putString("patient" , obj1);
-        currentFragment.setArguments(args);
-        fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
-    }
-
 
     @Override
     public void updateFragment(Fragment fragment) {

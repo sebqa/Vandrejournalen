@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ResultsPager extends Fragment {
+public class ResultsPager extends Fragment implements ResultsFragment.OnFragmentInteractionListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -55,7 +56,7 @@ public class ResultsPager extends Fragment {
     // TODO: Rename and change types of parameters
     ArrayList<Consultation> arrayList = new ArrayList<Consultation>();
     ViewPagerArrowIndicator viewPagerArrowIndicator;
-
+    FloatingActionButton fab;
     ArrayList<Date> dates = new ArrayList<Date>();
     long now;
     Date today;
@@ -99,12 +100,13 @@ public class ResultsPager extends Fragment {
         viewPagerArrowIndicator =  rootView.findViewById(R.id.viewPagerArrowIndicator);
         client = ServiceGenerator.createService(ServerClient.class);
 
+
         getAppointments();
         setUpPager();
         //Sort by date, low to high
 
 
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
+        fab = rootView.findViewById(R.id.fab);
         String role = user.getRole();
         switch(role) {
             case "Patient":
@@ -140,7 +142,7 @@ public class ResultsPager extends Fragment {
         ta.recycle();
         Log.d(TAG, "onCreateView: "+user.getRole());
 
-        adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,user);
+        adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,user, patient);
 
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(arrayList.size()-1);
@@ -169,7 +171,9 @@ public class ResultsPager extends Fragment {
                             }
                         });
                         adapter.notifyDataSetChanged();
-                        getNearestDate();
+                        if(!arrayList.isEmpty()){
+                            getNearestDate();
+                        }
 
                     }
 
@@ -204,7 +208,9 @@ public class ResultsPager extends Fragment {
                             month = monthOfYear+1;
                             day = dayOfMonth;
                             Log.d(TAG, "showDatePickerDialog: "+year+month+day);
-                            showTimePickerDialog(c);
+                            //showTimePickerDialog(c);
+                            setDate();
+
                         }
 
 
@@ -235,7 +241,6 @@ public class ResultsPager extends Fragment {
                             mFirst = false;
                             hour = hourOfDay;
                             min = minute;
-                            setDate();
                         }
                     }
                 }, hour, min, false);
@@ -297,11 +302,20 @@ public class ResultsPager extends Fragment {
 
         Date date = new Date();
         Consultation consultation = new Consultation(date, null);
-        consultation.setDate(day, month, year, hour, min);
+        consultation.setDate(day, month, year);
         arrayList.add(consultation);
         adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(arrayList.size(), true);
         Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void showFab() {
+        //fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+       // fab.hide();
+    }
 }

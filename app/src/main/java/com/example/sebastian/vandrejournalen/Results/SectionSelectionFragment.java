@@ -191,6 +191,5 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void updateFragment(Fragment fragment);
-        void openBasicHealth(Patient patient,User user);
     }
 }

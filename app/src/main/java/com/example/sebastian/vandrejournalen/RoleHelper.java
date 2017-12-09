@@ -112,18 +112,18 @@ public class RoleHelper {
         String role = user.getRole();
         ArrayList<Consultation> allConsultations = new ArrayList<Consultation>();
         final Consultation event = new Consultation(3,12,2017,"13.00","Læge");
-        event.setDate(3,12,2017, 13,00);
+        event.setDate(3,12,2017);
         final Consultation event2 = new Consultation(1,12,2017,"11.00","Jordemoder");
-        event2.setDate(1,12,2017,11,00);
+        event2.setDate(1,12,2017);
 
         final Consultation event3 = new Consultation(28,11,2017,"11.00","Jordemoder");
-        event3.setDate(28,11,2017,11,00);
+        event3.setDate(28,11,2017);
 
         final Consultation event4 = new Consultation(27,11,2017,"11.00","Jordemoder");
-        event4.setDate(27,11,2017,11,00);
+        event4.setDate(27,11,2017);
 
         final Consultation event5 = new Consultation(6,12,2017,"11.00","Jordemoder");
-        event5.setDate(6,12,2017,11,00);
+        event5.setDate(6,12,2017);
 
         allConsultations.add(event);
         allConsultations.add(event2);
