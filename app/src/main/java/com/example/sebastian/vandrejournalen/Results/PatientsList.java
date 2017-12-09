@@ -1,12 +1,9 @@
-package com.example.sebastian.vandrejournalen.calendar;
+package com.example.sebastian.vandrejournalen.Results;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,19 +14,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapter;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
 
 /**
  * Created by Sebastian on 30-12-2016.
  */
 
-public class NotesListTab extends Fragment {
+public class PatientsList extends Fragment {
 
     EditText input;
     Button showBtn;
@@ -48,19 +43,10 @@ public class NotesListTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_noteslist,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_patients_list,container,false);
         setHasOptionsMenu(true);
-        recyclerView =  rootView.findViewById(R.id.recentRecyclerView);
+        recyclerView =  rootView.findViewById(R.id.recyclerView);
 
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.new_note);
-                dialog.show();
-            }
-        });
         initList();
         return rootView;
     }
@@ -71,8 +57,8 @@ public class NotesListTab extends Fragment {
         //Detach listeners
     }
 
-    public static NotesListTab newInstance(User user) {
-        NotesListTab fragment = new NotesListTab();
+    public static PatientsList newInstance(User user) {
+        PatientsList fragment = new PatientsList();
         Bundle args = new Bundle();
         Gson gson = new Gson();
         String obj = gson.toJson(user);

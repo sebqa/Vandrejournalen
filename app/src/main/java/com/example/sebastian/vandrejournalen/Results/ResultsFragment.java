@@ -17,10 +17,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,7 +76,6 @@ public class ResultsFragment extends Fragment  {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             user = new Gson().fromJson(getArguments().getString("user","Midwife"),User.class);
-            user.setRole("Midwife");
             Log.d(TAG, "onCreate: "+user.getRole());
             appointment = new Gson().fromJson(getArguments().getString("obj"), Appointment.class);
 
@@ -101,26 +98,17 @@ public class ResultsFragment extends Fragment  {
         tvShowNotes = rootView.findViewById(R.id.tvShowNotes);
         notesLayout = rootView.findViewById(R.id.notesLayout);
 
-        etGestationsalder = new MaterialEditText(context);
-        etVaegt = new MaterialEditText(context);
-        etBlodtryk = new MaterialEditText(context);
-        etUrinASLeuNit= new MaterialEditText(context);
-        etOedem= new MaterialEditText(context);
-        etSymfyseFundus= new MaterialEditText(context);
-        etFosterpraes = new MaterialEditText(context);
-        etFosterskoen = new MaterialEditText(context);
-        etFosteraktivitet = new MaterialEditText(context);
-        etUndersoegelsessted = new MaterialEditText(context);
-        etInitialer = new MaterialEditText(context);
 
 
         //txt.setText(appointment.getDay()+"/"+appointment.getMonth()+"/"+appointment.getYear());
-        setEditable();
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 if(isAdded())
-                initLayout();
+                consultationLayout();
+                setEditable();
+
 
             }
         });
@@ -141,9 +129,7 @@ public class ResultsFragment extends Fragment  {
     @Override
     public void onResume() {
         super.onResume();
-        if(etGestationsalder.getText().toString().equals("")) {
-            etGestationsalder.requestFocus();
-        }
+
     }
 
     @Override
@@ -157,7 +143,19 @@ public class ResultsFragment extends Fragment  {
         void makeScrollable(View view);
     }
 
-    public void initLayout() {
+    public void consultationLayout() {
+        etGestationsalder = new MaterialEditText(context);
+        etVaegt = new MaterialEditText(context);
+        etBlodtryk = new MaterialEditText(context);
+        etUrinASLeuNit= new MaterialEditText(context);
+        etOedem= new MaterialEditText(context);
+        etSymfyseFundus= new MaterialEditText(context);
+        etFosterpraes = new MaterialEditText(context);
+        etFosterskoen = new MaterialEditText(context);
+        etFosteraktivitet = new MaterialEditText(context);
+        etUndersoegelsessted = new MaterialEditText(context);
+        etInitialer = new MaterialEditText(context);
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.topMargin = 16;
@@ -373,11 +371,14 @@ public class ResultsFragment extends Fragment  {
         String role = user.getRole();
         switch(role) {
             case "Midwife":
-
                 return;
 
-            case "DR":
-                etGestationsalder.requestFocus();
+            case "General Practitioner":
+                return;
+            case "Jordemoder":
+                return;
+
+            case "Praktiserende læge":
                 return;
 
             default:

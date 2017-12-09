@@ -29,6 +29,19 @@
     <string name="canc">Cancel</string>
     <string name="new_appointment">Create appointment</string>
     <string name="register_patient">Register patient</string>
+    <string name="my_journal">My journal</string>
+    <string name="phone">Phone:</string>
+    <string name="name">Name:</string>
+    <string name="address">Address:</string>
+    <string name="consultations">Consultations</string>
+    <string name="test">Tests</string>
+    <string name="ultrasound">Ultrasound</string>
+    <string name="diabeetus_screening_ogtt">Diabeetus screening - OGTT</string>
+    <string name="place_of_birth">Place of birth</string>
+    <string name="basic_health_information">Basic health information</string>
+    <string name="exit">Exit</string>
+    <string name="patient_not_registered">Patient not registered</string>
+    <string name="my_patients">My patients</string>
 
 
     <string-array name="monthsda">

@@ -37,7 +37,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
             case 0: // Fragment # 0 - This will show FirstFragment
                 return CalendarTab.newInstance(user);
             case 1: // Fragment # 0 - This will show FirstFragment different title
-                return NotesListTab.newInstance(role);
+                return NotesListTab.newInstance(user);
 
             default:
                 return null;

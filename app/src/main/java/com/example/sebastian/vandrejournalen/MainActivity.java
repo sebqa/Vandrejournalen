@@ -28,12 +28,15 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
+import com.example.sebastian.vandrejournalen.Results.PatientsList;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
-import com.example.sebastian.vandrejournalen.Results.StartJournalFragment;
+import com.example.sebastian.vandrejournalen.Results.SectionSelectionFragment;
+import com.example.sebastian.vandrejournalen.Results.BasicHealthInfoFragment;
 import com.example.sebastian.vandrejournalen.authentication.AuthenticationActivity;
 import com.example.sebastian.vandrejournalen.authentication.RegisterPatientFragment;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
+import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -44,7 +47,7 @@ import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity
-        implements CalendarTab.OnFragmentInteractionListener, RegisterPatientFragment.OnFragmentInteractionListener{
+        implements CalendarTab.OnFragmentInteractionListener, RegisterPatientFragment.OnFragmentInteractionListener, SectionSelectionFragment.OnFragmentInteractionListener{
     private static final String TAG = "MAINACTIVITY" ;
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
@@ -153,11 +156,17 @@ public class MainActivity extends AppCompatActivity
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            currentFragment = ResultsPager.newInstance(user);
+
+                            currentFragment = SectionSelectionFragment.newInstance(user);
                             fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
                         }},300);
 
                 } else if (id == R.id.nav_slideshow) {
+
+                    currentFragment = PatientsList.newInstance(user);
+                    fn.beginTransaction().replace(R.id.content_frame,currentFragment).addToBackStack(null).commit();
+
+
 
                 } else if (id == R.id.nav_manage) {
 
@@ -207,13 +216,9 @@ public class MainActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
             } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            } else if(currentFragment instanceof ResultsPager){
-                loadMainFragment();
-            }
-
-            else{
+            } else if(currentFragment instanceof Schedule || currentFragment instanceof SearchFragment|| currentFragment instanceof CalendarTab || fn.getBackStackEntryCount() <1){
                 new MaterialDialog.Builder(this)
-                        .title("Exit")
+                        .title(R.string.exit)
                         .content("Are you sure you want to exit?")
                         .positiveText("Yes")
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -230,6 +235,11 @@ public class MainActivity extends AppCompatActivity
                         })
                         .negativeText("No")
                         .show();
+            }
+
+            else{
+                fn.popBackStack();
+
             /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Exit");
             builder.setMessage("Are you sure you want to exit?").setCancelable(false)
@@ -320,7 +330,7 @@ public class MainActivity extends AppCompatActivity
 
     public void loadMainFragment(){
         currentFragment = RoleHelper.getMainFragment(user);
-        fn.beginTransaction().replace(R.id.content_frame, currentFragment).commit();
+        fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
         slidingUpPanelLayout.setEnabled(true);
         slidingUpPanelLayout.setClickable(true);
         slidingUpPanelLayout.setTouchEnabled(true);
@@ -453,7 +463,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void startJournal(Patient patient, User user) {
-        currentFragment = StartJournalFragment.newInstance();
+        currentFragment = SectionSelectionFragment.newInstance(user);
         Bundle args = new Bundle();
 
         String obj = new Gson().toJson(user);
@@ -462,6 +472,25 @@ public class MainActivity extends AppCompatActivity
         args.putString("patient" , obj1);
         currentFragment.setArguments(args);
         fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void openBasicHealth(Patient patient, User user) {
+        currentFragment = BasicHealthInfoFragment.newInstance();
+        Bundle args = new Bundle();
+
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
+        String obj1 = new Gson().toJson(patient);
+        args.putString("patient" , obj1);
+        currentFragment.setArguments(args);
+        fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
+    }
+
+
+    @Override
+    public void updateFragment(Fragment fragment) {
+        fn.beginTransaction().replace(R.id.content_frame,fragment).addToBackStack(null).commit();
     }
 }
 

@@ -1,5 +1,6 @@
 package com.example.sebastian.vandrejournalen.networking;
 
+import com.example.sebastian.vandrejournalen.Results.BasicInfo;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.authentication.LetID;
 import com.example.sebastian.vandrejournalen.Patient;
@@ -82,5 +83,18 @@ public interface ServerClient {
             @Path("page") String page,
             @Body String userID
     );
+
+    @POST("/{page}")
+    Call<Patient> getProfInfo(
+            @Path("page") String page,
+            @Body String userID
+    );
+
+    @POST("/{page}")
+    Call<String> cprExp(
+            @Path("page") String page,
+            @Body BasicInfo basicInfo
+            );
+
 
 }

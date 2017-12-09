@@ -124,7 +124,7 @@ public class ResultsPager extends Fragment {
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
         String role = user.getRole();
         switch(role) {
-            case "PL":
+            case "Patient":
                 fab.hide();
                 break;
             default:

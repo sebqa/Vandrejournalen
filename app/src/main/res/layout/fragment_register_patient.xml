@@ -44,7 +44,6 @@
             android:layout_height="wrap_content"
             android:text="Start journal"
             android:id="@+id/startBtn"
-            android:visibility="invisible"
             />
     </LinearLayout>
 </FrameLayout>

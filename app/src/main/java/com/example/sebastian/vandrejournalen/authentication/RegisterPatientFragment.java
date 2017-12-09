@@ -94,7 +94,6 @@ public class RegisterPatientFragment extends Fragment {
         startJournal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
                 cpr = etCPR.getText().toString();
                 checkCPR();
 
@@ -130,7 +129,7 @@ public class RegisterPatientFragment extends Fragment {
                         startJournal.setVisibility(View.VISIBLE);
 
                     } else if (response.body().trim().equals("0")) {
-                        Toast.makeText(context, "CPR Exists", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "CPR Exists, start journal", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getActivity(), "CPR not received", Toast.LENGTH_SHORT).show();
                     }
@@ -148,7 +147,7 @@ public class RegisterPatientFragment extends Fragment {
     }
 
     private void checkCPR() {
-        patient.setCpr(cpr);
+        patient.setCpr(etCPR.getText().toString());
         patient.setProfUserID(user.getUserID());
 
         Call<Patient> call = client.checkPatientExists("returnPatientInformation.php",patient.getCpr() );
@@ -157,8 +156,18 @@ public class RegisterPatientFragment extends Fragment {
             @Override
             public void onResponse(Call<Patient> call, Response<Patient> response) {
                 if(response.body() != null) {
+
+                    Log.d(TAG, "onResponse: "+response.body());
+                    Log.d(TAG, "onResponse: "+response.body().getName());
+                    Log.d(TAG, "onResponse: "+response.body().getAddress());
+                    Log.d(TAG, "onResponse: "+response.body().getEmail());
+                    Log.d(TAG, "onResponse: "+response.body().getPhoneprivate());
+                    Log.d(TAG, "onResponse: "+response.body().getPhonework());
+
                     patient = response.body();
                     sendProfUserID();
+                } else{
+                    Toast.makeText(context, R.string.patient_not_registered, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -171,25 +180,63 @@ public class RegisterPatientFragment extends Fragment {
     }
 
     public void sendProfUserID(){
-        Call<User> call = client.startJournal("returnProfInformation.php",patient.getProfUserID() );
+        Call<User> call = client.startJournal("returnProfInformation.php",user.getUserID() );
 
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                Log.d(TAG, "onResponse: "+patient.getName());
 
                 user.setName(response.body().getName());
                 user.setAddress(response.body().getAddress());
                 user.setEmail(response.body().getEmail());
                 user.setPhonework(response.body().getPhonework());
 
-                mListener.startJournal(patient,user);
+
+                Log.d(TAG, "onResponse: sendProfUserID" + " "+user.getName());
+
+                createJournal();
 
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void createJournal() {
+        String cpr = etCPR.getText().toString();
+        if (cpr.contains("-")){
+
+        } else{
+            StringBuilder str = new StringBuilder(cpr);
+            str.insert(6,"-");
+            cpr = str.toString();
+        }
+        final Patient patient = new Patient();
+        patient.setCpr(cpr);
+        patient.setProfUserID(user.getUserID());
+        Call<String> call = client.cprExp("createJournal.php",patient );
+        Log.d(TAG, "createJournal: patient id"+patient.getCpr()+"+"+patient.getProfUserID());
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: CreateJournal" + response.body());
+                if (response.body() != null) {
+                    if(!response.body().trim().equals("0")) {
+                        patient.setJournalID(response.body());
+                        mListener.startJournal(patient, user);
+                    } else {
+                        Toast.makeText(context, "Journal exists or patient doesn't", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
     }

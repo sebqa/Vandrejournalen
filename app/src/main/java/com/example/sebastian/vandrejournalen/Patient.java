@@ -79,6 +79,16 @@ public class Patient {
     int phoneprivate;
     int phonework;
 
+    public String getJournalID() {
+        return journalID;
+    }
+
+    public void setJournalID(String journalID) {
+        this.journalID = journalID;
+    }
+
+    String journalID;
+
 
     public boolean isCprExists() {
         return cprExists;
