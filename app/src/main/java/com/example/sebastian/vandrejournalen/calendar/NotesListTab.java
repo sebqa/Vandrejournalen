@@ -1,16 +1,25 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -19,6 +28,13 @@ import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Created by Sebastian on 30-12-2016.
@@ -26,18 +42,22 @@ import com.google.gson.Gson;
 
 public class NotesListTab extends Fragment {
 
+    private static final String TAG = "NOTESLISTTAB";
     EditText input;
     Button showBtn;
-
+    SharedPreferences sharedPrefs;
     RecyclerView recyclerView;
-    RecyclerAdapterNotesList adapter;
+    RecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     User user;
+
+    ArrayList<Note> notesList;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("obj"), User.class);        }
+            user = gson.fromJson(getArguments().getString("user"), User.class);        }
 
     }
     @Nullable
@@ -46,17 +66,73 @@ public class NotesListTab extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_noteslist,container,false);
         setHasOptionsMenu(true);
         recyclerView =  rootView.findViewById(R.id.recentRecyclerView);
+        final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        Gson gson = new Gson();
+        notesList = new ArrayList<Note>();
+
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        if(sharedPrefs !=null) {
+            String json = sharedPrefs.getString("notes", null);
+            Type type = new TypeToken<ArrayList<Note>>() {
+            }.getType();
+            notesList = gson.fromJson(json, type);
+            initList();
+
+        }
 
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View view) {
-                Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.new_note);
-                dialog.show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("New note for today");
+
+
+                // Set up the input
+                InputFilter[] inputFilter = new InputFilter[1];
+                inputFilter[0] = new InputFilter.LengthFilter(100);
+                final MaterialEditText input = new MaterialEditText(getActivity());
+
+                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+                input.setSingleLine(false);
+                input.setMaxCharacters(100);
+                input.setFilters(inputFilter);
+                builder.setView(input);
+                input.requestFocus();
+
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Note note = new Note();
+                        note.setDate(calendar.getTime());
+                        note.setText(input.getText().toString());
+
+                        notesList.add(0,note);
+                        adapter.notifyDataSetChanged();
+                        saveNotes();
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        getActivity().getWindow().setSoftInputMode(
+                                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                        );
+                    }
+                });
+                builder.show();
             }
+
+
         });
-        initList();
+
+
         return rootView;
     }
 
@@ -64,23 +140,32 @@ public class NotesListTab extends Fragment {
     public void onStop() {
         super.onStop();
         //Detach listeners
+        saveNotes();
     }
 
-    public static NotesListTab newInstance(User user) {
+    public static NotesListTab newInstance() {
         NotesListTab fragment = new NotesListTab();
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void saveNotes(){
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        Gson gson = new Gson();
+
+        String json = gson.toJson(notesList);
+        editor.putString("notes", json);
+        editor.apply();
     }
 
     public void initList(){
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
-        adapter = new RecyclerAdapterNotesList(RoleHelper.getAllAppointments(user), getActivity());
+
+        adapter = new RecyclerAdapter(notesList, getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);

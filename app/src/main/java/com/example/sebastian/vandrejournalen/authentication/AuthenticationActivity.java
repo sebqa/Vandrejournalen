@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.MainActivity;
@@ -151,6 +153,12 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     public void onSuccessfulLogin(User user) {
         Intent intent = new Intent(this, MainActivity.class);
         //Get role from server and put here
+
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
         Gson gson = new Gson();
         String obj = gson.toJson(user);
         prefs.edit().putString("user",obj).apply();

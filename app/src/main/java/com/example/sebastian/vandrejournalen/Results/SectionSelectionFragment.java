@@ -1,15 +1,10 @@
 package com.example.sebastian.vandrejournalen.Results;
 
 import android.content.Context;
-
-import android.content.DialogInterface;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +13,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Patient;
-import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
@@ -33,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.content.ContentValues.TAG;
+
 
 
 public class SectionSelectionFragment extends Fragment implements View.OnClickListener{
@@ -152,7 +145,11 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
 
     private void getPatientInfo() {
         try{
-            tvHeadline.append(" - "+patient.getCpr());
+            if (patient.getCpr() != null) {
+/*
+                tvHeadline.append(" - "+patient.getCpr());
+*/
+            }
             tvRole.setText("Patient");
             tvName.append(patient.getName());
             tvAddress.append(patient.getAddress());
@@ -172,7 +169,6 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
             public void onResponse(Call<Patient> call, Response<Patient> response) {
                 if(response.body() != null) {
                     prof = response.body();
-                    Log.d(TAG, "onResponse: "+prof.getPatientJournalID());
                     try {
                         tvRole.setText(getResources().getString(R.string.gp));
                         tvName.append(prof.getName());
@@ -181,11 +177,9 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
                         tvPhone.append("" + prof.getPhonework());
                         user.setJournalID(prof.getPatientJournalID());
                     }catch (NullPointerException e){
-                        Log.d(TAG, "onResponse: noget var null");
                     }
                 }
                 else{
-                    Log.d(TAG, "onResponse: body is null"+response.body());
                 }
 
             }

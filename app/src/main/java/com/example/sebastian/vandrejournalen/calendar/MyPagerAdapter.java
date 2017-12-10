@@ -1,6 +1,7 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.User;
+import com.google.gson.Gson;
 
 /**
  * Created by Sebastian on 03-02-2017.
@@ -32,12 +34,22 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
-        String role = user.getRole();
         switch (position) {
             case 0: // Fragment # 0 - This will show FirstFragment
-                return CalendarTab.newInstance(user);
+                CalendarTab fragment = CalendarTab.newInstance();
+                Bundle args = new Bundle();
+                String obj = new Gson().toJson(user);
+                args.putString("user" , obj);
+                fragment.setArguments(args);
+                return fragment;
             case 1: // Fragment # 0 - This will show FirstFragment different title
-                return NotesListTab.newInstance(user);
+                NotesListTab fragment2 = NotesListTab.newInstance();
+                Bundle args2 = new Bundle();
+                String obj2 = new Gson().toJson(user);
+                args2.putString("user" , obj2);
+                fragment2.setArguments(args2);
+
+                return fragment2;
 
             default:
                 return null;

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.User;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -20,12 +21,13 @@ import java.util.ArrayList;
 
 public class Schedule extends Fragment  {
     FragmentPagerAdapter adapterViewPager;
-    String role;
+    User user;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            role = getArguments().getString("role");
+            Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("user"), User.class);
         }
 
     }
@@ -33,8 +35,6 @@ public class Schedule extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_schedule,container,false);
-        User user = new User();
-        user.setRole("PL");
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext(),user);
         vpPager.setAdapter(adapterViewPager);
@@ -61,10 +61,9 @@ public class Schedule extends Fragment  {
 
 
 
-    public static Schedule newInstance(String role) {
+    public static Schedule newInstance() {
         Schedule fragment = new Schedule();
         Bundle args = new Bundle();
-        args.putString("role",role);
         fragment.setArguments(args);
         return fragment;
     }

@@ -4,6 +4,7 @@ import com.example.sebastian.vandrejournalen.Results.BasicInfo;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.authentication.LetID;
 import com.example.sebastian.vandrejournalen.Patient;
+import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.Consultation;
 
 import java.util.ArrayList;
@@ -120,5 +121,11 @@ public interface ServerClient {
     Call<String> postConsultation(
             @Path("page") String page,
             @Body Consultation consultation
+    );
+
+    @POST("/{page}")
+    Call<ArrayList<Appointment>> getAppointments(
+            @Path("page") String page,
+            @Body User user
     );
 }

@@ -1,9 +1,11 @@
 package com.example.sebastian.vandrejournalen;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
+import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.AppointmentFragment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 
 public class RoleHelper {
 
+    private static final String TAG = "ROLEHELPER";
+
     public static int getOptionsMenu(User user){
         String role = user.getRole();
         switch(role){
@@ -26,7 +30,7 @@ public class RoleHelper {
             case "General Practitioner":
                 return R.menu.dr_drawer;
             case "Specialist":
-                return R.menu.dr_drawer;
+                return R.menu.mw_drawer;
             default:
                 return R.menu.activity_main_drawer;
         }
@@ -48,25 +52,25 @@ public class RoleHelper {
     }
 
     public static Fragment getMainFragment(User user) {
-        String role = user.getRole();
-        switch (role) {
+        Log.d(TAG, "getMainFragment: "+user.getRole());
+        switch (user.getRole()) {
             case "Patient":
-                return Schedule.newInstance(role);
+                return Schedule.newInstance();
             case "Midwife":
-                return SearchFragment.newInstance(user);
+                return SearchFragment.newInstance();
             case "General Practitioner":
-                return SearchFragment.newInstance(user);
+                return SearchFragment.newInstance();
             case "Specialist":
-                return SearchFragment.newInstance(user);
+                return SearchFragment.newInstance();
             default:
                 return null;
         }
     }
-    public static Fragment getSlidingFragment(User user, Consultation consultation) {
+    public static Fragment getSlidingFragment(User user, Appointment appointment) {
         String role = user.getRole();
         switch (role) {
             case "Patient":
-                return AppointmentFragment.newInstance(user, consultation);
+                return AppointmentFragment.newInstance();
             case "Midwife":
                 return ResultsPager.newInstance(user);
             case "General Practitioner":

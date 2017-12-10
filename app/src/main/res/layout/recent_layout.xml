@@ -12,7 +12,7 @@
     >
 
     <TextView
-        android:id="@+id/eventDate"
+        android:id="@+id/noteDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
@@ -26,9 +26,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:id="@+id/eventText"
+        android:id="@+id/noteText"
         android:textSize="15sp"
-        android:layout_below="@+id/eventDate"
+        android:layout_below="@+id/noteDate"
         android:layout_marginBottom="1dp"
         android:paddingLeft="8dp"
 

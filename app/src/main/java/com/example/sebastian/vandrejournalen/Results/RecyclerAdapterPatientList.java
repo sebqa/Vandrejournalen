@@ -93,8 +93,8 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
             this.ctx = ctx;
 
             //Cast the values to a Text or ImageView in the layout.
-            date = view.findViewById(R.id.eventDate);
-            event = view.findViewById(R.id.eventText);
+            date = view.findViewById(R.id.noteDate);
+            event = view.findViewById(R.id.noteText);
             container = view.findViewById(R.id.item_container);
 
             //Set an onClickListener to the entire view.
@@ -117,14 +117,6 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
                     @Override
                     public void onResponse(Call<Patient> call, Response<Patient> response) {
                         if(response.body() != null) {
-
-                            Log.d(TAG, "onResponse: "+response.body());
-                            Log.d(TAG, "onResponse: "+response.body().getName());
-                            Log.d(TAG, "onResponse: "+response.body().getAddress());
-                            Log.d(TAG, "onResponse: "+response.body().getEmail());
-                            Log.d(TAG, "onResponse: "+response.body().getPhoneprivate());
-                            Log.d(TAG, "onResponse: "+response.body().getPhonework());
-
                             Patient cPatient = response.body();
                             cPatient.setCpr(patient.getCpr());
                             mListener.sectionSelection(cPatient);

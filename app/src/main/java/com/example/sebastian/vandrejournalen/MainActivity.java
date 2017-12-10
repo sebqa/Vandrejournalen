@@ -1,5 +1,6 @@
 package com.example.sebastian.vandrejournalen;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,8 @@ import com.example.sebastian.vandrejournalen.Results.SectionSelectionFragment;
 import com.example.sebastian.vandrejournalen.Results.BasicHealthInfoFragment;
 import com.example.sebastian.vandrejournalen.authentication.AuthenticationActivity;
 import com.example.sebastian.vandrejournalen.authentication.RegisterPatientFragment;
+import com.example.sebastian.vandrejournalen.calendar.Appointment;
+import com.example.sebastian.vandrejournalen.calendar.AppointmentFragment;
 import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
@@ -241,6 +245,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             popStack();
+                            edited = false;
                         }
                     })
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -303,7 +308,11 @@ public class MainActivity extends AppCompatActivity
         setIntent.addCategory(Intent.CATEGORY_HOME);
         setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(setIntent);
-
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
         MainActivity.this.finish();
 
 
@@ -356,7 +365,6 @@ public class MainActivity extends AppCompatActivity
 
     private void restartActivity() {
         Intent intent=new Intent(MainActivity.this,MainActivity.class);
-        intent.putExtra("role",role);
         finish();
         startActivity(intent);
     }
@@ -364,7 +372,14 @@ public class MainActivity extends AppCompatActivity
 
 
     public void loadMainFragment(){
+
+        Bundle args = new Bundle();
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
+        Log.d(TAG, "loadMainFragment: "+user.getRole());
         currentFragment = RoleHelper.getMainFragment(user);
+        currentFragment.setArguments(args);
+
         fn.beginTransaction().replace(R.id.content_frame, currentFragment).addToBackStack(null).commit();
         slidingUpPanelLayout.setEnabled(true);
         slidingUpPanelLayout.setClickable(true);
@@ -402,7 +417,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDateClick(ArrayList<Consultation> arrayList) {
+    public void onDateClick(ArrayList<Appointment> arrayList) {
         //Delay showing new panel to see it animate
         String role = user.getRole();
         /*slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
@@ -412,12 +427,13 @@ public class MainActivity extends AppCompatActivity
             public void run() {*/
         switch(role){
             case "Patient":
+
                 Bundle args = new Bundle();
-                Fragment fragment = RoleHelper.getSlidingFragment(user, arrayList.get(0));
+                Fragment fragment = AppointmentFragment.newInstance();
                 String obj2 = new Gson().toJson(user);
                 args.putString("user" , obj2);
                 String obj1 = new Gson().toJson(arrayList.get(0));
-                args.putString("consultation" , obj1);
+                args.putString("appointment" , obj1);
                 fragment.setArguments(args);
 
                 fn.beginTransaction().replace(R.id.sliding,fragment).commit();
@@ -440,11 +456,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onToday(ArrayList<Consultation> arrayList, int pos) {
+    public void onToday(ArrayList<Appointment> arrayList, int pos) {
         String role = user.getRole();
         switch(role){
-            case "PL":
-                fn.beginTransaction().replace(R.id.sliding,RoleHelper.getSlidingFragment(user,arrayList.get(pos))).commit();
+            case "Patient":
+                Log.d(TAG, "onDateClick: "+arrayList.get(0).getAppointmentID());
+                Bundle args = new Bundle();
+                Fragment fragment = AppointmentFragment.newInstance();
+                String obj2 = new Gson().toJson(user);
+                args.putString("user" , obj2);
+                String obj1 = new Gson().toJson(arrayList.get(0));
+                args.putString("appointment" , obj1);
+                fragment.setArguments(args);
+                fn.beginTransaction().replace(R.id.sliding,fragment).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 break;
             case "Midwife":
@@ -463,14 +487,15 @@ public class MainActivity extends AppCompatActivity
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
-    public void createDialog(ArrayList<Consultation> arrayList){
+    public void createDialog(final ArrayList<Appointment> arrayList){
         for (int i=0; i< arrayList.size();i++){
-            patients.add(arrayList.get(i).getFullName()+" - "+arrayList.get(i).getTime()+" + CPR ");
+            patients.add(arrayList.get(i).getName());
         }
         DateFormat formatter = new SimpleDateFormat("EEE dd/MM");
        if(dialog == null) {
            MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
-                   .title(patients.size()+" "+getResources().getString(R.string.patients)+" - "+formatter.format(arrayList.get(0).getDate())).items(patients)
+                   .title(patients.size()+" "+getResources().getString(R.string.patients)+" - "+formatter.format(arrayList.get(0).getDate()))
+                   .items(patients)
                    .dismissListener(new DialogInterface.OnDismissListener() {
                        @Override
                        public void onDismiss(DialogInterface dialogInterface) {
@@ -481,8 +506,22 @@ public class MainActivity extends AppCompatActivity
                    .itemsCallback(new MaterialDialog.ListCallback() {
                        @Override
                        public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
-                           Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
-                           currentFragment = ResultsPager.newInstance(user);
+                           Patient patient = new Patient();
+                           patient.setAddress(arrayList.get(which).getAddress());
+                           patient.setEmail(arrayList.get(which).getEmail());
+                           patient.setPhonework(arrayList.get(which).getPhonework());
+                           patient.setPhoneprivate(arrayList.get(which).getPhoneprivate());
+                           patient.setName(arrayList.get(which).getName());
+                           patient.setJournalID(arrayList.get(which).getJournalID());
+                           currentFragment = SectionSelectionFragment.newInstance();
+
+                           Bundle args = new Bundle();
+                           String obj = new Gson().toJson(user);
+                           args.putString("user" , obj);
+                           String obj1 = new Gson().toJson(patient);
+                           args.putString("patient" , obj1);
+                           currentFragment.setArguments(args);
+
                            fn.beginTransaction().replace(R.id.content_frame, currentFragment, "sliding").addToBackStack(null).commit();
                            dialog = null;
 

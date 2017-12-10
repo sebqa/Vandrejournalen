@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.User;
-import com.example.sebastian.vandrejournalen.calendar.RecyclerAdapterNotesList;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
@@ -61,7 +60,6 @@ public class PatientsList extends Fragment {
             public void onResponse(Call<ArrayList<Patient>> call, Response<ArrayList<Patient>> response) {
                 if(response.body() != null){
                     patients.clear();
-                    Log.d(TAG, "onResponse: første user name"+response.body().get(0).getName());
                     patients.addAll(response.body());
                     adapter.notifyDataSetChanged();
                 }

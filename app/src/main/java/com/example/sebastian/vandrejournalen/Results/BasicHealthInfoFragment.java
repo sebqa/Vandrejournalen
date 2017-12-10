@@ -86,6 +86,13 @@ public class BasicHealthInfoFragment extends Fragment {
         initLayout(rootView);
         if(user.getRole().equals("Patient")){
             setEditable();
+        } else{
+            etMensDag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDatePicker();
+                }
+            });
         }
         getBasicInfo();
         return rootView;
@@ -100,7 +107,7 @@ public class BasicHealthInfoFragment extends Fragment {
         calcYes.setClickable(false);
         calcNo.setClickable(false);
         button.setVisibility(View.INVISIBLE);
-
+        etMensDag.setClickable(false);
         hepYes.setClickable(false);
         hepNo .setClickable(false);
         bloodyes .setClickable(false);
@@ -124,6 +131,12 @@ public class BasicHealthInfoFragment extends Fragment {
             journalID = user.getJournalID();
         } else{
             journalID = patient.getJournalID();
+            etMensDag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDatePicker();
+                }
+            });
         }
 
         client = ServiceGenerator.createService(ServerClient.class);
@@ -135,26 +148,6 @@ public class BasicHealthInfoFragment extends Fragment {
                 if(response.body() != null){
                     basicInfo = response.body();
                     basicInfo.setJournalID(patient.getJournalID());
-                    Log.d(TAG, "onResponse: "+basicInfo.getMensDag());
-                    Log.d(TAG, "onResponse: "+basicInfo.getCyklus());
-                    Log.d(TAG, "onResponse: "+basicInfo.isbSikker());
-                    Log.d(TAG, "onResponse: "+basicInfo.getGrav());
-                    Log.d(TAG, "onResponse: "+basicInfo.getHojde());
-                    Log.d(TAG, "onResponse: "+basicInfo.getBMI());
-                    Log.d(TAG, "onResponse: "+basicInfo.isRhesus());
-                    Log.d(TAG, "onResponse: "+basicInfo.isIrreg());
-                    Log.d(TAG, "onResponse: "+basicInfo.isAntiD());
-                    Log.d(TAG, "onResponse: "+basicInfo.getAntiDDate());
-                    Log.d(TAG, "onResponse: "+basicInfo.getAntiDIni());
-                    Log.d(TAG, "onResponse: "+basicInfo.getNaegel());
-                    Log.d(TAG, "onResponse: "+basicInfo.getUltralydtermin());
-                    Log.d(TAG, "onResponse: "+basicInfo.isHep());
-                    Log.d(TAG, "onResponse: "+basicInfo.isBlodTaget());
-                    Log.d(TAG, "onResponse: "+basicInfo.isBarnRhes());
-                    Log.d(TAG, "onResponse: "+basicInfo.isAntiStof());
-                    Log.d(TAG, "onResponse: "+basicInfo.isUrin());
-                    Log.d(TAG, "onResponse: "+basicInfo.getUrinDate());
-                    Log.d(TAG, "onResponse: "+basicInfo.getUrinIni());
 
                     try {
                         etMensDag.setText(basicInfo.getMensDag());
@@ -232,12 +225,7 @@ public class BasicHealthInfoFragment extends Fragment {
     private void initLayout(View rootView) {
         etMensDag = rootView.findViewById(R.id.lastMens);
         etMensDag.setHint(R.string.last_mens);
-        etMensDag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDatePicker();
-            }
-        });
+
         etCyklus  = rootView.findViewById(R.id.cycle);
         etCyklus.setText(R.string.cycle);
         calcYes = rootView.findViewById(R.id.calcYes);
@@ -279,29 +267,6 @@ public class BasicHealthInfoFragment extends Fragment {
     }
 
     private void sendInfo() {
-        /*if(etMensDag.equals("")){
-
-        } else{
-            basicInfo.setMensDag("i morgen");
-            basicInfo.setCyklus("rundt og rundt");
-            basicInfo.setbSikker(true);
-            basicInfo.setGrav("81");
-            basicInfo.setHojde("152");
-            basicInfo.setBMI("91");
-            basicInfo.setHep(true);
-            basicInfo.setBlodTaget(true);
-            basicInfo.setRhesus(false);
-            basicInfo.setIrreg(true);
-            basicInfo.setBarnRhes(false);
-            basicInfo.setAntiStof(false);
-            basicInfo.setAntiD(true);
-            basicInfo.setAntiDDate("I går");
-            basicInfo.setAntiDIni("DINMOR");
-            basicInfo.setUrin(true);
-            basicInfo.setUrinDate("hold hænderne frem");
-            basicInfo.setUrinIni("OKOS");
-        }*/
-
         basicInfo.setCyklus(etCyklus.getText().toString());
         if(calcNo.isChecked()){
             basicInfo.setbSikker(false);
@@ -319,30 +284,7 @@ public class BasicHealthInfoFragment extends Fragment {
         basicInfo.setBarnRhes(crhesYes.isChecked());
         basicInfo.setAntiStof(antiYes.isChecked());
         basicInfo.setAntiD(antiDYes.isChecked());
-
         basicInfo.setUrin(urinDyrk.isChecked());
-
-
-        Log.d(TAG, "onResponse: "+basicInfo.getMensDag());
-        Log.d(TAG, "onResponse: "+basicInfo.getCyklus());
-        Log.d(TAG, "onResponse: "+basicInfo.isbSikker());
-        Log.d(TAG, "onResponse: "+basicInfo.getGrav());
-        Log.d(TAG, "onResponse: "+basicInfo.getHojde());
-        Log.d(TAG, "onResponse: "+basicInfo.getBMI());
-        Log.d(TAG, "onResponse: "+basicInfo.isRhesus());
-        Log.d(TAG, "onResponse: "+basicInfo.isIrreg());
-        Log.d(TAG, "onResponse: "+basicInfo.isAntiD());
-        Log.d(TAG, "onResponse: "+basicInfo.getAntiDDate());
-        Log.d(TAG, "onResponse: "+basicInfo.getAntiDIni());
-        Log.d(TAG, "onResponse: "+basicInfo.getNaegel());
-        Log.d(TAG, "onResponse: "+basicInfo.getUltralydtermin());
-        Log.d(TAG, "onResponse: "+basicInfo.isHep());
-        Log.d(TAG, "onResponse: "+basicInfo.isBlodTaget());
-        Log.d(TAG, "onResponse: "+basicInfo.isBarnRhes());
-        Log.d(TAG, "onResponse: "+basicInfo.isAntiStof());
-        Log.d(TAG, "onResponse: "+basicInfo.isUrin());
-        Log.d(TAG, "onResponse: "+basicInfo.getUrinDate());
-        Log.d(TAG, "onResponse: "+basicInfo.getUrinIni());
 
         Call<String> call = client.sendBasic("addJournalBasicHealth.php",basicInfo);
         call.enqueue(new Callback<String>() {
@@ -379,8 +321,6 @@ public class BasicHealthInfoFragment extends Fragment {
         day = c.get(Calendar.DAY_OF_MONTH);
         Locale locale = getResources().getConfiguration().locale;
         Locale.setDefault(locale);
-
-
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                 new DatePickerDialog.OnDateSetListener() {

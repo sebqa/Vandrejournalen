@@ -90,11 +90,19 @@ public class RegisterInfoFragment extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(user.getInstitution() == null) {
+                if(user.getInstitution() != null) {
                     user.setInstitution(user.getInstitution());
                     user.setAddress(user.getAddress());
                 }
-                user.setCpr(etCPR.getText().toString());
+                String cpr = etCPR.getText().toString().trim();
+                if (cpr.contains("-")){
+                    user.setCpr(cpr);
+                } else{
+                    StringBuilder str = new StringBuilder(cpr);
+                    str.insert(6,"-");
+                    user.setCpr(str.toString());
+                    Log.d(TAG, "checkCred: "+user.getCpr());
+                }
                 user.setName(etName.getText().toString());
                 user.setPhoneprivate(Integer.parseInt(etPrivateTlf.getText().toString()));
                 user.setPhonework(Integer.parseInt(etWorkTlf.getText().toString()));

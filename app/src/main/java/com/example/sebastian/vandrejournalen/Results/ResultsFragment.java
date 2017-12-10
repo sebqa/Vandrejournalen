@@ -208,7 +208,7 @@ public class ResultsFragment extends Fragment  {
             });
 
             if (consultation.getConsultationID() == null || consultation.getConsultationID().equals("")) {
-                consultation.setInitialer(user.getUserID());
+                consultation.setInitialer(user.getName());
                 consultation.setConsultationID("");
                 edited = true;
                 mListener.updateEdited(edited);
@@ -216,13 +216,13 @@ public class ResultsFragment extends Fragment  {
                 fabCheck.setVisibility(View.VISIBLE);
                 //mListener.hideFab();
                 etType.setText(user.getName());
-            } else if (consultation.getInitialer() != null) {
-                Log.d(TAG, "consultationLayout: " + consultation.getConsultationID());
-                etType.setText(consultation.getInitialer());
-                //mListener.showFab();
             }
         }
-
+        if (consultation.getInitialer() != null) {
+            Log.d(TAG, "consultationLayout: " + consultation.getConsultationID());
+            etType.setText(consultation.getInitialer());
+            //mListener.showFab();
+        }
             etType.setFloatingLabelAlwaysShown(true);
             etType.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
             etType.setFloatingLabelText(getString(R.string.responsible));
@@ -338,10 +338,10 @@ public class ResultsFragment extends Fragment  {
 
 
         //Get notes for this consultation
-        RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), context);
+       /* RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
         /*final TextView notesTitle = new TextView(context);
         notesTitle.setText("NOTER");

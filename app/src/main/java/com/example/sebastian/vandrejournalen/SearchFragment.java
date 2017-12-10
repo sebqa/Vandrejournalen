@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,8 @@ import com.google.gson.Gson;
 
 public class SearchFragment extends Fragment {
 
+    private static final String TAG = "SEARCHFRAGMENT";
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
     private SearchView searchView;
     User user;
     public SearchFragment() {
@@ -29,12 +26,9 @@ public class SearchFragment extends Fragment {
     }
 
 
-    public static SearchFragment newInstance(User user) {
+    public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,7 +37,7 @@ public class SearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("obj"), User.class);
+            user = gson.fromJson(getArguments().getString("user"), User.class);
 
         }
 
@@ -63,7 +57,13 @@ public class SearchFragment extends Fragment {
 
     private void loadFragment() {
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(R.id.content_search, CalendarTab.newInstance(user)).commit();
+        CalendarTab fragment = CalendarTab.newInstance();
+        Log.d(TAG, "loadFragment: "+user.getRole());
+        Bundle args = new Bundle();
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
+        fragment.setArguments(args);
+        fm.beginTransaction().replace(R.id.content_search, fragment).commit();
 
     }
 
