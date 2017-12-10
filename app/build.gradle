@@ -73,5 +73,9 @@ dependencies {
     //Edited version
     compile 'com.github.sebqa:ViewPagerArrowIndicator:fix-SNAPSHOT'
 
+    //Floating Action Button - https://github.com/Clans/FloatingActionButton
+    compile 'com.github.clans:fab:1.6.4'
+
+
 
 }

@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +41,7 @@ import com.google.gson.Gson;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -58,6 +63,7 @@ public class ResultsFragment extends Fragment  {
     MaterialDialog dialog;
     LinearLayout cLinearLayout,hLinearLayout,notesLayout;
     User user;
+    FloatingActionButton fab, fabCheck;
     MaterialSpinner typeSpinner;
     Consultation consultation;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
@@ -67,6 +73,7 @@ public class ResultsFragment extends Fragment  {
     OnFragmentInteractionListener mListener;
     Patient patient;
     ServerClient client;
+    private boolean edited;
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -101,12 +108,11 @@ public class ResultsFragment extends Fragment  {
         ITEMS.add(getString(R.string.gp)+ " - id 12323437198");
         ITEMS.add(getString(R.string.mw));
         ITEMS.add(getString(R.string.sp));
-        Log.d(TAG, "onCreateView: "+user.getRole());
         //etName = rootView.findViewById(R.id.name);
         cLinearLayout = rootView.findViewById(R.id.resultsLayout);
         hLinearLayout = rootView.findViewById(R.id.hLayout);
-        tvShowNotes = rootView.findViewById(R.id.tvShowNotes);
-        notesLayout = rootView.findViewById(R.id.notesLayout);
+        /*tvShowNotes = rootView.findViewById(R.id.tvShowNotes);
+        notesLayout = rootView.findViewById(R.id.notesLayout);*/
 
         client = ServiceGenerator.createService(ServerClient.class);
 
@@ -150,9 +156,8 @@ public class ResultsFragment extends Fragment  {
     }
 
     public interface OnFragmentInteractionListener {
-        void showFab();
-        void hideFab();
-
+        void showDatePicker();
+        void updateEdited(boolean edited);
     }
 
     public void consultationLayout() {
@@ -176,34 +181,48 @@ public class ResultsFragment extends Fragment  {
         TextView tvDate = new TextView(context);
         tvDate.setLayoutParams(params);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
         tvDate.setText(dateFormat.format(consultation.getDate()));
 
         hLinearLayout.addView(tvDate,0);
 
-        //Type of consultation
-       /* if(consultation.getConsultationID()== null){
-            initSpinner();
-            cLinearLayout.addView(typeSpinner);
-            consultation.setInitialer(user.getUserID());
-
-            addButton = new Button(context);
-            addButton.setText(R.string.new_appointment);
-            cLinearLayout.addView(addButton);
-        } else{*/
        etType = new MaterialEditText(context);
 
-        if(consultation.getConsultationID()== null ||consultation.getConsultationID().equals(""
-        )){
-            consultation.setInitialer(user.getUserID());
-            consultation.setConsultationID("");
-            //mListener.hideFab();
+        if (!user.getRole().equals("Patient")) {
+            fab = rootView.findViewById(R.id.fab);
+            fab.setVisibility(View.VISIBLE);
+            fabCheck = rootView.findViewById(R.id.fabCheck);
+            fabCheck.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sendConsultation();
+                    fabCheck.setVisibility(View.INVISIBLE);
+                    fab.setVisibility(View.VISIBLE);
+                }
+            });
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.showDatePicker();
+                }
+            });
 
-            etType.setText(user.getName());
-        } else if(consultation.getInitialer() != null){
-            Log.d(TAG, "consultationLayout: "+consultation.getConsultationID());
-            etType.setText(consultation.getInitialer());
-            //mListener.showFab();
+            if (consultation.getConsultationID() == null || consultation.getConsultationID().equals("")) {
+                consultation.setInitialer(user.getUserID());
+                consultation.setConsultationID("");
+                edited = true;
+                mListener.updateEdited(edited);
+                fab.setVisibility(View.INVISIBLE);
+                fabCheck.setVisibility(View.VISIBLE);
+                //mListener.hideFab();
+                etType.setText(user.getName());
+            } else if (consultation.getInitialer() != null) {
+                Log.d(TAG, "consultationLayout: " + consultation.getConsultationID());
+                etType.setText(consultation.getInitialer());
+                //mListener.showFab();
+            }
         }
+
             etType.setFloatingLabelAlwaysShown(true);
             etType.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
             etType.setFloatingLabelText(getString(R.string.responsible));
@@ -211,13 +230,34 @@ public class ResultsFragment extends Fragment  {
             cLinearLayout.addView(etType);
 
 
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(!edited) {
+                    fab.setVisibility(View.INVISIBLE);
+                    fabCheck.setVisibility(View.VISIBLE);
+                    edited = true;
+                    mListener.updateEdited(edited);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
 
         // Gestationsalder
-        etGestationsalder.setText("" + consultation.getGestationsalder());
+        etGestationsalder.setText(String.valueOf(consultation.gestationsalder));
         etGestationsalder.setFloatingLabelAlwaysShown(true);
         etGestationsalder.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etGestationsalder.setFloatingLabelText("Gestationsalder");
+        etGestationsalder.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etGestationsalder);
 
         // Vaegt
@@ -225,6 +265,7 @@ public class ResultsFragment extends Fragment  {
         etVaegt.setFloatingLabelAlwaysShown(true);
         etVaegt.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etVaegt.setFloatingLabelText("Vægt");
+        etVaegt.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etVaegt);
 
         // Blodtryk
@@ -232,6 +273,7 @@ public class ResultsFragment extends Fragment  {
         etBlodtryk.setFloatingLabelAlwaysShown(true);
         etBlodtryk.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etBlodtryk.setFloatingLabelText("Blodtryk");
+        etBlodtryk.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etBlodtryk);
 
         // UrinASLeuNit
@@ -239,6 +281,7 @@ public class ResultsFragment extends Fragment  {
         etUrinASLeuNit.setFloatingLabelAlwaysShown(true);
         etUrinASLeuNit.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etUrinASLeuNit.setFloatingLabelText("Urin: A, S, Leu, Nit");
+        etUrinASLeuNit.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etUrinASLeuNit);
 
         // Oedem
@@ -246,6 +289,7 @@ public class ResultsFragment extends Fragment  {
         etOedem.setFloatingLabelAlwaysShown(true);
         etOedem.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etOedem.setFloatingLabelText("Oedem");
+        etOedem.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etOedem);
 
         // SymfyseFundus
@@ -253,6 +297,7 @@ public class ResultsFragment extends Fragment  {
         etSymfyseFundus.setFloatingLabelAlwaysShown(true);
         etSymfyseFundus.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etSymfyseFundus.setFloatingLabelText("SymfyseFundus");
+        etSymfyseFundus.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etSymfyseFundus);
 
         // Fosterpraes
@@ -260,6 +305,7 @@ public class ResultsFragment extends Fragment  {
         etFosterpraes.setFloatingLabelAlwaysShown(true);
         etFosterpraes.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosterpraes.setFloatingLabelText("Fosterpræs");
+        etFosterpraes.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etFosterpraes);
 
         // Fosterskoen
@@ -267,6 +313,7 @@ public class ResultsFragment extends Fragment  {
         etFosterskoen.setFloatingLabelAlwaysShown(true);
         etFosterskoen.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etFosterskoen.setFloatingLabelText("Fosterskøn");
+        etFosterskoen.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etFosterskoen);
 
         // Fosteraktivitet
@@ -281,22 +328,22 @@ public class ResultsFragment extends Fragment  {
         etUndersoegelsessted.setFloatingLabelAlwaysShown(true);
         etUndersoegelsessted.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etUndersoegelsessted.setFloatingLabelText("Undersøgelsessted");
+        etFosteraktivitet.addTextChangedListener(textWatcher);
         cLinearLayout.addView(etUndersoegelsessted);
-
-
 
         final RecyclerView recyclerView = new RecyclerView(getActivity());
         recyclerView.addItemDecoration(new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL));
 
-        //Get notes for this consultation
 
+
+        //Get notes for this consultation
         RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        final TextView notesTitle = new TextView(context);
+        /*final TextView notesTitle = new TextView(context);
         notesTitle.setText("NOTER");
         notesTitle.setTextSize(20);
         notesTitle.setLayoutParams(params);
@@ -318,56 +365,52 @@ public class ResultsFragment extends Fragment  {
                     notesShowing = true;
                 }
             }
-        });
-        if(!user.getRole().equals("Patient")){
-            saveExit = new Button(context);
-            saveExit.setText(getResources().getString(R.string.save_exit));
-            hLinearLayout.addView(saveExit);
-            saveExit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    sendConsultation();
-                }
-            });
-        }
-
+        });*/
 
     }
 
     private void sendConsultation() {
+        edited = false;
+        mListener.updateEdited(edited);
         consultation.setJournalID(patient.getJournalID());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Log.d(TAG, "sendConsultation: "+consultation.getConsultationID());
-        consultation.setDateString(dateFormat.format(consultation.getDate()));
-        consultation.setBlodtryk(etBlodtryk.getText().toString());
-        consultation.setGestationsalder(Integer.parseInt(etGestationsalder.getText().toString()));
-        consultation.setVaegt(Float.parseFloat(etVaegt.getText().toString()));
-        consultation.setUrinASLeuNit(etUrinASLeuNit.getText().toString());
-        consultation.setOedem(etOedem.getText().toString());
-        consultation.setSymfyseFundus(Float.parseFloat(etSymfyseFundus.getText().toString()));
-        consultation.setFosterpraes(etFosterpraes.getText().toString());
-        consultation.setFosterskoen(etFosterskoen.getText().toString());
-        consultation.setFosteraktivitet(etFosteraktivitet.getText().toString());
-        consultation.setUndersoegelsessted(etUndersoegelsessted.getText().toString());
+        try {
+            consultation.setDateString(dateFormat.format(consultation.getDate()));
+            consultation.setBlodtryk(etBlodtryk.getText().toString());
+            consultation.setGestationsalder(Integer.parseInt(etGestationsalder.getText().toString()));
+            consultation.setVaegt(Float.parseFloat(etVaegt.getText().toString()));
+            consultation.setUrinASLeuNit(etUrinASLeuNit.getText().toString());
+            consultation.setOedem(etOedem.getText().toString());
+            consultation.setSymfyseFundus(Float.parseFloat(etSymfyseFundus.getText().toString()));
+            consultation.setFosterpraes(etFosterpraes.getText().toString());
+            consultation.setFosterskoen(etFosterskoen.getText().toString());
+            consultation.setFosteraktivitet(etFosteraktivitet.getText().toString());
+            consultation.setUndersoegelsessted(etUndersoegelsessted.getText().toString());
 
 
-        Call<String> call = client.postConsultation("addJournalConsultation.php", consultation);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.d(TAG, "onResponse: "+response.body().trim());
-                if(!response.body().trim().equals("FALSE")){
+            Call<String> call = client.postConsultation("addJournalConsultation.php", consultation);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    Log.d(TAG, "onResponse: " + response.body().trim());
+                    if (!response.body().trim().equals("FALSE")) {
 
+                    }
+                    Log.d(TAG, "onResponse: " + response.body().trim());
+                    Log.d(TAG, "onResponse: "+consultation.getGestationsalder());
+                    Toast.makeText(context, "Updated", Toast.LENGTH_SHORT).show();
                 }
-                Log.d(TAG, "onResponse: "+response.body().trim());
-            }
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-            }
-        });
 
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (NumberFormatException e1){
+            Toast.makeText(context, "Wrong input", Toast.LENGTH_SHORT).show();
+        }
 
 
     }

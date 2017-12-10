@@ -5,31 +5,29 @@
         <item
             android:id="@+id/nav_camera"
             android:icon="@android:drawable/ic_menu_my_calendar"
-            android:title="Schedule" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Patients" />
+            android:title="@string/calendar" />
+
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="MidWife things "/>
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:icon="@drawable/ic_action_patients"
+            android:title="@string/my_patients"/>
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/other">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:icon="@drawable/ic_action_condit"
+                android:title="@string/terms_and_conditions" />
+            <item
+                android:id="@+id/nav_sen"
+                android:icon="@drawable/ic_action_terms"
+                android:title="@string/about" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="@string/log_out" />
+                android:title="@string/log_out"  />
         </menu>
     </item>
 

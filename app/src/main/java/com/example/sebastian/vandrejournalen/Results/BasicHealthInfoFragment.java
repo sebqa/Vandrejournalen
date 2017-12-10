@@ -50,7 +50,7 @@ public class BasicHealthInfoFragment extends Fragment {
     ServerClient client;
     int day,month,year;
     final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
+    String journalID;
     BasicInfo basicInfo;
 
     public BasicHealthInfoFragment() {
@@ -97,15 +97,38 @@ public class BasicHealthInfoFragment extends Fragment {
         etGrav.setFocusable(false);
         ethojde.setFocusable(false);
         etBMI.setFocusable(false);
-        calcYes.setFocusable(false);
-        calcNo.setFocusable(false);
+        calcYes.setClickable(false);
+        calcNo.setClickable(false);
         button.setVisibility(View.INVISIBLE);
+
+        hepYes.setClickable(false);
+        hepNo .setClickable(false);
+        bloodyes .setClickable(false);
+        bloodNo .setClickable(false);
+        mrhesYes .setClickable(false);
+        mrhesNo .setClickable(false);
+        iregYes .setClickable(false);
+        iregNo .setClickable(false);
+        crhesYes .setClickable(false);
+        crhesNo .setClickable(false);
+        antiYes .setClickable(false);
+        antiNo .setClickable(false);
+        antiDYes .setClickable(false);
+        antiDNo .setClickable(false);
+        urinDyrk.setClickable(false);
     }
 
     private void getBasicInfo() {
+
+        if(user.getRole().equals("Patient")){
+            journalID = user.getJournalID();
+        } else{
+            journalID = patient.getJournalID();
+        }
+
         client = ServiceGenerator.createService(ServerClient.class);
-        Log.d(TAG, "getBasicInfo: JOURNALID"+ patient.getJournalID());
-        Call<BasicInfo> call = client.getBasicInfo("returnJournalBasicHealth.php", patient.getJournalID());
+        Log.d(TAG, "getBasicInfo: JOURNALID"+ user.getJournalID());
+        Call<BasicInfo> call = client.getBasicInfo("returnJournalBasicHealth.php", journalID);
         call.enqueue(new Callback<BasicInfo>() {
             @Override
             public void onResponse(Call<BasicInfo> call, Response<BasicInfo> response) {

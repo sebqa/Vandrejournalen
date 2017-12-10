@@ -58,5 +58,12 @@
     <string name="save_exit">Save and exit</string>
     <string name="schedule">Schedule</string>
     <string name="info_saved">Information saved</string>
+    <string name="nconsultation">New consultation</string>
+    <string name="terms_and_conditions">Terms and conditions</string>
+    <string name="about">About</string>
+    <string name="other">Other</string>
+    <string name="nappointment">New appointment</string>
+    <string name="register_new_patient">Register new patient</string>
+    <string name="atprof">Attach professional</string>
 
 </resources>

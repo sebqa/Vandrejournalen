@@ -31,9 +31,18 @@ public class Appointment {
         this.userID = userID;
     }
 
+    public String getJournalID() {
+        return journalID;
+    }
+
+    public void setJournalID(String journalID) {
+        this.journalID = journalID;
+    }
+
     Date date;
     String profUserID;
     String userID;
+    String journalID;
 
     public Appointment() {
     }

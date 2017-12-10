@@ -56,5 +56,12 @@ hvornår i graviditeten </string>
     <string name="save_exit">Gem og afslut</string>
     <string name="schedule">Kalender</string>
     <string name="info_saved">Information gemt</string>
+    <string name="nconsultation">Ny konsultation</string>
+    <string name="terms_and_conditions">Betingelser</string>
+    <string name="about">Om Vandrejournalen</string>
+    <string name="other">Andet</string>
+    <string name="nappointment">Ny aftale</string>
+    <string name="register_new_patient">Opret ny patient</string>
+    <string name="atprof">Tilføj professionel</string>
 
 </resources>

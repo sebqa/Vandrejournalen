@@ -214,11 +214,13 @@ public class RegisterFragment extends Fragment {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     Log.d(TAG, "onResponse: "+response.body());
-                    if(response.body().trim().equals("1")){
-                        Toast.makeText(getActivity(), "Match!", Toast.LENGTH_SHORT).show();
-                        User user = new User();
-                        user.setCpr(finalCpr);
-                        mListener.goToInfo(user);
+                    if(response.body() != null){
+                        if(response.body().trim().equals("1")) {
+                            Toast.makeText(getActivity(), "Match!", Toast.LENGTH_SHORT).show();
+                            User user = new User();
+                            user.setCpr(finalCpr);
+                            mListener.goToInfo(user);
+                        }
 
 
                     } else{

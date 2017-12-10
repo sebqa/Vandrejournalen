@@ -30,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.PatientsList;
 import com.example.sebastian.vandrejournalen.Results.RecyclerAdapterPatientList;
+import com.example.sebastian.vandrejournalen.Results.ResultsFragment;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
 import com.example.sebastian.vandrejournalen.Results.SectionSelectionFragment;
 import com.example.sebastian.vandrejournalen.Results.BasicHealthInfoFragment;
@@ -42,13 +43,14 @@ import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity
-        implements CalendarTab.OnFragmentInteractionListener, RegisterPatientFragment.OnFragmentInteractionListener, BasicHealthInfoFragment.OnFragmentInteractionListener, SectionSelectionFragment.OnFragmentInteractionListener, RecyclerAdapterPatientList.OnFragmentInteractionListener{
+        implements CalendarTab.OnFragmentInteractionListener, RegisterPatientFragment.OnFragmentInteractionListener, BasicHealthInfoFragment.OnFragmentInteractionListener, SectionSelectionFragment.OnFragmentInteractionListener, RecyclerAdapterPatientList.OnFragmentInteractionListener, ResultsFragment.OnFragmentInteractionListener{
     private static final String TAG = "MAINACTIVITY" ;
     final android.support.v4.app.FragmentManager fn = getSupportFragmentManager();
     public static Locale mylocale;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     SharedPreferences prefs;
     User user;
+    boolean edited;
     public static String language;
 
     @Override
@@ -229,6 +232,25 @@ public class MainActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
             } else if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            } else if(edited){
+                new MaterialDialog.Builder(this)
+                    .title(R.string.exit)
+                    .content("You have unsaved changes. Are you sure you want to return?")
+                    .positiveText("Yes")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            popStack();
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        }
+                    })
+                    .negativeText("No")
+                    .show();
+
             } else if(currentFragment instanceof Schedule || currentFragment instanceof SearchFragment|| currentFragment instanceof CalendarTab || fn.getBackStackEntryCount() <2){
                 new MaterialDialog.Builder(this)
                         .title(R.string.exit)
@@ -455,6 +477,7 @@ public class MainActivity extends AppCompatActivity
                            dialog = null;
                        }
                    })
+
                    .itemsCallback(new MaterialDialog.ListCallback() {
                        @Override
                        public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
@@ -491,7 +514,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateFragment(Fragment fragment) {
 
-        fn.beginTransaction().replace(R.id.content_frame,fragment).addToBackStack(null).commit();
+        fn.beginTransaction().replace(R.id.content_frame,fragment,"section").addToBackStack(null).commit();
     }
 
     @Override
@@ -510,6 +533,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void popStack() {
         fn.popBackStack();
+    }
+
+    @Override
+    public void showDatePicker() {
+        ResultsPager frag = (ResultsPager) fn.findFragmentByTag("section");
+        try {
+            frag.showDatePickerDialog();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateEdited(boolean edited) {
+        this.edited = edited;
     }
 }
 

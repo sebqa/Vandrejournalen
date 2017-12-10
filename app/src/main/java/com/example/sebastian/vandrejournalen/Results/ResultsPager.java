@@ -42,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ResultsPager extends Fragment implements ResultsFragment.OnFragmentInteractionListener{
+public class ResultsPager extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -106,29 +106,6 @@ public class ResultsPager extends Fragment implements ResultsFragment.OnFragment
         //Sort by date, low to high
 
 
-        fab = rootView.findViewById(R.id.fab);
-        String role = user.getRole();
-        switch(role) {
-            case "Patient":
-                fab.hide();
-                break;
-            default:
-
-                //Open dialog here to request consultation
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        showDatePickerDialog();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-
-                }
-            });
-        }
-
         return rootView;
 
 
@@ -170,6 +147,9 @@ public class ResultsPager extends Fragment implements ResultsFragment.OnFragment
                                 return o1.getDate().compareTo(o2.getDate());
                             }
                         });
+                        if(arrayList.isEmpty()&& !user.getRole().equals("Patient")){
+                            setTodayDate();
+                        }
                         adapter.notifyDataSetChanged();
                         if(!arrayList.isEmpty()){
                             getNearestDate();
@@ -280,6 +260,7 @@ public class ResultsPager extends Fragment implements ResultsFragment.OnFragment
 
 
 
+
     public void afterToday(Date closest){
         if(!closest.after(today)) {
             viewPager.setCurrentItem(dates.indexOf(closest));
@@ -296,9 +277,11 @@ public class ResultsPager extends Fragment implements ResultsFragment.OnFragment
         this.context = context;
     }
 
-
-
-    public void setDate() {
+    public void setTodayDate() {
+        final Calendar c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH)+1;
+        day = c.get(Calendar.DAY_OF_MONTH);
 
         Date date = new Date();
         Consultation consultation = new Consultation(date, null);
@@ -307,15 +290,22 @@ public class ResultsPager extends Fragment implements ResultsFragment.OnFragment
         adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(arrayList.size(), true);
         Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
+
+
     }
 
-    @Override
-    public void showFab() {
-        //fab.show();
+    public void setDate() {
+
+
+        Date date = new Date();
+        Consultation consultation = new Consultation(date, null);
+        consultation.setDate(day, month, year);
+        arrayList.add(consultation);
+        adapter.notifyDataSetChanged();
+        viewPager.setCurrentItem(arrayList.size(), true);
+        Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
+
+
     }
 
-    @Override
-    public void hideFab() {
-       // fab.hide();
-    }
 }
