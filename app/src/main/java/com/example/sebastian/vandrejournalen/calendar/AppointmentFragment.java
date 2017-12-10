@@ -74,15 +74,15 @@ public class AppointmentFragment extends Fragment  {
 
             apText = rootView.findViewById(R.id.appointText);
 
-            recyclerView = rootView.findViewById(R.id.apNotesList);
+            /*recyclerView = rootView.findViewById(R.id.apNotesList);
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                     DividerItemDecoration.VERTICAL));
 
-            adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), getActivity());
+            adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role)), getActivity());
             layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
-        }
+        */}
 
 
         return rootView;

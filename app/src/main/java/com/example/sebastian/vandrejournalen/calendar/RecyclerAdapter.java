@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.sebastian.journalapp.R;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -18,13 +21,13 @@ import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
     int position;
-    private ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
+    private ArrayList<Note> arrayList = new ArrayList<Note>();
     private int selectedPos = 0;
 
     Context ctx;
 
     //Constructor for the RecyclerAdapter
-    public RecyclerAdapter(ArrayList<Appointment> arrayList, Context ctx){
+    public RecyclerAdapter(ArrayList<Note> arrayList, Context ctx){
         this.arrayList = arrayList;
         this.ctx =ctx;
 
@@ -45,17 +48,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
 
         //Attach the values we retrieve from the Item class to the values.
-        final Appointment event = arrayList.get(position);
-
-        holder.date.setText(event.getDay()+"/"+ event.getMonth()+"/"+ event.getYear()+"\n"+event.getTime());
-        holder.event.setText(event.getEvent());
+        final Note note = arrayList.get(position);
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - kk:mm");
+        holder.date.setText(""+formatter.format(note.getDate()));
+        holder.text.setText(note.getText());
         holder.container.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 //Here goes your desired onClick behaviour. Like:
                 //You can change the fragment, something like this, not tested, please correct for your desired output:
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                /*EventPreview ep = EventPreview.newInstance(event);
+                /*EventPreview ep = EventPreview.newInstance(text);
                 //Create a bundle to pass data, add data, set the bundle to your fragment and:
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.previewContainer, ep).addToBackStack(null).commit();
 */
@@ -75,20 +78,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
 
 
-        TextView date,event;
+        TextView date, text;
         private View container;
-        ArrayList<Appointment> events = new ArrayList<Appointment>();
+        ArrayList<Note> notes = new ArrayList<Note>();
         Context ctx;
 
         //Constructor for the view holder.
-        public RecyclerViewHolder(View view, Context ctx, ArrayList<Appointment> events){
+        public RecyclerViewHolder(View view, Context ctx, ArrayList<Note> notes){
             super(view);
-            this.events = events;
+            this.notes = notes;
             this.ctx = ctx;
 
             //Cast the values to a Text or ImageView in the layout.
-            date = view.findViewById(R.id.eventDate);
-            event = view.findViewById(R.id.eventText);
+            date = view.findViewById(R.id.noteDate);
+            text = view.findViewById(R.id.noteText);
             container = view.findViewById(R.id.item_container);
 
             //Set an onClickListener to the entire view.
@@ -102,11 +105,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
             //Find out which item was clicked
             int position = getAdapterPosition();
-            Appointment event = this.events.get(position);
-            if(event != null) {
+            Note note = this.notes.get(position);
+            if(note != null) {
                 //Create new intent that gets us to the next activity.
                 //Intent intent = new Intent(ctx, ItemDetails.class);
-                //Toast.makeText(view.getContext(), "Clicked "+event.getDate(),
+                //Toast.makeText(view.getContext(), "Clicked "+text.getDate(),
                         //Toast.LENGTH_SHORT).show();
 
 

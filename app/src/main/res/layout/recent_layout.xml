@@ -12,7 +12,7 @@
     >
 
     <TextView
-        android:id="@+id/eventDate"
+        android:id="@+id/noteDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
@@ -20,17 +20,17 @@
         android:paddingLeft="8dp"
         android:text="Hamburger med ost"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
+        android:id="@+id/noteText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/eventText"
-        android:textSize="15sp"
-        android:layout_below="@+id/eventDate"
+        android:layout_below="@+id/noteDate"
         android:layout_marginBottom="1dp"
         android:paddingLeft="8dp"
+        android:text=""
+        android:textSize="15sp"
 
         />
 

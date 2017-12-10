@@ -238,10 +238,10 @@ public class ResultsFragment extends Fragment  {
                 DividerItemDecoration.VERTICAL));
 
         //Get notes for this appointment
-        RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), context);
+      /*  RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(role), context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);*/
 
         final TextView notesTitle = new TextView(context);
         notesTitle.setText("NOTER");

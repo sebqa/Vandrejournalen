@@ -69,7 +69,7 @@ public class CalendarTab extends Fragment {
         calendarView.setOnDayClickListener(new CalendarView.OnDayClickListener() {
             @Override
             public void onClick(int day, int month, int year, boolean hasEvent) {
-                //Check if there is an event on this day
+                //Check if there is an text on this day
                 ArrayList<Appointment> thisDayList = new ArrayList<>();
 
                 if (hasEvent) {

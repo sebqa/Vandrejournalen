@@ -70,5 +70,5 @@ dependencies {
     //Material EditText - https://github.com/rengwuxian/MaterialEditText
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
 
-
+    compile 'com.google.code.gson:gson:2.8.2'
 }
