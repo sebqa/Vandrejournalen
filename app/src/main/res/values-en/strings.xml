@@ -65,5 +65,8 @@
     <string name="nappointment">New appointment</string>
     <string name="register_new_patient">Register new patient</string>
     <string name="atprof">Attach professional</string>
+    <string name="newAppoi">New appointment</string>
+    <string name="create">Create</string>
+    <string name="date">Date</string>
 
 </resources>

@@ -128,4 +128,10 @@ public interface ServerClient {
             @Path("page") String page,
             @Body User user
     );
+
+    @POST("/{page}")
+    Call<String> postAppointment(
+            @Path("page") String page,
+            @Body Appointment appointment
+    );
 }

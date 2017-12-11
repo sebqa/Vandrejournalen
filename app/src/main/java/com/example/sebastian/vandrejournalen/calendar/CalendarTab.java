@@ -1,5 +1,8 @@
 package com.example.sebastian.vandrejournalen.calendar;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
@@ -18,16 +24,27 @@ import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
+import com.jaredrummler.materialspinner.MaterialSpinner;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import br.com.jpttrindade.calendarview.view.CalendarView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 public class CalendarTab extends Fragment {
     private static final String TAG = "CALENDARTAB";
@@ -38,6 +55,9 @@ public class CalendarTab extends Fragment {
     FloatingActionButton fab;
     Context context;
     ServerClient client;
+    int day,month,year,hour,min;
+    MaterialEditText etDate;
+    Dialog dialog;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +79,165 @@ public class CalendarTab extends Fragment {
         Log.d(TAG, "onCreateView: "+user.getRole());
         if(user.getRole().equals("Patient")){
             fab.setVisibility(View.INVISIBLE);
+        } else{
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    createAppointment();
+                }
+            });
         }
 
         getAppointments();
         return rootView;
 
+    }
+
+    private void createAppointment() {
+        dialog = new Dialog(context);
+
+
+        dialog.setContentView(R.layout.new_appointment_layout);
+        dialog.setTitle(R.string.newAppoi);
+        final MaterialSpinner institutionSpinner = dialog.findViewById(R.id.placeSpinner);
+        final MaterialSpinner roleSpinner = dialog.findViewById(R.id.requestedRoleSpinner);
+
+        roleSpinner.setItems(getString(R.string.gp),getString(R.string.mw),"Specialist");
+
+
+/*
+        institutionSpinner.setItems(getInstitutions());
+*/
+
+
+        // set the custom dialog components - text, image and button
+        etDate = dialog.findViewById(R.id.etDate);
+        etDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    showDatePickerDialog();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        final MaterialEditText etCPR = dialog.findViewById(R.id.etCPR);
+        etCPR.setTransformationMethod(null);
+
+        Button dialogButton =  dialog.findViewById(R.id.dialogButton);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(etCPR.getText().toString().length() >=10) {
+                    sendAppointment(etCPR.getText().toString(),institutionSpinner.getText().toString(),roleSpinner.getText().toString());
+                }
+            }
+        });
+
+        dialog.show();
+
+    }
+
+    private void sendAppointment(String cpr, String institution, String requestedRole) {
+        final Appointment appointment = new Appointment();
+        appointment.setDate( new GregorianCalendar(year, month-1, day).getTime());
+        if (cpr.contains("-")){
+            appointment.setCpr(cpr);
+        } else{
+            StringBuilder str = new StringBuilder(cpr);
+            str.insert(6,"-");
+            appointment.setCpr(str.toString());
+        }
+        Log.d(TAG, "sendAppointment: "+appointment.getDate());
+        appointment.setInstitution(institution);
+        appointment.setRequestedRole(requestedRole);
+
+        Call<String> call = client.postAppointment("addAppointment.php", appointment);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.body() != null) {
+                    Log.d(TAG, "onResponse: " + response.body().trim());
+                    if (response.body().trim().equals("1")) {
+                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d(TAG, "onResponse: " + response.body().trim());
+                }
+                Log.d(TAG, "onResponse: " + response.message());
+            }
+
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+    public void showDatePickerDialog() throws ParseException {
+        final Calendar c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
+        Locale locale = getResources().getConfiguration().locale;
+        Locale.setDefault(locale);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                new DatePickerDialog.OnDateSetListener() {
+                    boolean mFirst = true;
+
+                    @Override
+                    public void onDateSet(DatePicker view, int nyear,
+                                          int monthOfYear, int dayOfMonth) {
+
+                        if (mFirst) {
+                            mFirst = false;
+                            year = nyear;
+                            month = monthOfYear+1;
+                            day = dayOfMonth;
+                            Log.d(TAG, "showDatePickerDialog: "+year+month+day);
+                            showTimePickerDialog(c);
+
+                        }
+
+
+
+                    }
+                }, year, month, day);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date d = sdf.parse(day+"/"+(month+1)+"/"+year);
+        datePickerDialog.getDatePicker().setMinDate(d.getTime());
+        datePickerDialog.show();
+
+
+    }
+
+    public void showTimePickerDialog(Calendar c){
+        hour = c.get(Calendar.HOUR_OF_DAY);
+        min = c.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    boolean mFirst = true;
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay,
+                                          int minute) {
+                        if (mFirst) {
+                            mFirst = false;
+                            hour = hourOfDay;
+                            min = minute;
+                            etDate.setText(day+"/"+month+"/"+year+" - "+ hour+":"+min);
+                        }
+                    }
+                }, hour, min, false);
+        timePickerDialog.show();
     }
 
     private void setUpCalendar() {
@@ -130,7 +304,6 @@ public class CalendarTab extends Fragment {
                 if(response.body() != null){
                     arrayList.clear();
                     arrayList.addAll(response.body());
-                    Log.d(TAG, "onResponse: "+response.body().get(0).getDate());
 
                     if(arrayList.isEmpty()&& !user.getRole().equals("Patient")){
                     }

@@ -63,5 +63,8 @@ hvornår i graviditeten </string>
     <string name="nappointment">Ny aftale</string>
     <string name="register_new_patient">Opret ny patient</string>
     <string name="atprof">Tilføj professionel</string>
+    <string name="newAppoi">Ny aftale</string>
+    <string name="create">Opret</string>
+    <string name="date">Dato</string>
 
 </resources>

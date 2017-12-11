@@ -122,6 +122,35 @@ public class Appointment {
     int phonework;
     int phoneprivate;
 
+    public String getCpr() {
+        return cpr;
+    }
+
+    public void setCpr(String cpr) {
+        this.cpr = cpr;
+    }
+
+    String cpr;
+
+    public String getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
+    }
+
+    public String getRequestedRole() {
+        return requestedRole;
+    }
+
+    public void setRequestedRole(String requestedRole) {
+        this.requestedRole = requestedRole;
+    }
+
+    String institution;
+    String requestedRole;
+
     public Appointment() {
     }
 }
