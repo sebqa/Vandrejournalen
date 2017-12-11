@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="280dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="280dp"
     android:layout_height="match_parent"
     android:padding="16dp">
 
@@ -22,7 +24,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/etCPR"
         android:hint="Patient CPR"
-        android:inputType="numberPassword"/>
+        android:inputType="numberPassword"
+        />
 
 
     <com.jaredrummler.materialspinner.MaterialSpinner
@@ -40,6 +43,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dialogButton"
-        android:text="@string/create"/>
+        android:text="@string/create"
+        android:background="?attr/colorPrimary"
+        android:textColor="#FFF"/>
+
 
 </LinearLayout>

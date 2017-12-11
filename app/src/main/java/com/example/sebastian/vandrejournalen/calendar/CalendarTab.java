@@ -58,7 +58,8 @@ public class CalendarTab extends Fragment {
     int day,month,year,hour,min;
     MaterialEditText etDate;
     Dialog dialog;
-
+    MaterialSpinner institutionSpinner;
+    ArrayList<String> institutions = new ArrayList<>();
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -83,7 +84,7 @@ public class CalendarTab extends Fragment {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    createAppointment();
+                    getInstitutions();
                 }
             });
         }
@@ -96,18 +97,17 @@ public class CalendarTab extends Fragment {
     private void createAppointment() {
         dialog = new Dialog(context);
 
-
         dialog.setContentView(R.layout.new_appointment_layout);
         dialog.setTitle(R.string.newAppoi);
-        final MaterialSpinner institutionSpinner = dialog.findViewById(R.id.placeSpinner);
+        institutionSpinner = dialog.findViewById(R.id.placeSpinner);
+        institutionSpinner.setItems(institutions);
+
         final MaterialSpinner roleSpinner = dialog.findViewById(R.id.requestedRoleSpinner);
 
         roleSpinner.setItems(getString(R.string.gp),getString(R.string.mw),"Specialist");
 
 
-/*
-        institutionSpinner.setItems(getInstitutions());
-*/
+
 
 
         // set the custom dialog components - text, image and button
@@ -136,7 +136,30 @@ public class CalendarTab extends Fragment {
             }
         });
 
-        dialog.show();
+
+    }
+
+    private void getInstitutions() {
+
+        Call<ArrayList<String>> call = client.getInstitutions("returnInstitutions.php", user );
+        call.enqueue(new Callback<ArrayList<String>>() {
+            @Override
+            public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
+                Log.d(TAG, "onResponse: "+response.body());
+                if (response.body() != null) {
+                    institutions.addAll(response.body());
+                    Log.d(TAG, "onResponse: "+institutions.get(0));
+                    createAppointment();
+                    dialog.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<String>> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
     }
 

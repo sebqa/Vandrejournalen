@@ -134,4 +134,10 @@ public interface ServerClient {
             @Path("page") String page,
             @Body Appointment appointment
     );
+
+    @POST("/{page}")
+    Call<ArrayList<String>> getInstitutions(
+            @Path("page") String page,
+            @Body User user
+    );
 }
