@@ -52,7 +52,7 @@ public class NotesListTab extends Fragment {
     User user;
 
     ArrayList<Note> notesList;
-
+    Calendar calendar;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -66,18 +66,19 @@ public class NotesListTab extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_noteslist,container,false);
         setHasOptionsMenu(true);
         recyclerView =  rootView.findViewById(R.id.recentRecyclerView);
-        final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        calendar = Calendar.getInstance(TimeZone.getDefault());
         Gson gson = new Gson();
         notesList = new ArrayList<Note>();
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         if(sharedPrefs !=null) {
-            String json = sharedPrefs.getString("notes", null);
+            String json = sharedPrefs.getString("notes"+user.getUserID(), null);
             Type type = new TypeToken<ArrayList<Note>>() {
             }.getType();
             notesList = gson.fromJson(json, type);
-            initList();
-
+            if(notesList != null) {
+                initList();
+            }
         }
 
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
@@ -110,8 +111,15 @@ public class NotesListTab extends Fragment {
                         Note note = new Note();
                         note.setDate(calendar.getTime());
                         note.setText(input.getText().toString());
+                        if(notesList != null) {
+                            initList();
 
+                        } else{
+                            notesList = new ArrayList<Note>();
+                            initList();
+                        }
                         notesList.add(0,note);
+
                         adapter.notifyDataSetChanged();
                         saveNotes();
 
@@ -156,7 +164,7 @@ public class NotesListTab extends Fragment {
         Gson gson = new Gson();
 
         String json = gson.toJson(notesList);
-        editor.putString("notes", json);
+        editor.putString("notes"+user.getUserID(), json);
         editor.apply();
     }
 
