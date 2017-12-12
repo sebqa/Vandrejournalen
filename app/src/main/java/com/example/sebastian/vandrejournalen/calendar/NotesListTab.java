@@ -27,6 +27,7 @@ import android.widget.EditText;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.RoleHelper;
 import com.example.sebastian.vandrejournalen.User;
+import com.example.sebastian.vandrejournalen.authentication.SecureUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -50,7 +51,7 @@ public class NotesListTab extends Fragment {
     RecyclerAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     User user;
-
+    SecureUtil secureUtil;
     ArrayList<Note> notesList;
     Calendar calendar;
     public void onCreate(Bundle savedInstanceState) {
@@ -70,12 +71,19 @@ public class NotesListTab extends Fragment {
         Gson gson = new Gson();
         notesList = new ArrayList<Note>();
 
+
+        secureUtil = new SecureUtil(getActivity());
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         if(sharedPrefs !=null) {
-            String json = sharedPrefs.getString("notes"+user.getUserID(), null);
+            Log.d(TAG, "onCreateView: "+sharedPrefs.getString("notes", null));
+            String json = sharedPrefs.getString("notes", null);
+            if(json != null){
+
+
             Type type = new TypeToken<ArrayList<Note>>() {
             }.getType();
-            notesList = gson.fromJson(json, type);
+            notesList = gson.fromJson(secureUtil.decrypt(json), type);
+            }
             if(notesList != null) {
                 initList();
             }
@@ -89,7 +97,6 @@ public class NotesListTab extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("New note for today");
-
 
                 // Set up the input
                 InputFilter[] inputFilter = new InputFilter[1];
@@ -163,8 +170,8 @@ public class NotesListTab extends Fragment {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
 
-        String json = gson.toJson(notesList);
-        editor.putString("notes"+user.getUserID(), json);
+        String json = secureUtil.encrypt(gson.toJson(notesList));
+        editor.putString("notes", json);
         editor.apply();
     }
 

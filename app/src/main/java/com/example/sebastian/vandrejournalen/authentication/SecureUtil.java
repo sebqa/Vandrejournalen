@@ -83,16 +83,11 @@ public class SecureUtil {
     }
 
 
-    String encrypt(String passwordString) {
+    public String encrypt(String passwordString) {
         this.password = passwordString;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!keyguardManager.isKeyguardSecure()) {
-                // Show a message that the user hasn't set up a lock screen.
-                Toast.makeText(context, "Secure lock screen isn't set up.\n" +
-                        "Go to 'Settings -> Security -> Screen lock' to set up a lock screen", Toast.LENGTH_SHORT).show();
 
-            } else {
                 try {
                     //Create key
                     SecretKey secretKey = createKey();
@@ -121,19 +116,19 @@ public class SecureUtil {
                     throw new RuntimeException(e);
                 }
             }
-        }
+
         return encryptedPassword;
     }
 
 
-    String decrypt(String passwordString) {
+    public String decrypt(String passwordString) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!keyguardManager.isKeyguardSecure()) {
+           /* if (!keyguardManager.isKeyguardSecure()) {
                 // Show a message that the user hasn't set up a lock screen.
                 Toast.makeText(context, "Secure lock screen isn't set up.\n" +
-                        "Go to 'Settings -> Security -> Screen lock' to set up a lock screen", Toast.LENGTH_SHORT).show();
-            } else {
+                        "Go to 'Settings -> Security -> Screen lock' to set up a lock screen", Toast.LENGTH_SHORT).show();*//*
+            } else {*/
                 try {
                     //Init sharedpreferences
                     SharedPreferences sharedPreferences = context.getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE);
@@ -164,7 +159,7 @@ public class SecureUtil {
                 }
             }
 
-        }
+
         return decryptedPassword;
     }
 
@@ -177,8 +172,6 @@ public class SecureUtil {
                 keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_NAME,
                         KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                         .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                        .setUserAuthenticationRequired(true)
-                        .setUserAuthenticationValidityDurationSeconds(AUTHENTICATION_DURATION_SECONDS)
                         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                         .build());
                 return keyGenerator.generateKey();
