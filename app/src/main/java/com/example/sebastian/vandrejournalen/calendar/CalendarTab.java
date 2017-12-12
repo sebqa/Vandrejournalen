@@ -89,6 +89,7 @@ public class CalendarTab extends Fragment {
             });
         }
 
+        Log.d(TAG, "onCreateView: "+user.getUserID());
         getAppointments();
         return rootView;
 
@@ -99,14 +100,14 @@ public class CalendarTab extends Fragment {
 
         dialog.setContentView(R.layout.new_appointment_layout);
         dialog.setTitle(R.string.newAppoi);
-        institutionSpinner = dialog.findViewById(R.id.placeSpinner);
+       /* institutionSpinner = dialog.findViewById(R.id.placeSpinner);
         institutionSpinner.setItems(institutions);
 
         final MaterialSpinner roleSpinner = dialog.findViewById(R.id.requestedRoleSpinner);
 
         roleSpinner.setItems(getString(R.string.gp),getString(R.string.mw),"Specialist");
 
-
+*/
 
 
 
@@ -131,7 +132,7 @@ public class CalendarTab extends Fragment {
             @Override
             public void onClick(View v) {
                 if(etCPR.getText().toString().length() >=10) {
-                    sendAppointment(etCPR.getText().toString(),institutionSpinner.getText().toString(),roleSpinner.getText().toString());
+                    sendAppointment(etCPR.getText().toString());
                 }
             }
         });
@@ -157,15 +158,17 @@ public class CalendarTab extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<String>> call, Throwable t) {
                 Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: Error returnInstitutions");
 
             }
         });
 
     }
 
-    private void sendAppointment(String cpr, String institution, String requestedRole) {
+    private void sendAppointment(String cpr) {
         final Appointment appointment = new Appointment();
         appointment.setDate( new GregorianCalendar(year, month-1, day).getTime());
+        Log.d(TAG, "sendAppointment: "+appointment.getDate());
         if (cpr.contains("-")){
             appointment.setCpr(cpr);
         } else{
@@ -174,8 +177,12 @@ public class CalendarTab extends Fragment {
             appointment.setCpr(str.toString());
         }
         Log.d(TAG, "sendAppointment: "+appointment.getDate());
-        appointment.setInstitution(institution);
-        appointment.setRequestedRole(requestedRole);
+        appointment.setProfUserID(user.getUserID());
+        appointment.setProfRole(user.getRole());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        appointment.setDateString(dateFormat.format(appointment.getDate()));
+        Log.d(TAG, "sendAppointment: "+appointment.getDateString());
 
         Call<String> call = client.postAppointment("addAppointment.php", appointment);
         call.enqueue(new Callback<String>() {
@@ -183,8 +190,12 @@ public class CalendarTab extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.body() != null) {
                     Log.d(TAG, "onResponse: " + response.body().trim());
-                    if (response.body().trim().equals("1")) {
+                    if (response.body().trim().equals("TRUE")) {
                         Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        getAppointments();
+                    } else{
+                        Toast.makeText(context, R.string.cantcreate, Toast.LENGTH_SHORT).show();
                     }
                     Log.d(TAG, "onResponse: " + response.body().trim());
                 }
@@ -195,6 +206,7 @@ public class CalendarTab extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: Error addAppointment ");
             }
         });
 
@@ -292,6 +304,7 @@ public class CalendarTab extends Fragment {
             if(appointment.getMonth()== calendar.get(Calendar.MONTH)+1 && appointment.getDay() == calendar.get(Calendar.DAY_OF_MONTH) && appointment.getYear() == calendar.get(Calendar.YEAR)){
                     //show today's consultation
                     mListener.onToday(arrayList,i);
+                Log.d(TAG, "setUpCalendar: "+arrayList.get(i).getName());
                 }
         }
 
@@ -320,7 +333,6 @@ public class CalendarTab extends Fragment {
 
     private void getAppointments() {
         Call<ArrayList<Appointment>> call = client.getAppointments("returnAppointments.php", user );
-
         call.enqueue(new Callback<ArrayList<Appointment>>() {
             @Override
             public void onResponse(Call<ArrayList<Appointment>> call, Response<ArrayList<Appointment>> response) {
@@ -335,18 +347,17 @@ public class CalendarTab extends Fragment {
                             @Override
                             public void run(){
                                 setUpCalendar();
+                                mListener.setNames(arrayList.get(0).getJournalMidwifeName(), arrayList.get(0).getJournalSpecialistName());
                             }
                         });
                     }
-
                 }
-
             }
 
             @Override
             public void onFailure(Call<ArrayList<Appointment>> call, Throwable t) {
                 Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
-
+                Log.d(TAG, "onFailure: Error returnAppointments");
             }
         });
 
@@ -387,6 +398,7 @@ public class CalendarTab extends Fragment {
         void onDateClick(ArrayList<Appointment> arrayList);
         void onToday(ArrayList<Appointment> arrayList, int pos);
         void removePreview();
+        void setNames(String midwife, String specialist);
     }
 
     @Override

@@ -14,12 +14,12 @@ import com.google.gson.Gson;
 /**
  * Created by Sebastian on 03-02-2017.
  */
-public class MyPagerAdapter extends FragmentPagerAdapter {
+public class SchedulePagerAdapter extends FragmentPagerAdapter {
     private static int NUM_ITEMS = 2;
     Context context;
     User user;
 
-    public MyPagerAdapter(FragmentManager fragmentManager, Context mContext, User user) {
+    public SchedulePagerAdapter(FragmentManager fragmentManager, Context mContext, User user) {
         super(fragmentManager);
         context = mContext;
         this.user = user;

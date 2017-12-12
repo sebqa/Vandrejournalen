@@ -66,5 +66,8 @@ hvornår i graviditeten </string>
     <string name="newAppoi">Ny aftale</string>
     <string name="create">Opret</string>
     <string name="date">Dato</string>
+    <string name="attMid">Tilføj jordemoder</string>
+    <string name="attSpec">Tilføj specialist</string>
+    <string name="cantcreate">Der kunne ikke laves ny aftale med denne person</string>
 
 </resources>

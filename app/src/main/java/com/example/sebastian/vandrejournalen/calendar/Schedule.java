@@ -13,8 +13,6 @@ import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.User;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 /**
  * Created by Sebastian on 02-11-2016.
  */
@@ -36,7 +34,7 @@ public class Schedule extends Fragment  {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_schedule,container,false);
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext(),user);
+        adapterViewPager = new SchedulePagerAdapter(getFragmentManager(),getContext(),user);
         vpPager.setAdapter(adapterViewPager);
         vpPager.setOffscreenPageLimit(3);
 

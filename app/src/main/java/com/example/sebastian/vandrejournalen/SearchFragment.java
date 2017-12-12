@@ -38,7 +38,6 @@ public class SearchFragment extends Fragment {
         if (getArguments() != null) {
             Gson gson = new Gson();
             user = gson.fromJson(getArguments().getString("user"), User.class);
-
         }
 
     }

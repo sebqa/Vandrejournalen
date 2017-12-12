@@ -21,6 +21,25 @@ public class User implements Serializable {
     boolean response;
     String journalID;
 
+    public String getMidwifeName() {
+        return midwifeName;
+    }
+
+    public void setMidwifeName(String midwifeName) {
+        this.midwifeName = midwifeName;
+    }
+
+    public String getSpecialistName() {
+        return specialistName;
+    }
+
+    public void setSpecialistName(String specialistName) {
+        this.specialistName = specialistName;
+    }
+
+    String midwifeName;
+    String specialistName;
+
     public String getJournalID() {
         return journalID;
     }

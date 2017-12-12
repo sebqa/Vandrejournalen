@@ -39,7 +39,6 @@ import javax.crypto.spec.IvParameterSpec;
 public class SecureUtil {
 
     Context context;
-    private static final int LOGIN_WITH_CREDENTIALS_REQUEST_CODE = 2;
     private static final int AUTHENTICATION_DURATION_SECONDS = 30;
     private static final String KEY_NAME = "key";
     private static final String TRANSFORMATION = KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/"
@@ -109,8 +108,6 @@ public class SecureUtil {
                     editor.apply();
 
 
-                } catch (UserNotAuthenticatedException e) {
-                    showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
                 } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
                         | BadPaddingException | UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
@@ -150,8 +147,6 @@ public class SecureUtil {
                     byte[] passwordBytes = cipher.doFinal(passwordStringBytes);
                     //Convert back to string
                     decryptedPassword = new String(passwordBytes, CHARSET_NAME);
-                } catch (UserNotAuthenticatedException e) {
-                    showAuthenticationScreen(LOGIN_WITH_CREDENTIALS_REQUEST_CODE);
                 } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
                         | BadPaddingException | InvalidAlgorithmParameterException
                         | UnrecoverableKeyException | KeyStoreException | CertificateException | IOException e) {

@@ -15,6 +15,8 @@ public class Appointment {
         this.date = date;
     }
 
+
+
     public String getProfUserID() {
         return profUserID;
     }
@@ -121,6 +123,50 @@ public class Appointment {
     String email;
     int phonework;
     int phoneprivate;
+    String institution;
+    String profRole;
+    String cpr;
+
+
+    String journalMidwifeName;
+    String journalSpecialistName;
+
+    public String getJournalMidwifeName() {
+        return journalMidwifeName;
+    }
+
+    public void setJournalMidwifeName(String journalMidwifeName) {
+        this.journalMidwifeName = journalMidwifeName;
+    }
+
+    public String getJournalSpecialistName() {
+        return journalSpecialistName;
+    }
+
+    public void setJournalSpecialistName(String journalSpecialistName) {
+        this.journalSpecialistName = journalSpecialistName;
+    }
+
+    public String getDateString() {
+        return dateString;
+    }
+
+    public void setDateString(String dateString) {
+        this.dateString = dateString;
+    }
+
+    String dateString;
+
+    public String getProfRole() {
+        return profRole;
+    }
+
+    public void setProfRole(String profRole) {
+        this.profRole = profRole;
+    }
+
+
+
 
     public String getCpr() {
         return cpr;
@@ -130,7 +176,7 @@ public class Appointment {
         this.cpr = cpr;
     }
 
-    String cpr;
+
 
     public String getInstitution() {
         return institution;
@@ -140,16 +186,7 @@ public class Appointment {
         this.institution = institution;
     }
 
-    public String getRequestedRole() {
-        return requestedRole;
-    }
 
-    public void setRequestedRole(String requestedRole) {
-        this.requestedRole = requestedRole;
-    }
-
-    String institution;
-    String requestedRole;
 
     public Appointment() {
     }

@@ -11,6 +11,16 @@ public class LetID {
     String userID;
     int inKeyCode;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    String name;
+
     public int getInKeyCode() {
         return inKeyCode;
     }

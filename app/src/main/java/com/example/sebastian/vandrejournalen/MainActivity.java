@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
 
                     if(user.getRole().equals("Patient")){
-
+                        Log.d(TAG, "onNavigationItemSelected: "+user.getMidwifeName());
                     }
 
                     final Handler handler = new Handler();
@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity
                         }},400);
 
                 } else if (id == R.id.nav_send) {
+                    prefs.edit().remove("token").apply();
                     prefs.edit().remove("user").apply();
                     prefs.edit().remove("userMain").apply();
 
@@ -442,14 +443,9 @@ public class MainActivity extends AppCompatActivity
             default:
                 /*fn.beginTransaction().replace(R.id.sliding, NotesListTab.newInstance()).commit();
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);*/
-
                 createDialog(arrayList);
-
-
         }
                 //fn.beginTransaction().add(R.id.content_frame,RoleHelper.getSlidingFragment(role,appointment)).commit();
-
-
 
             /*}
         },400);*/
@@ -487,6 +483,12 @@ public class MainActivity extends AppCompatActivity
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
+    @Override
+    public void setNames(String midwife, String specialist) {
+        user.setMidwifeName(midwife);
+        user.setSpecialistName(specialist);
+    }
+
     public void createDialog(final ArrayList<Appointment> arrayList){
         for (int i=0; i< arrayList.size();i++){
             patients.add(arrayList.get(i).getName());
@@ -513,6 +515,8 @@ public class MainActivity extends AppCompatActivity
                            patient.setPhoneprivate(arrayList.get(which).getPhoneprivate());
                            patient.setName(arrayList.get(which).getName());
                            patient.setJournalID(arrayList.get(which).getJournalID());
+                           patient.setMidwifeName(arrayList.get(which).getJournalMidwifeName());
+                           patient.setSpecialistName(arrayList.get(which).getJournalSpecialistName());
                            currentFragment = SectionSelectionFragment.newInstance();
 
                            Bundle args = new Bundle();

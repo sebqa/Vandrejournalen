@@ -68,5 +68,8 @@
     <string name="newAppoi">New appointment</string>
     <string name="create">Create</string>
     <string name="date">Date</string>
+    <string name="attMid">Attach midwife</string>
+    <string name="attSpec">Attach specialist</string>
+    <string name="cantcreate">Cannot create appointment for this person</string>
 
 </resources>

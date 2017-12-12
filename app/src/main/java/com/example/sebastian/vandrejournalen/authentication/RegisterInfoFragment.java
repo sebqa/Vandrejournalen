@@ -1,10 +1,12 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.util.Log;
@@ -42,6 +44,7 @@ public class RegisterInfoFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View rootView;
     User user;
+    SharedPreferences prefs;
     public RegisterInfoFragment() {
         // Required empty public constructor
     }
@@ -74,6 +77,7 @@ public class RegisterInfoFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_register_info, container, false);
         client = ServiceGenerator.createService(ServerClient.class);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
 
         cLayout = rootView.findViewById(R.id.layoutRegisterInfo);
 
@@ -101,27 +105,30 @@ public class RegisterInfoFragment extends Fragment {
                     StringBuilder str = new StringBuilder(cpr);
                     str.insert(6,"-");
                     user.setCpr(str.toString());
-                    Log.d(TAG, "checkCred: "+user.getCpr());
                 }
                 user.setName(etName.getText().toString());
                 user.setPhoneprivate(Integer.parseInt(etPrivateTlf.getText().toString()));
                 user.setPhonework(Integer.parseInt(etWorkTlf.getText().toString()));
                 user.setPassword(etPassword.getText().toString());
 
-                Call<String> call = client.registerInfo("registerInformation.php", user);
-                call.enqueue(new Callback<String>() {
+                Call<User> call = client.registerInfo("registerInformation.php", user);
+                call.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        if(!response.body().trim().equals("FALSE")){
-                            user.setUserID(response.body().trim());
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        if(response.body() != null){
+                            user.setUserID(response.body().getUserID());
+                            user.setToken(response.body().getToken());
                             mListener.onSuccessfulLogin(user);
+                            Log.d(TAG, "onResponse: "+response.body().getUserID());
+                            Log.d(TAG, "onResponse: "+response.body().getToken());
                         }
-                        Log.d(TAG, "onResponse: "+response.body().trim());
+                        Log.d(TAG, "onResponse: "+response.message());
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
+                    public void onFailure(Call<User> call, Throwable t) {
                         Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "onFailure: Error registerInformation");
                     }
                 });
 
@@ -142,13 +149,6 @@ public class RegisterInfoFragment extends Fragment {
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -167,8 +167,6 @@ public class RegisterInfoFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
         void loginExists(User user);
         void onSuccessfulLogin(User user);
     }

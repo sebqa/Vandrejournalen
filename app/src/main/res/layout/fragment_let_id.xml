@@ -71,4 +71,12 @@
         android:background="?attr/colorPrimary"
         android:text="Continue"
         android:textColor="#FFF" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Not you?"
+        android:id="@+id/tvNotYou"
+        />
 </LinearLayout>

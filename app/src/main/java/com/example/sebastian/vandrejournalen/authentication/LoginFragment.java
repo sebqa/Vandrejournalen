@@ -1,8 +1,10 @@
 package com.example.sebastian.vandrejournalen.authentication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.Selection;
@@ -20,6 +22,7 @@ import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
+import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import retrofit2.Call;
@@ -31,16 +34,16 @@ import static android.content.ContentValues.TAG;
 
 public class LoginFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    String token;
     private static final String ARG_PARAM2 = "param2";
     MaterialEditText passwordInput, usernameInput;
     private String mParam1;
     private String mParam2;
     Button button;
     private View rootView;
-    User user = new User();
+    User user;
     ServerClient client;
-
+    SharedPreferences prefs;
     int keyDel;
 
     private OnFragmentInteractionListener mListener;
@@ -49,11 +52,10 @@ public class LoginFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static LoginFragment newInstance(String param1, String param2) {
+    public static LoginFragment newInstance(String token, String param2) {
         LoginFragment fragment = new LoginFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,8 +64,10 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            token = getArguments().getString("token");
+            Log.d(TAG, "onCreate: loginFragment"+token);
+            user = new Gson().fromJson(getArguments().getString("user"), User.class);
+
         }
 
     }
@@ -76,6 +80,12 @@ public class LoginFragment extends Fragment {
         passwordInput = rootView.findViewById(R.id.passwordInput);
         usernameInput = rootView.findViewById(R.id.usernameInput);
         button = rootView.findViewById(R.id.button);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        client = ServiceGenerator.createService(ServerClient.class);
+
+        if(user.getToken() != null){
+            checkToken();
+        }
 
         passwordInput.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -89,32 +99,7 @@ public class LoginFragment extends Fragment {
                 return false;
             }
         });
-        /*qrbutton = rootView.findViewById(R.id.qrbutton);
-        cipherText = rootView.findViewById(R.id.cipherText);
-        drbutton = rootView.findViewById(R.id.drbutton);
-        mwbutton = rootView.findViewById(R.id.mwbutton);*/
 
-        client = ServiceGenerator.createService(ServerClient.class);
-
-        /*mwbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mListener != null) {
-
-                    encryptedString = mListener.encrypt(passwordInput.getText().toString());
-                    cipherText.setText(encryptedString);
-                }
-            }
-        });
-        drbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mListener != null) {
-                    decryptedString = mListener.decrypt(encryptedString);
-                    cipherText.setText(decryptedString);
-                }
-            }
-        });*/
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,6 +111,28 @@ public class LoginFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    private void checkToken() {
+        Call<String> call = client.checkToken("logInCheckToken.php",user.getToken() );
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: " + response.body());
+                if (response.body() != null) {
+                    if (!response.body().trim().equals("FALSE")){
+                        user.setUserID(response.body().trim());
+                        mListener.loginExists(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: "+token);
+            }
+        });
     }
 
     private void checkCred() {
@@ -156,6 +163,8 @@ public class LoginFragment extends Fragment {
                     } else {
                         Log.d(TAG, "onResponse: " + response.body().getUserID());
                         user.setUserID(response.body().getUserID());
+                        user.setToken(response.body().getToken());
+                        Log.d(TAG, "onResponse: "+user.getToken());
                         mListener.loginExists(user);
                         passwordInput.setHelperText("");
                     }
@@ -198,9 +207,5 @@ public class LoginFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void loginExists(User user);
-        String encrypt(String passwordString);
-        String decrypt(String passwordString);
-
-        void register(User user);
     }
 }

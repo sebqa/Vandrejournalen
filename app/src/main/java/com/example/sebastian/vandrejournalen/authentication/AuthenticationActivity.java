@@ -36,15 +36,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, QRReader.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterInfoFragment.OnFragmentInteractionListener, letIDFragment.OnFragmentInteractionListener{
+public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener,
+        RegisterInfoFragment.OnFragmentInteractionListener, letIDFragment.OnFragmentInteractionListener{
     private static final String TAG = "AUTHENTICATIONACTIVITY";
     SecureUtil secureUtil;
     FragmentManager fm = getSupportFragmentManager();
     SharedPreferences prefs;
-    User user;
+    User user = new User();
     FragmentTransaction ft;
     public static Locale mylocale;
     public static int theme;
+    String token ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -67,27 +69,21 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         setContentView(R.layout.activity_authentication);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        String tokenString = prefs.getString("token","");
+        if (!tokenString.equals("")){
+            user.setToken(tokenString);
+            Log.d(TAG, "onCreate: "+user.getToken());
+            goToLogin();
+            Log.d(TAG, "onCreate: user is set "+user.getRole());
 
-        if (findViewById(R.id.fragment_container) != null) {
+        } else if (findViewById(R.id.fragment_container) != null) {
             if (savedInstanceState != null) {
                 return;
             }
-
             Fragment fragment= RegisterFragment.newInstance("","");
-
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
 
-        String userString = prefs.getString("user","");
-        if (!userString.equals("")){
-            user = new Gson().fromJson(userString,User.class);
-            loginExists(user);
-            Log.d(TAG, "onCreate: user is set"+user.getRole());
-        } else{
-
-            Log.d(TAG, "onCreate: no user set");
-
-        }
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // only for gingerbread and newer versions
@@ -95,12 +91,15 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
         }
 
-
     }
 
     @Override
     public void loginExists(User user) {
+        Bundle args = new Bundle();
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
             Fragment fragment = letIDFragment.newInstance(user);
+            fragment.setArguments(args);
             ft = fm.beginTransaction();
             ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
                 R.anim.fragment_slide_left_exit,
@@ -110,44 +109,6 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             //user.setRole("Midwife");
     }
 
-
-
-
-    @Override
-    public String encrypt(String passwordString) {
-        return secureUtil.encrypt(passwordString);
-    }
-
-    @Override
-    public String decrypt(String passwordString) {
-        return secureUtil.decrypt(passwordString);
-    }
-
-    @Override
-    public void register(User user) {
-        ServerClient client = ServiceGenerator.createService(ServerClient.class);
-        Call<User> call = client.addUser("loginCprPw.php",user);
-        // Execute the call asynchronously. Get a positive or negative callback.
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                // The network call was a success and we got a response
-                Toast.makeText(AuthenticationActivity.this, ""+response.body().getRole(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // the network call was a failure
-                Toast.makeText(AuthenticationActivity.this, "Network Failure", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 
     @Override
     public void onSuccessfulLogin(User user) {
@@ -161,11 +122,17 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         }
         Gson gson = new Gson();
         String obj = gson.toJson(user);
-        prefs.edit().putString("user",obj).apply();
+        prefs.edit().putString("token",user.getToken()).apply();
         intent.putExtra("user", obj);
+
+
+        Log.d(TAG, "onSuccessfulLogin: "+user.getToken());
         startActivity(intent);
         finish();
     }
+
+
+
     protected void setLanguage(String language){
         mylocale=new Locale(language);
         prefs.edit().putString("language",language).apply();
@@ -178,7 +145,13 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void goToLogin() {
-        Fragment fragment = LoginFragment.newInstance("","");
+        Bundle args = new Bundle();
+        Gson gson = new Gson();
+        String obj = gson.toJson(user);
+        args.putString("user",obj);
+        token = user.getToken();
+        Fragment fragment = LoginFragment.newInstance(token,"");
+        fragment.setArguments(args);
         ft = fm.beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
                 R.anim.fragment_slide_left_exit,
@@ -214,5 +187,22 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         } else {
             Toast.makeText(this, "User confirmation failed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+            restartActivity();
+        }
+
+    @Override
+    public void restartActivity() {
+        Intent intent=new Intent(AuthenticationActivity.this,AuthenticationActivity.class);
+        user.setToken(null);
+        Log.d(TAG, "popstack: "+user.getToken());
+        prefs.edit().putString("token",null).apply();
+        token = null;
+        finish();
+        startActivity(intent);
     }
 }

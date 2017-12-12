@@ -45,7 +45,7 @@ public interface ServerClient {
 
 
     @POST("/{page}")
-    Call<String> registerInfo(
+    Call<User> registerInfo(
             @Path("page") String page,
             @Body User user
     );
@@ -139,5 +139,18 @@ public interface ServerClient {
     Call<ArrayList<String>> getInstitutions(
             @Path("page") String page,
             @Body User user
+    );
+
+    @POST("/{page}")
+    Call<String> checkToken(
+            @Path("page") String page,
+            @Body String token
+    );
+
+
+    @POST("/{page}")
+    Call<String> attachProf(
+            @Path("page") String page,
+            @Body Patient patient
     );
 }

@@ -28,17 +28,7 @@
         />
 
 
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/placeSpinner"
-        android:hint="Institution"
-        />
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/requestedRoleSpinner"
-        />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -34,7 +34,7 @@ public class letIDFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     ServerClient client;
     User user;
-    TextView tvLetTag,tvLetID, tvName;
+    TextView tvLetTag,tvLetID, tvName, tvNotYou;
     Button continueBtn;
     MaterialEditText etLetInput;
     LetID letID;
@@ -50,9 +50,7 @@ public class letIDFragment extends Fragment {
     public static letIDFragment newInstance(User user) {
         letIDFragment fragment = new letIDFragment();
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("obj" , obj);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +60,7 @@ public class letIDFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("obj"), User.class);
+            user = gson.fromJson(getArguments().getString("user"), User.class);
         }
     }
 
@@ -75,15 +73,14 @@ public class letIDFragment extends Fragment {
         tvLetTag = rootView.findViewById(R.id.letTag);
         tvLetID = rootView.findViewById(R.id.letID);
         tvName = rootView.findViewById(R.id.tvUserName);
+        tvNotYou = rootView.findViewById(R.id.tvNotYou);
         etLetInput = rootView.findViewById(R.id.letInput);
         etLetInput.setTransformationMethod(null);
         etLetInput.setEnabled(false);
         etLetInput.setHelperTextColor(Color.parseColor("#D50000"));
+        etLetInput.requestFocus();
 
 
-        if(user.getName() != null){
-            tvName.setText(user.getName());
-        }
         continueBtn = rootView.findViewById(R.id.continueBtn);
         etLetInput.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -109,19 +106,25 @@ public class letIDFragment extends Fragment {
         });
         getLetIDKeyTag();
 
+        tvNotYou.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.restartActivity();
+            }
+        });
+
 
         return rootView;
     }
 
     private void getLetIDKeyTag() {
         final int[] retry = {0};
-
         Call<LetID> call = client.getLetTag("logInLetIdKeytag.php", user.getUserID());
         call.enqueue(new Callback<LetID>() {
             @Override
             public void onResponse(Call<LetID> call, Response<LetID> response) {
 
-                Log.d(TAG, "onResponse: "+response.body());
+                Log.d(TAG, "onResponse: LETID"+response.body());
                 if (response.body() !=null) {
                     if(response.body().getKeyTag() != 0){
                         letID = response.body();
@@ -131,6 +134,11 @@ public class letIDFragment extends Fragment {
                         tvLetTag.setText(""+letID.getKeyTag());
                         letID.setUserID(user.getUserID());
 
+                        if(user.getName() != null){
+                            tvName.setText(user.getName());
+                        } else{
+                            tvName.setText(letID.getName());
+                        }
                         etLetInput.setEnabled(true);
 
                     } else {
@@ -151,6 +159,7 @@ public class letIDFragment extends Fragment {
                     retry[0]++;
                 } else{
                     Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onFailure: Error logInLetIDKeytag");
                 }
             }
 
@@ -160,8 +169,6 @@ public class letIDFragment extends Fragment {
 
     private void checkLet() {
         String rawInput = etLetInput.getText().toString();
-
-
 
             //TODO VALIDATION OF INPUT
 
@@ -235,7 +242,7 @@ public class letIDFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
         void onSuccessfulLogin(User user);
+        void restartActivity();
     }
 }

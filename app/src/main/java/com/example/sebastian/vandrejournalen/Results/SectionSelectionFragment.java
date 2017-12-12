@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,20 +28,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
+import static android.content.ContentValues.TAG;
 
 
 public class SectionSelectionFragment extends Fragment implements View.OnClickListener{
+    private static final String TAG = "SECTIONSELECTION";
     User user;
-    TextView tvHeadline, tvRole, tvName, tvAddress, tvPhone,tvEmail;
+    TextView tvHeadline, tvRole, tvName, tvAddress, tvPhone,tvEmail, tvMidwifeName, tvSpecialistName;
     LinearLayout tvBasic,tvCons,tvTests,tvUltra,tvDiab,tvPoB, secContent;
     private OnFragmentInteractionListener mListener;
     Context context;
     Patient patient;
     Patient prof;
     ServerClient client;
-    Button newProf;
+    Button newSpecialist,newMidwife;
     MaterialDialog dialog;
+
+    String profCpr;
 
     public SectionSelectionFragment() {
         // Required empty public constructor
@@ -82,7 +87,12 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         tvUltra= rootView.findViewById(R.id.ultraSoundLink);
         tvDiab= rootView.findViewById(R.id.diabeetesLink);
         tvPoB= rootView.findViewById(R.id.birthPlaceLink);
-
+        newMidwife = new Button(context);
+        newSpecialist = new Button(context);
+        newMidwife.setText(R.string.attMid);
+        newSpecialist.setText(R.string.attSpec);
+        tvMidwifeName = new TextView(context);
+        tvSpecialistName = new TextView(context);
 
         tvBasic.setOnClickListener(this);
         tvCons.setOnClickListener(this);
@@ -91,38 +101,90 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         tvDiab.setOnClickListener(this);
         tvPoB.setOnClickListener(this);
 
+
+        TypedValue typedValue = new TypedValue();
+        if (this.getActivity().getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true))
+        {
+            // how to get color?
+            int colorWindowBackground = typedValue.data;// **just add this line to your code!!**
+            newMidwife.setBackgroundColor(colorWindowBackground);
+            newMidwife.setTextColor(Color.parseColor("#FFFFFF"));
+            newSpecialist.setBackgroundColor(colorWindowBackground);
+            newSpecialist.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+
+
         if(user.getRole().equals("Patient")) {
             getProfInfo();
+            Log.d(TAG, "onCreateView: "+user.getMidwifeName());
+            newMidwife.setText(getString(R.string.mw)+ ": "+user.getMidwifeName());
+            newSpecialist.setText("Specialist: "+user.getSpecialistName());
+
+            secContent.addView(newMidwife);
+            secContent.addView(newSpecialist);
+
+
         } else if(user.getRole().equals("General Practitioner") ||user.getRole().equals("Praktiserende læge")){
             getPatientInfo();
-            newProf = new Button(context);
-            newProf.setText(R.string.atprof);
-            TypedValue typedValue = new TypedValue();
-            if (this.getActivity().getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true))
-            {
-                // how to get color?
-                int colorWindowBackground = typedValue.data;// **just add this line to your code!!**
-                newProf.setBackgroundColor(colorWindowBackground);
-                newProf.setTextColor(Color.parseColor("#FFFFFF"));
-            }
 
 
-            secContent.addView(newProf);
-            newProf.setOnClickListener(new View.OnClickListener() {
+
+
+
+            secContent.addView(newMidwife);
+            newMidwife.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     new MaterialDialog.Builder(context)
                             .title(R.string.atprof)
                             .positiveText(getString(R.string.cont))
-                            .input("ID", null, false, new MaterialDialog.InputCallback() {
+                            .inputType(InputType.TYPE_CLASS_NUMBER)
+                            .input("CPR", null, false, new MaterialDialog.InputCallback() {
                                 @Override
                                 public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                    profCpr = input.toString();
 
                                 }
                             })
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    profCpr = dialog.getInputEditText().getText().toString();
+                                    attachProf("Midwife");
+                                }
+                            })
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                }
+                            })
+                            .negativeText(getString(R.string.canc))
+                            .show();
+                }
+            });
+
+
+
+
+            secContent.addView(newSpecialist);
+            newSpecialist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new MaterialDialog.Builder(context)
+                            .title(R.string.atprof)
+                            .positiveText(getString(R.string.cont))
+                            .inputType(InputType.TYPE_CLASS_NUMBER)
+                            .input("CPR", null, false, new MaterialDialog.InputCallback() {
+                                @Override
+                                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                    profCpr = input.toString();
+                                }
+                            })
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    profCpr = dialog.getInputEditText().getText().toString();
+                                    attachProf("Specialist");
 
                                 }
                             })
@@ -143,8 +205,50 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         return rootView;
     }
 
+    private void attachProf(final String role) {
+        String cpr =profCpr;
+        if (cpr.contains("-")){
+            patient.setProfCPR(cpr);
+        } else{
+            StringBuilder str = new StringBuilder(cpr);
+            str.insert(6,"-");
+            patient.setProfCPR(str.toString());
+            Log.d(TAG, "checkCred: "+user.getCpr());
+        }
+        patient.setProfRole(role);
+
+        Log.d(TAG, "attachProf: "+patient.getProfCPR());
+        Log.d(TAG, "attachProf: "+patient.getProfRole());
+        Log.d(TAG, "attachProf: "+patient.getJournalID());
+
+        Call<String> call = client.attachProf("addProfToJournal.php",patient);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.body() != null || !response.body().equals("")) {
+                    Log.d(TAG, "onResponse: "+response.body().trim());
+
+                    if(role.equals("Midwife")){
+                        newMidwife.setText(getString(R.string.mw)+ ": "+response.body().trim());
+                    } else{
+                        newSpecialist.setText("Specialist: "+response.body().trim());
+                    }
+
+                }  else {
+                    newMidwife.setText(R.string.attMid);
+                    newSpecialist.setText(R.string.attSpec);
+                }
+                }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void getPatientInfo() {
-        try{
+
             if (patient.getCpr() != null) {
 /*
                 tvHeadline.append(" - "+patient.getCpr());
@@ -154,14 +258,22 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
             tvName.append(patient.getName());
             tvAddress.append(patient.getAddress());
             tvEmail.append(patient.getEmail());
-            tvPhone.append("" + patient.getPhonework()+"\n"+patient.getPhoneprivate() );
-        } catch (NullPointerException e){
-            Toast.makeText(context, "nuller", Toast.LENGTH_SHORT).show();
-        }
+            tvPhone.append("" + patient.getPhonework() + "\n" + patient.getPhoneprivate());
+
+
+            if (patient.getMidwifeName() != null) {
+                newMidwife.setText(getString(R.string.mw) + ": " + patient.getMidwifeName());
+
+            }
+            if (patient.getSpecialistName() != null) {
+                newSpecialist.setText("Specialist: " + patient.getSpecialistName());
+            }
+
 
     }
 
     private void getProfInfo() {
+
         Call<Patient> call = client.getProfInfo("findGpInfo.php",user.getUserID() );
 
         call.enqueue(new Callback<Patient>() {
@@ -176,6 +288,9 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
                         tvEmail.append(prof.getEmail());
                         tvPhone.append("" + prof.getPhonework());
                         user.setJournalID(prof.getPatientJournalID());
+
+
+
                     }catch (NullPointerException e){
                     }
                 }

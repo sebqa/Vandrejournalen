@@ -78,6 +78,44 @@ public class Patient {
     String email;
     int phoneprivate;
     int phonework;
+    String profRole;
+
+    public String getMidwifeName() {
+        return midwifeName;
+    }
+
+    public void setMidwifeName(String midwifeName) {
+        this.midwifeName = midwifeName;
+    }
+
+    public String getSpecialistName() {
+        return specialistName;
+    }
+
+    public void setSpecialistName(String specialistName) {
+        this.specialistName = specialistName;
+    }
+
+    String midwifeName;
+    String specialistName;
+
+    public String getProfRole() {
+        return profRole;
+    }
+
+    public void setProfRole(String profRole) {
+        this.profRole = profRole;
+    }
+
+    public String getProfCPR() {
+        return profCPR;
+    }
+
+    public void setProfCPR(String profCPR) {
+        this.profCPR = profCPR;
+    }
+
+    String profCPR;
 
     public String getPatientJournalID() {
         return patientJournalID;
