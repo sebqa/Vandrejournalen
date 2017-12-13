@@ -39,7 +39,6 @@ import javax.crypto.spec.IvParameterSpec;
 public class SecureUtil {
 
     Context context;
-    private static final int AUTHENTICATION_DURATION_SECONDS = 30;
     private static final String KEY_NAME = "key";
     private static final String TRANSFORMATION = KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/"
             + KeyProperties.ENCRYPTION_PADDING_PKCS7;
@@ -86,7 +85,6 @@ public class SecureUtil {
         this.password = passwordString;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
                 try {
                     //Create key
                     SecretKey secretKey = createKey();

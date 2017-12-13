@@ -2,6 +2,7 @@ package com.example.sebastian.vandrejournalen.calendar;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -73,20 +74,20 @@ public class NotesListTab extends Fragment {
 
 
         secureUtil = new SecureUtil(getActivity());
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if(sharedPrefs !=null) {
-            Log.d(TAG, "onCreateView: "+sharedPrefs.getString("notes", null));
-            String json = sharedPrefs.getString("notes", null);
-            if(json != null){
+        Log.d(TAG, "onCreateView: Before load of sharedprefs"+user.getUserID());
+        sharedPrefs = getContext().getSharedPreferences("notes", Context.MODE_PRIVATE);
+            if(sharedPrefs !=null) {
+                Log.d(TAG, "onCreateView: "+sharedPrefs.getString("notes", null));
+                String json = sharedPrefs.getString("notes" ,null);
+                if(json != null){
+                Type type = new TypeToken<ArrayList<Note>>() {
+                }.getType();
+                notesList = gson.fromJson(secureUtil.decrypt(json), type);
+                }
+                if(notesList != null) {
+                    initList();
+                }
 
-
-            Type type = new TypeToken<ArrayList<Note>>() {
-            }.getType();
-            notesList = gson.fromJson(secureUtil.decrypt(json), type);
-            }
-            if(notesList != null) {
-                initList();
-            }
         }
 
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
@@ -166,7 +167,6 @@ public class NotesListTab extends Fragment {
     }
 
     public void saveNotes(){
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
 

@@ -153,6 +153,7 @@ public class LoginFragment extends Fragment {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                Log.d(TAG, "onResponse: loginCprPw"+response.message());
 
                 if (response.body() !=null) {
                     if(response.body().getUserID() ==null){
@@ -164,6 +165,8 @@ public class LoginFragment extends Fragment {
                         Log.d(TAG, "onResponse: " + response.body().getUserID());
                         user.setUserID(response.body().getUserID());
                         user.setToken(response.body().getToken());
+                        user.setCpr("");
+                        user.setPassword("");
                         Log.d(TAG, "onResponse: "+user.getToken());
                         mListener.loginExists(user);
                         passwordInput.setHelperText("");

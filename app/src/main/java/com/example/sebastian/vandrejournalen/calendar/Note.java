@@ -10,6 +10,16 @@ public class Note {
     Date date;
     String text;
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    String userID;
+
     public Date getDate() {
         return date;
     }

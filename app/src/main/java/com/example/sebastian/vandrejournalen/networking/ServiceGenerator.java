@@ -8,6 +8,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -18,13 +19,13 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class ServiceGenerator {
-    private static final String BASE_URL = "http://35.156.15.3/";
+    private static final String BASE_URL = "https://18.195.46.104/";
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(getUnsafeOkHttpClient())
                     .addConverterFactory(ScalarsConverterFactory.create())
+                    .client(getUnsafeOkHttpClient())
                     .addConverterFactory(GsonConverterFactory.create());
 
     private static Retrofit retrofit = builder.build();
@@ -80,4 +81,15 @@ public class ServiceGenerator {
         }
 
     }
+
+/*    public static certClient(){
+        CertificatePinner certPinner = new CertificatePinner.Builder()
+                .add("http://35.156.15.3/",
+                        "sha256/4hw5tz+scE+TW+mlai5YipDfFWn1dqvfLG+nU7tq1V8=")
+                .build();
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .certificatePinner(certPinner)
+                .build();
+    }*/
 }

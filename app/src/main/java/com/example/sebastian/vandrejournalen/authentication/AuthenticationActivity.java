@@ -80,7 +80,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             if (savedInstanceState != null) {
                 return;
             }
-            Fragment fragment= RegisterFragment.newInstance("","");
+            Fragment fragment= RegisterFragment.newInstance();
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
 
@@ -162,7 +162,12 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void goToInfo(User user) {
+        Bundle args = new Bundle();
+        Gson gson = new Gson();
+        String obj = gson.toJson(user);
+        args.putString("obj" , obj);
         Fragment fragment = RegisterInfoFragment.newInstance(user);
+        fragment.setArguments(args);
         ft = fm.beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
                 R.anim.fragment_slide_left_exit,

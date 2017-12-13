@@ -54,9 +54,6 @@ public class RegisterInfoFragment extends Fragment {
     public static RegisterInfoFragment newInstance(User user) {
         RegisterInfoFragment fragment = new RegisterInfoFragment();
         Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("obj" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,26 +87,35 @@ public class RegisterInfoFragment extends Fragment {
         etVerifypass = new MaterialEditText(context);
 
         sendButton = rootView.findViewById(R.id.sendButton);
-        backButton = rootView.findViewById(R.id.backButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(user.getInstitution() != null) {
+                if (user.getInstitution() != null) {
                     user.setInstitution(user.getInstitution());
                     user.setAddress(user.getAddress());
+                } else {
+
                 }
                 String cpr = etCPR.getText().toString().trim();
-                if (cpr.contains("-")){
+                if (cpr.contains("-")) {
                     user.setCpr(cpr);
-                } else{
+                } else {
                     StringBuilder str = new StringBuilder(cpr);
-                    str.insert(6,"-");
+                    str.insert(6, "-");
                     user.setCpr(str.toString());
                 }
                 user.setName(etName.getText().toString());
-                user.setPhoneprivate(Integer.parseInt(etPrivateTlf.getText().toString()));
-                user.setPhonework(Integer.parseInt(etWorkTlf.getText().toString()));
-                user.setPassword(etPassword.getText().toString());
+
+                try {
+                    if(!etPrivateTlf.getText().toString().equals("")) {
+                    user.setPhoneprivate(Integer.parseInt(etPrivateTlf.getText().toString()));
+                }
+
+                    user.setPhonework(Integer.parseInt(etWorkTlf.getText().toString()));
+                    user.setPassword(etPassword.getText().toString());
+                } catch (NumberFormatException e){
+
+            }
 
                 Call<User> call = client.registerInfo("registerInformation.php", user);
                 call.enqueue(new Callback<User>() {
@@ -187,16 +193,22 @@ public class RegisterInfoFragment extends Fragment {
         etName.setFloatingLabelText("Name");
         cLayout.addView(etName);
 
+
         etAddress.setFloatingLabelAlwaysShown(true);
         etAddress.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etAddress.setFloatingLabelText("Address");
+        if(!user.getRole().equals("Patient")){
+            etAddress.setText(user.getInstitution());
+            etAddress.setFloatingLabelText("Institution");
+        }
+
         cLayout.addView(etAddress);
 
         etPrivateTlf.setFloatingLabelAlwaysShown(true);
         etPrivateTlf.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etPrivateTlf.setInputType(InputType.TYPE_CLASS_NUMBER);
         etPrivateTlf.setFloatingLabelText("Private telephone number");
-        cLayout.addView(etPrivateTlf);
+        //cLayout.addView(etPrivateTlf);
 
         etWorkTlf.setFloatingLabelAlwaysShown(true);
         etWorkTlf.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
