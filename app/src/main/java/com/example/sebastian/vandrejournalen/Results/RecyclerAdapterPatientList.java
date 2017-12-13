@@ -67,7 +67,7 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
         final Patient patient = arrayList.get(position);
 
         holder.date.setText(patient.getName());
-        holder.event.setText(patient.getCpr());
+        holder.event.setText(patient.getAddress());
         this.position = position;
     }
 
@@ -111,14 +111,13 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
             final Patient patient = this.patients.get(position);
             Log.d(TAG, "onClick: Clicked"+patient.getName());
             if(patient != null) {
-                Call<Patient> call = client.getPatientInfo("returnPatientInformation.php",patient.getCpr() );
+                Call<Patient> call = client.getPatientInfo("returnPatientInformationFromPatientID.php",patient.getUserID() );
 
                 call.enqueue(new Callback<Patient>() {
                     @Override
                     public void onResponse(Call<Patient> call, Response<Patient> response) {
                         if(response.body() != null) {
                             Patient cPatient = response.body();
-                            cPatient.setCpr(patient.getCpr());
                             mListener.sectionSelection(cPatient);
 
                         } else{

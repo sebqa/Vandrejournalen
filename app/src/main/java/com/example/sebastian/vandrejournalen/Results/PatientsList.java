@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Patient;
@@ -52,6 +53,8 @@ public class PatientsList extends Fragment {
         setHasOptionsMenu(true);
         recyclerView =  rootView.findViewById(R.id.recyclerView);
         client = ServiceGenerator.createService(ServerClient.class);
+
+        Log.d(TAG, "onCreateView: "+user.getUserID());
         Call<ArrayList<Patient>> call = client.getPatients("returnMyPatients.php", user.getUserID() );
         initList();
 
@@ -59,6 +62,7 @@ public class PatientsList extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<Patient>> call, Response<ArrayList<Patient>> response) {
                 if(response.body() != null){
+                    Log.d(TAG, "onResponse: "+response.body().get(0).getUserID());
                     patients.clear();
                     patients.addAll(response.body());
                     adapter.notifyDataSetChanged();
@@ -68,7 +72,7 @@ public class PatientsList extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<Patient>> call, Throwable t) {
-
+                Toast.makeText(getContext(), "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
 

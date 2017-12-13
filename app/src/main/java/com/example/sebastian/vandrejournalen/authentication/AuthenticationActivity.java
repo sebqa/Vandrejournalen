@@ -47,6 +47,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     public static Locale mylocale;
     public static int theme;
     String token ="";
+    static boolean canExit = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -58,6 +59,8 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             setTheme(R.style.PinkTheme);
         }
         super.onCreate(savedInstanceState);
+        canExit = true;
+
         ft = fm.beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
                 R.anim.fragment_slide_left_exit,
@@ -107,6 +110,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
                 R.anim.fragment_slide_right_exit);
             ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
             //user.setRole("Midwife");
+        canExit = false;
     }
 
 
@@ -158,6 +162,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
                 R.anim.fragment_slide_right_enter,
                 R.anim.fragment_slide_right_exit);
         ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+        canExit = false;
     }
 
     @Override
@@ -174,6 +179,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
                 R.anim.fragment_slide_right_enter,
                 R.anim.fragment_slide_right_exit);
         ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
+        canExit = false;
     }
 
     @Override
@@ -197,17 +203,21 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(!canExit) {
             restartActivity();
+        } else{
+            finish();
+        }
         }
 
     @Override
     public void restartActivity() {
         Intent intent=new Intent(AuthenticationActivity.this,AuthenticationActivity.class);
         user.setToken(null);
-        Log.d(TAG, "popstack: "+user.getToken());
         prefs.edit().putString("token",null).apply();
         token = null;
         finish();
         startActivity(intent);
+
     }
 }

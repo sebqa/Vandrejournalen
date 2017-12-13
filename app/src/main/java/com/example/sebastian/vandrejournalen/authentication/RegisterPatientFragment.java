@@ -146,14 +146,23 @@ public class RegisterPatientFragment extends Fragment {
     }
 
     private void checkCPR() {
-        patient.setCpr(etCPR.getText().toString());
+        String cpr =etCPR.getText().toString();
+        if (cpr.contains("-")){
+            patient.setCpr(cpr);
+        } else{
+            StringBuilder str = new StringBuilder(cpr);
+            str.insert(6,"-");
+            patient.setCpr(str.toString());
+        }
         patient.setProfUserID(user.getUserID());
+        Log.d(TAG, "checkCPR: "+patient.getCpr());
 
         Call<Patient> call = client.getPatientInfo("returnPatientInformation.php",patient.getCpr() );
 
         call.enqueue(new Callback<Patient>() {
             @Override
             public void onResponse(Call<Patient> call, Response<Patient> response) {
+                Log.d(TAG, "onResponse: "+response.message());
                 if(response.body() != null) {
 
                     Log.d(TAG, "onResponse: "+response.body());
@@ -174,11 +183,14 @@ public class RegisterPatientFragment extends Fragment {
             @Override
             public void onFailure(Call<Patient> call, Throwable t) {
                 Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: returnPatientInformation");
             }
         });
     }
 
     public void sendProfUserID(){
+
+        Log.d(TAG, "sendProfUserID: "+user.getUserID());
         Call<User> call = client.startJournal("returnProfInformation.php",user.getUserID() );
 
         call.enqueue(new Callback<User>() {
@@ -213,9 +225,10 @@ public class RegisterPatientFragment extends Fragment {
             str.insert(6,"-");
             cpr = str.toString();
         }
-        final Patient patient = new Patient();
         patient.setCpr(cpr);
+        Log.d(TAG, "createJournal: "+patient.getCpr());
         patient.setProfUserID(user.getUserID());
+
         Call<String> call = client.cprExp("createJournal.php",patient );
         Log.d(TAG, "createJournal: patient id"+patient.getCpr()+"+"+patient.getProfUserID());
 
@@ -224,7 +237,11 @@ public class RegisterPatientFragment extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 Log.d(TAG, "onResponse: CreateJournal" + response.body());
                 if (response.body() != null) {
+                    Log.d(TAG, "onResponse:1 "+patient.getName());
                     if(!response.body().trim().equals("0")) {
+                        Log.d(TAG, "onResponse:2 "+patient.getName());
+                        patient.setCpr("");
+
                         patient.setJournalID(response.body());
                         mListener.startJournal(patient, user);
                     } else {

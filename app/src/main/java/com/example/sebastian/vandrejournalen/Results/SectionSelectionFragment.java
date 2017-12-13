@@ -225,7 +225,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if(response.body() != null || !response.body().equals("")) {
+                if(response.body() != null) {
                     Log.d(TAG, "onResponse: "+response.body().trim());
 
                     if(role.equals("Midwife")){

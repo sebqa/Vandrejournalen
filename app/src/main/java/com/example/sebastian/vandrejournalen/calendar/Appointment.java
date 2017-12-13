@@ -126,8 +126,6 @@ public class Appointment {
     String institution;
     String profRole;
     String cpr;
-
-
     String journalMidwifeName;
     String journalSpecialistName;
 
