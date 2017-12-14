@@ -11,16 +11,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/sectionContent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:text="Journal"
-        android:textAlignment="center"
         android:textSize="20sp"
         android:id="@+id/tvHeadline"
-        android:padding="8dp"/>
-
+        android:padding="8dp"
+        android:layout_weight="1"/>
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/closeJ"
+            android:layout_weight="1"
+            android:textAlignment="viewEnd"
+            android:id="@+id/closeBtn"
+            android:visibility="invisible"/>
+</LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

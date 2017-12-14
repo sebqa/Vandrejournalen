@@ -71,5 +71,8 @@
     <string name="attMid">Attach midwife</string>
     <string name="attSpec">Attach specialist</string>
     <string name="cantcreate">Cannot create appointment for this person</string>
+    <string name="closeJ">Close journal</string>
+    <string name="closeJourn">Are you sure you want to close this journal? You will not be able access it anymore</string>
+    <string name="journalclosed">Journal closed</string>
 
 </resources>

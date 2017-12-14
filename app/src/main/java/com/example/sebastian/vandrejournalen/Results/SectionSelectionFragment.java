@@ -34,7 +34,7 @@ import static android.content.ContentValues.TAG;
 public class SectionSelectionFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "SECTIONSELECTION";
     User user;
-    TextView tvHeadline, tvRole, tvName, tvAddress, tvPhone,tvEmail, tvMidwifeName, tvSpecialistName;
+    TextView tvHeadline, tvRole, tvName, tvAddress, tvPhone,tvEmail, tvMidwifeName, tvSpecialistName, tvCloseBtn;
     LinearLayout tvBasic,tvCons,tvTests,tvUltra,tvDiab,tvPoB, secContent;
     private OnFragmentInteractionListener mListener;
     Context context;
@@ -87,6 +87,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         tvUltra= rootView.findViewById(R.id.ultraSoundLink);
         tvDiab= rootView.findViewById(R.id.diabeetesLink);
         tvPoB= rootView.findViewById(R.id.birthPlaceLink);
+        tvCloseBtn = rootView.findViewById(R.id.closeBtn);
         newMidwife = new Button(context);
         newSpecialist = new Button(context);
         newMidwife.setText(R.string.attMid);
@@ -130,6 +131,30 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
 
         } else if(user.getRole().equals("General Practitioner") ||user.getRole().equals("Praktiserende læge")){
             getPatientInfo();
+
+            tvCloseBtn.setVisibility(View.VISIBLE);
+            tvCloseBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new MaterialDialog.Builder(context)
+                            .title(R.string.closeJourn)
+                            .positiveText(getString(R.string.yes))
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                   closeJournal();
+                                }
+                            })
+                            .negativeText(getString(R.string.no))
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                }
+                            })
+                            .negativeText(getString(R.string.canc))
+                            .show();
+                }
+            });
 
             secContent.addView(newMidwife);
             newMidwife.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +228,35 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
 
 
         return rootView;
+    }
+
+    private void closeJournal() {
+
+        patient.setProfUserID(user.getUserID());
+        Call<String> call = client.attachProf("closeJournal.php",patient);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.body() != null) {
+                    Log.d(TAG, "onResponse: "+response.body().trim());
+                    if(response.body().trim().equals("TRUE")){
+                        Toast.makeText(context, R.string.journalclosed, Toast.LENGTH_SHORT).show();
+                        mListener.popStack();
+
+                    } else{
+                        Log.d(TAG, "onResponse: "+response.body().trim());
+                        Log.d(TAG, "onResponse: "+response.message());
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void attachProf(final String role) {
@@ -358,5 +412,6 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void updateFragment(Fragment fragment);
+        void popStack();
     }
 }

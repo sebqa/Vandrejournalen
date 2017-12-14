@@ -69,5 +69,8 @@ hvornår i graviditeten </string>
     <string name="attMid">Tilføj jordemoder</string>
     <string name="attSpec">Tilføj specialist</string>
     <string name="cantcreate">Der kunne ikke laves ny aftale med denne person</string>
+    <string name="closeJ">Luk journal</string>
+    <string name="closeJourn">Er du sikker på at du vil lukke denne journal? Du vil ikke være i stand til at tilgå den længere</string>
+    <string name="journalclosed">Journal lukket</string>
 
 </resources>
