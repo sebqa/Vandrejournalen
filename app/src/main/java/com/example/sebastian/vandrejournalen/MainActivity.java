@@ -400,12 +400,6 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        if (theme == 0) {
-            setTheme(R.style.BlueTheme);
-        } else {
-            setTheme(R.style.PinkTheme);
-
-        }
 
     }
 
