@@ -62,7 +62,6 @@ public class PatientsList extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<Patient>> call, Response<ArrayList<Patient>> response) {
                 if(response.body() != null){
-                    Log.d(TAG, "onResponse: "+response.body().get(0).getUserID());
                     patients.clear();
                     patients.addAll(response.body());
                     adapter.notifyDataSetChanged();

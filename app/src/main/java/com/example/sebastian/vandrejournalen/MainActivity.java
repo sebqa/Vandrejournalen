@@ -77,12 +77,15 @@ public class MainActivity extends AppCompatActivity
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         theme = prefs.getInt("theme",0);
 
-        //Set theme
+ /*       //Set theme
         if (theme == 0){
             setTheme(R.style.BlueTheme);
         } else{
             setTheme(R.style.PinkTheme);
         }
+
+        */
+
         super.onCreate(savedInstanceState);
          language = prefs.getString("language","en");
         setLanguage(language);
@@ -95,6 +98,23 @@ public class MainActivity extends AppCompatActivity
 
         }
         user = gson.fromJson(jsonUser, User.class);
+
+        role = user.getRole();
+
+        switch (role){
+            case "Patient":
+                setTheme(R.style.PinkTheme);
+                break;
+            case "General Practitioner":
+                setTheme(R.style.BlueTheme);
+                break;
+            case "Midwife":
+                setTheme(R.style.YellowTheme);
+                break;
+            case "Specialist":
+                setTheme(R.style.GreenTheme);
+        }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

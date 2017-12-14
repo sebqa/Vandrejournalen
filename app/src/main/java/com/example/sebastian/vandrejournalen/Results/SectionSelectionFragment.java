@@ -117,19 +117,19 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         if(user.getRole().equals("Patient")) {
             getProfInfo();
             Log.d(TAG, "onCreateView: "+user.getMidwifeName());
-            newMidwife.setText(getString(R.string.mw)+ ": "+user.getMidwifeName());
-            newSpecialist.setText("Specialist: "+user.getSpecialistName());
 
+            if(user.getMidwifeName() != null) {
+                newMidwife.setText(getString(R.string.mw) + ": " + user.getMidwifeName());
+            }
+            if(user.getSpecialistName() != null) {
+                newSpecialist.setText("Specialist: " + user.getSpecialistName());
+            }
             secContent.addView(newMidwife);
             secContent.addView(newSpecialist);
 
 
         } else if(user.getRole().equals("General Practitioner") ||user.getRole().equals("Praktiserende læge")){
             getPatientInfo();
-
-
-
-
 
             secContent.addView(newMidwife);
             newMidwife.setOnClickListener(new View.OnClickListener() {

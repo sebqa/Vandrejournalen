@@ -8,6 +8,13 @@
     <color name="pinkPrimaryDark">#880E4F</color>
     <color name="pinkAccent">#880E4F</color>
 
+    <color name="greenPrimary">#4DB6AC</color>
+    <color name="greenPrimaryDark">#004D40</color>
+    <color name="greenAccent">#004D40</color>
+
+    <color name="yellowPrimary">#FFD54F</color>
+    <color name="yellowPrimaryDark">#FF6F00</color>
+    <color name="yellowAccent">#FF6F00</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>

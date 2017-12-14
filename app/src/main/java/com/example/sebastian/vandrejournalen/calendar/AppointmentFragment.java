@@ -67,7 +67,15 @@ public class AppointmentFragment extends Fragment  {
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy\nkk:mm:ss");
 
             previewDate.setText(formatter.format(appointment.getDate()));
-            appointTitle.setText(appointment.getName());
+
+            if(appointment.getName() != null){
+                appointTitle.setText(appointment.getName());
+            } else if (appointment.getJournalMidwifeName() != null){
+                appointTitle.setText(appointment.getJournalMidwifeName());
+            } else if (appointment.getJournalSpecialistName() != null){
+                appointTitle.setText(appointment.getJournalSpecialistName());
+            }
+
 
             apText = rootView.findViewById(R.id.appointText);
 
