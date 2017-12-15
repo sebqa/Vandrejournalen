@@ -5,7 +5,7 @@ import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.authentication.LetID;
 import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
-import com.example.sebastian.vandrejournalen.calendar.Consultation;
+import com.example.sebastian.vandrejournalen.Results.Consultation;
 
 import java.util.ArrayList;
 

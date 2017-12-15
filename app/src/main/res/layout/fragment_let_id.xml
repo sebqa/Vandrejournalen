@@ -9,38 +9,43 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="@drawable/ic_key"
-        android:layout_gravity="center"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical"
-       >
-        <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="20sp"
-        android:text=""
-        android:id="@+id/tvUserName"
-        android:textAlignment="center"/>
+        >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/insKey"
-            android:textAlignment="center"/>
-        <TextView
-            android:id="@+id/letID"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Card ID: " />
-</LinearLayout>
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/letidlogo" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/insKey"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/letID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Card ID: " />
+        </LinearLayout>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

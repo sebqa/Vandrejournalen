@@ -29,9 +29,6 @@ import static android.content.ContentValues.TAG;
 
 
 public class letIDFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     ServerClient client;
     User user;
     TextView tvLetTag,tvLetID, tvName, tvNotYou;
@@ -50,7 +47,6 @@ public class letIDFragment extends Fragment {
     public static letIDFragment newInstance(User user) {
         letIDFragment fragment = new letIDFragment();
         Bundle args = new Bundle();
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -148,9 +144,7 @@ public class letIDFragment extends Fragment {
                 }else {
                     Log.d(TAG, "onResponse: "+"Den er null");
                 }
-                //                    mListener.loginExists(user);
-
-            }
+           }
 
             @Override
             public void onFailure(Call<LetID> call, Throwable t) {
@@ -204,7 +198,6 @@ public class letIDFragment extends Fragment {
                         }
                     });
                 }
-
     }
 
     private boolean validate(String input) {

@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.User;
-import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.sebastian.vandrejournalen.calendar;
+package com.example.sebastian.vandrejournalen.Results;
 
 import android.support.annotation.NonNull;
 

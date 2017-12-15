@@ -10,6 +10,7 @@ public class LetID {
     int keyTag;
     String userID;
     int inKeyCode;
+    String name;
 
     public String getName() {
         return name;
@@ -19,7 +20,6 @@ public class LetID {
         this.name = name;
     }
 
-    String name;
 
     public int getInKeyCode() {
         return inKeyCode;

@@ -6,7 +6,7 @@ import android.util.Log;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Results.ResultsPager;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
-import com.example.sebastian.vandrejournalen.calendar.Consultation;
+import com.example.sebastian.vandrejournalen.Results.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.AppointmentFragment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 

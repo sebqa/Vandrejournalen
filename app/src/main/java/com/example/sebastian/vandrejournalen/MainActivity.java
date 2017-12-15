@@ -40,7 +40,6 @@ import com.example.sebastian.vandrejournalen.authentication.AuthenticationActivi
 import com.example.sebastian.vandrejournalen.authentication.RegisterPatientFragment;
 import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.AppointmentFragment;
-import com.example.sebastian.vandrejournalen.calendar.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
 import com.google.gson.Gson;
