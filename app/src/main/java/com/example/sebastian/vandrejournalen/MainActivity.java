@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -42,6 +41,7 @@ import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.calendar.AppointmentFragment;
 import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
+import com.example.sebastian.vandrejournalen.calendar.SearchFragment;
 import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity
                     .negativeText("No")
                     .show();
 
-            } else if(currentFragment instanceof Schedule || currentFragment instanceof SearchFragment|| currentFragment instanceof CalendarTab || fn.getBackStackEntryCount() <2){
+            } else if(currentFragment instanceof Schedule || currentFragment instanceof SearchFragment || currentFragment instanceof CalendarTab || fn.getBackStackEntryCount() <2){
                 new MaterialDialog.Builder(this)
                         .title(R.string.exit)
                         .content("Are you sure you want to exit?")

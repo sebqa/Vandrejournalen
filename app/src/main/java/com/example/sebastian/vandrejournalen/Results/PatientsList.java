@@ -55,7 +55,7 @@ public class PatientsList extends Fragment {
         client = ServiceGenerator.createService(ServerClient.class);
 
         Log.d(TAG, "onCreateView: "+user.getUserID());
-        Call<ArrayList<Patient>> call = client.getPatients("returnMyPatients.php", user.getUserID() );
+        Call<ArrayList<Patient>> call = client.getPatients("returnMyPatients.php", user);
         initList();
 
         call.enqueue(new Callback<ArrayList<Patient>>() {

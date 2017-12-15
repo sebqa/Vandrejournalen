@@ -64,7 +64,6 @@ public class ResultsFragment extends Fragment  {
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
     boolean persSelected = false;
     ArrayList<String> ITEMS = new ArrayList<String>();
-    Button saveExit;
     OnFragmentInteractionListener mListener;
     Patient patient;
     ServerClient client;
@@ -183,7 +182,7 @@ public class ResultsFragment extends Fragment  {
 
        etType = new MaterialEditText(context);
 
-        if (!user.getRole().equals("Patient")) {
+        if (user.getRole().equals("General Practitioner")||user.getRole().equals("Midwife")) {
             fab = rootView.findViewById(R.id.fab);
             fab.setVisibility(View.VISIBLE);
             fabCheck = rootView.findViewById(R.id.fabCheck);

@@ -74,5 +74,8 @@
     <string name="closeJ">Close journal</string>
     <string name="closeJourn">Are you sure you want to close this journal? You will not be able access it anymore</string>
     <string name="journalclosed">Journal closed</string>
+    <string name="notreg">Not registered?</string>
+    <string name="insert_your_key_or_cpr">Insert your key or CPR</string>
+    <string name="password">Password</string>
 
 </resources>

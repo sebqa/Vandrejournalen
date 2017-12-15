@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="?attr/colorPrimary"
-        android:text="Continue"
+        android:text="@string/cont"
         android:textColor="#FFF" />
 
 

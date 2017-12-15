@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="Insert your key or CPR"
+            android:hint="@string/insert_your_key_or_cpr"
             android:textSize="12sp"
             app:met_floatingLabel="highlight" />
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:background="?attr/colorPrimary"
-            android:text="Continue"
+            android:text="@string/cont"
             android:textColor="#FFF" />
     </LinearLayout>
 

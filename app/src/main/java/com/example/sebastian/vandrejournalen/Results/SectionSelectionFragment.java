@@ -42,8 +42,6 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     Patient prof;
     ServerClient client;
     Button newSpecialist,newMidwife;
-    MaterialDialog dialog;
-
     String profCpr;
 
     public SectionSelectionFragment() {
@@ -387,6 +385,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         args.putString("user" , obj);
         String obj1 = new Gson().toJson(patient);
         args.putString("patient" , obj1);
+
         switch (view.getId()){
             case R.id.basicInfoLink:
                 fragment = BasicHealthInfoFragment.newInstance();

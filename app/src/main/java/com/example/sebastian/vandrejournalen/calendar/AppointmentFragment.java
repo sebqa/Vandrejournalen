@@ -22,12 +22,7 @@ import java.util.ArrayList;
 
 
 public class AppointmentFragment extends Fragment  {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private String apDate, apTitle;
     private TextView previewDate, appointTitle;
-    RecyclerAdapter adapter;
-    RecyclerView.LayoutManager layoutManager;
     private View rootView;
     private RecyclerView recyclerView;
     TextView apText;
@@ -70,11 +65,12 @@ public class AppointmentFragment extends Fragment  {
 
             if(appointment.getName() != null){
                 appointTitle.setText(appointment.getName());
-            } else if (appointment.getJournalMidwifeName() != null){
+
+            } /*else if (appointment.getJournalMidwifeName() != null){
                 appointTitle.setText(appointment.getJournalMidwifeName());
             } else if (appointment.getJournalSpecialistName() != null){
                 appointTitle.setText(appointment.getJournalSpecialistName());
-            }
+            }*/
 
 
             apText = rootView.findViewById(R.id.appointText);
@@ -83,25 +79,11 @@ public class AppointmentFragment extends Fragment  {
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                     DividerItemDecoration.VERTICAL));
 
-
-            /*//TODO Get notes!
-            ArrayList<Note> notesList = new ArrayList<Note>();
-
-            adapter = new RecyclerAdapter(notesList, getActivity());
-            layoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);*/
         }
 
 
         return rootView;
 
-    }
-
-
-
-    public interface OnFragmentInteractionListener {
-        void makeScrollable(View view);
     }
 
 

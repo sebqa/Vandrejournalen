@@ -9,6 +9,7 @@ import com.example.sebastian.vandrejournalen.calendar.Appointment;
 import com.example.sebastian.vandrejournalen.Results.Consultation;
 import com.example.sebastian.vandrejournalen.calendar.AppointmentFragment;
 import com.example.sebastian.vandrejournalen.calendar.Schedule;
+import com.example.sebastian.vandrejournalen.calendar.SearchFragment;
 
 import java.util.ArrayList;
 

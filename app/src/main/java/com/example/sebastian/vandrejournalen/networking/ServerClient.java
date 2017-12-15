@@ -102,7 +102,7 @@ public interface ServerClient {
     @POST("/{page}")
     Call<ArrayList<Patient>> getPatients(
             @Path("page") String page,
-            @Body String userID
+            @Body User user
     );
 
     @POST("/{page}")

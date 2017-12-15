@@ -38,8 +38,6 @@ public class Schedule extends Fragment  {
         vpPager.setAdapter(adapterViewPager);
         vpPager.setOffscreenPageLimit(3);
 
-
-
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = rootView.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);

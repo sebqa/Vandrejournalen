@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,17 +22,12 @@ import android.widget.Toast;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.MainActivity;
 
+import com.example.sebastian.vandrejournalen.SecureUtil;
 import com.example.sebastian.vandrejournalen.User;
-import com.example.sebastian.vandrejournalen.networking.ServerClient;
-import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
 import com.google.gson.Gson;
 
 
 import java.util.Locale;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class AuthenticationActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener,
@@ -111,6 +105,11 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
             ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
             //user.setRole("Midwife");
         canExit = false;
+    }
+
+    @Override
+    public void popStack() {
+        fm.popBackStack();
     }
 
 

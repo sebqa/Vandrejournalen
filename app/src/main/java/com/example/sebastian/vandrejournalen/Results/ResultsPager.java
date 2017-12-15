@@ -6,7 +6,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -39,10 +38,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ResultsPager extends Fragment{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
     private static final String TAG = "RESULTSPAGER";
     int day,month,year,hour, min;
     ServerClient client;
@@ -52,7 +48,6 @@ public class ResultsPager extends Fragment{
     // TODO: Rename and change types of parameters
     ArrayList<Consultation> arrayList = new ArrayList<Consultation>();
     ViewPagerArrowIndicator viewPagerArrowIndicator;
-    FloatingActionButton fab;
     ArrayList<Date> dates = new ArrayList<Date>();
     long now;
     Date today;
@@ -61,10 +56,10 @@ public class ResultsPager extends Fragment{
     ResultsPagerAdapter adapter;
     User user;
     Patient patient;
+
     public ResultsPager() {
         // Required empty public constructor
     }
-
 
     public static ResultsPager newInstance(User user) {
         ResultsPager fragment = new ResultsPager();
@@ -81,7 +76,6 @@ public class ResultsPager extends Fragment{
                 patient = new Gson().fromJson(getArguments().getString("patient", "Patient"), Patient.class);
             }
         }
-
     }
 
     @Override
@@ -96,15 +90,9 @@ public class ResultsPager extends Fragment{
         viewPagerArrowIndicator =  rootView.findViewById(R.id.viewPagerArrowIndicator);
         client = ServiceGenerator.createService(ServerClient.class);
 
-
-        getAppointments();
+        getConsultations();
         setUpPager();
-        //Sort by date, low to high
-
-
         return rootView;
-
-
     }
 
     private void setUpPager() {
@@ -124,42 +112,39 @@ public class ResultsPager extends Fragment{
 
     }
 
-    private void getAppointments() {
+    private void getConsultations() {
         if(user.getRole().equals("Patient")){
             journalID = user.getJournalID();
         } else {
             journalID = patient.getJournalID();
         }
-            Call<ArrayList<Consultation>> call = client.getConsultations("returnJournalConsultations.php", journalID );
+        Call<ArrayList<Consultation>> call = client.getConsultations("returnJournalConsultations.php", journalID );
 
-            call.enqueue(new Callback<ArrayList<Consultation>>() {
-                @Override
-                public void onResponse(Call<ArrayList<Consultation>> call, Response<ArrayList<Consultation>> response) {
-                    if(response.body() != null){
-                        arrayList.clear();
-                        arrayList.addAll(response.body());
-                        Collections.sort(arrayList, new Comparator<Consultation>() {
-                            public int compare(Consultation o1, Consultation o2) {
-                                return o1.getDate().compareTo(o2.getDate());
-                            }
-                        });
-                        if(arrayList.isEmpty()&& !user.getRole().equals("Patient")){
-                            setTodayDate();
+        call.enqueue(new Callback<ArrayList<Consultation>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Consultation>> call, Response<ArrayList<Consultation>> response) {
+                if(response.body() != null){
+                    arrayList.clear();
+                    arrayList.addAll(response.body());
+                    Collections.sort(arrayList, new Comparator<Consultation>() {
+                        public int compare(Consultation o1, Consultation o2) {
+                            return o1.getDate().compareTo(o2.getDate());
                         }
-                        adapter.notifyDataSetChanged();
-                        if(!arrayList.isEmpty()){
-                            getNearestDate();
-                        }
-
+                    });
+                    if(arrayList.isEmpty()&& !user.getRole().equals("Patient")){
+                        setTodayDate();
                     }
-
+                    adapter.notifyDataSetChanged();
+                    if(!arrayList.isEmpty()){
+                        getNearestDate();
+                    }
                 }
-
-                @Override
-                public void onFailure(Call<ArrayList<Consultation>> call, Throwable t) {
-
-                }
-            });
+            }
+            @Override
+            public void onFailure(Call<ArrayList<Consultation>> call, Throwable t) {
+                Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void showDatePickerDialog() throws ParseException {
@@ -177,7 +162,6 @@ public class ResultsPager extends Fragment{
                     @Override
                     public void onDateSet(DatePicker view, int nyear,
                                           int monthOfYear, int dayOfMonth) {
-
                         if (mFirst) {
                             mFirst = false;
                             year = nyear;
@@ -186,11 +170,7 @@ public class ResultsPager extends Fragment{
                             Log.d(TAG, "showDatePickerDialog: "+year+month+day);
                             //showTimePickerDialog(c);
                             setDate();
-
                         }
-
-
-
                     }
                 }, year, month, day);
 
@@ -226,18 +206,14 @@ public class ResultsPager extends Fragment{
 
     public void getNearestDate(){
         now = System.currentTimeMillis();
-
         //Check if it's today
         for (int i=0; i< arrayList.size();i++){
             dates.add(arrayList.get(i).getDate());
-
-
             /* if(calendar.get(Calendar.DAY_OF_MONTH) == arrayList.get(i).getDay() && calendar.get(Calendar.MONTH)+1 == arrayList.get(i).getMonth() && calendar.get(Calendar.YEAR) == arrayList.get(i).getYear()){
                 viewPager.setCurrentItem(i,false);
 
             }*/
         }
-
         Date closest = Collections.min(dates, new Comparator<Date>() {
             public int compare(Date d1, Date d2) {
                 long diff1 = Math.abs(d1.getTime() - now);
@@ -245,7 +221,6 @@ public class ResultsPager extends Fragment{
                 return Long.compare(diff1, diff2);
             }
         });
-
         afterToday(closest);
     }
 
@@ -286,13 +261,9 @@ public class ResultsPager extends Fragment{
         adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(arrayList.size(), true);
         Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
-
-
     }
 
     public void setDate() {
-
-
         Date date = new Date();
         Consultation consultation = new Consultation(date, null);
         consultation.setDate(day, month, year);
@@ -300,7 +271,6 @@ public class ResultsPager extends Fragment{
         adapter.notifyDataSetChanged();
         viewPager.setCurrentItem(arrayList.size(), true);
         Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
-
 
     }
 

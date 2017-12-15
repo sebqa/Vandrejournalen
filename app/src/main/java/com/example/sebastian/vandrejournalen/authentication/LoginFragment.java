@@ -35,16 +35,14 @@ import static android.content.ContentValues.TAG;
 public class LoginFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     String token;
-    private static final String ARG_PARAM2 = "param2";
+    TextView tvNotReg;
     MaterialEditText passwordInput, usernameInput;
-    private String mParam1;
-    private String mParam2;
     Button button;
     private View rootView;
     User user;
     ServerClient client;
     SharedPreferences prefs;
-    int keyDel;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -80,6 +78,7 @@ public class LoginFragment extends Fragment {
         passwordInput = rootView.findViewById(R.id.passwordInput);
         usernameInput = rootView.findViewById(R.id.usernameInput);
         button = rootView.findViewById(R.id.button);
+        tvNotReg = rootView.findViewById(R.id.tvNotReg);
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
         client = ServiceGenerator.createService(ServerClient.class);
 
@@ -106,6 +105,13 @@ public class LoginFragment extends Fragment {
                 if (mListener != null) {
                     checkCred();
                 }
+            }
+        });
+
+        tvNotReg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.popStack();
             }
         });
 
@@ -210,5 +216,6 @@ public class LoginFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void loginExists(User user);
+        void popStack();
     }
 }

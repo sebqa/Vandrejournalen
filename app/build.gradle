@@ -77,5 +77,8 @@ dependencies {
     compile 'com.github.clans:fab:1.6.4'
 
 
+    //Test af cert
+    compile 'com.github.mklimek:ssl-utils-android:1.0.1'
+
 
 }

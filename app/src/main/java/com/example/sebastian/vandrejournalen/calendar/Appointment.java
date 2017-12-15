@@ -129,6 +129,16 @@ public class Appointment {
     String journalMidwifeName;
     String journalSpecialistName;
 
+    public String getJournalGpName() {
+        return journalGpName;
+    }
+
+    public void setJournalGpName(String journalGpName) {
+        this.journalGpName = journalGpName;
+    }
+
+    String journalGpName;
+
     public String getJournalMidwifeName() {
         return journalMidwifeName;
     }

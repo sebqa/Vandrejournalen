@@ -1,4 +1,4 @@
-package com.example.sebastian.vandrejournalen.authentication;
+package com.example.sebastian.vandrejournalen;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
@@ -38,7 +38,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 public class SecureUtil {
 
-    Context context;
+    private Context context;
     private static final String KEY_NAME = "key";
     private static final String TRANSFORMATION = KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/"
             + KeyProperties.ENCRYPTION_PADDING_PKCS7;
@@ -48,8 +48,6 @@ public class SecureUtil {
     private KeyguardManager keyguardManager;
     private String encryptedPassword;
     private String decryptedPassword;
-    private String password;
-
 
     public SecureUtil(Context context){
         this.context = context;
@@ -60,57 +58,32 @@ public class SecureUtil {
 
     }
 
-    public void checkLockScreen(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!keyguardManager.isKeyguardSecure()) {
-                Toast.makeText(context,
-                        "Secure lock screen hasn't set up. Go to 'Settings -> Security -> Screenlock' to set up a lock screen",
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-    private void showAuthenticationScreen(int requestCode) {
-        //Open user authentication screen
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
-            if (intent != null) {
-
-                ((Activity) context).startActivityForResult(intent, requestCode);
-            }
-        }
-    }
-
-
     public String encrypt(String passwordString) {
-        this.password = passwordString;
+        try {
+            //Create key
+            SecretKey secretKey = createKey();
+            //Setup cipher with algo settings
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            //Generate IV
+            byte[] encryptionIv = cipher.getIV();
+            //Convert plaintext to byte array
+            byte[] passwordBytes = passwordString.getBytes(CHARSET_NAME);
+            //Encrypt
+            byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
+            //Convert to string
+            encryptedPassword = Base64.encodeToString(encryptedPasswordBytes, Base64.DEFAULT);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                try {
-                    //Create key
-                    SecretKey secretKey = createKey();
-                    //Setup cipher with algo settings
-                    Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-                    cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-                    //Generate IV
-                    byte[] encryptionIv = cipher.getIV();
-                    //Convert plaintext to byte array
-                    byte[] passwordBytes = passwordString.getBytes(CHARSET_NAME);
-                    //Encrypt
-                    byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
-                    //Convert to string
-                    encryptedPassword = Base64.encodeToString(encryptedPasswordBytes, Base64.DEFAULT);
+            //Save IV in shared preferences
+            SharedPreferences.Editor editor = context.getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE).edit();
+            editor.putString("encryptionIv", Base64.encodeToString(encryptionIv, Base64.DEFAULT));
+            editor.apply();
 
-                    //Save IV in shared preferences
-                    SharedPreferences.Editor editor = context.getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE).edit();
-                    editor.putString("encryptionIv", Base64.encodeToString(encryptionIv, Base64.DEFAULT));
-                    editor.apply();
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
+                | BadPaddingException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
 
-
-                } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeyException
-                        | BadPaddingException | UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }
-            }
 
         return encryptedPassword;
     }
@@ -151,7 +124,6 @@ public class SecureUtil {
                     throw new RuntimeException(e);
                 }
             }
-
 
         return decryptedPassword;
     }

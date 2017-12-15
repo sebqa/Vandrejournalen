@@ -1,4 +1,4 @@
-package com.example.sebastian.vandrejournalen;
+package com.example.sebastian.vandrejournalen.calendar;
 
 
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
-import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
+import com.example.sebastian.vandrejournalen.User;
 import com.google.gson.Gson;
 
 
