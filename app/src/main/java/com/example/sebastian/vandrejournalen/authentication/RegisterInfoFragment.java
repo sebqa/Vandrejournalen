@@ -111,32 +111,31 @@ public class RegisterInfoFragment extends Fragment {
                         }
                         user.setPhonework(Integer.parseInt(etWorkTlf.getText().toString()));
                         user.setPassword(etPassword.getText().toString());
-                    } catch (NumberFormatException e) {
 
-                    }
-
-
-                    Call<User> call = client.registerInfo("registerInformation.php", user);
-                    call.enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> response) {
-                            //Check if the response is not null
-                            if (response.body() != null) {
-                                //Add attributes to User object
-                                user.setUserID(response.body().getUserID());
-                                user.setToken(response.body().getToken());
-                                //Call to Activity
-                                mListener.onSuccessfulLogin(user);
-                            } else {
-                                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                        Call<User> call = client.registerInfo("registerInformation.php", user);
+                        call.enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(Call<User> call, Response<User> response) {
+                                //Check if the response is not null
+                                if (response.body() != null) {
+                                    //Add attributes to User object
+                                    user.setUserID(response.body().getUserID());
+                                    user.setToken(response.body().getToken());
+                                    //Call to Activity
+                                    mListener.onSuccessfulLogin(user);
+                                } else {
+                                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-                            Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<User> call, Throwable t) {
+                                Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(context, "Wrong input type", Toast.LENGTH_SHORT).show();
+                    }
                 } else{
                     Toast.makeText(context, "Passwords don't match", Toast.LENGTH_SHORT).show();
                 }
@@ -173,7 +172,6 @@ public class RegisterInfoFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-
         //Interface methods
         void onSuccessfulLogin(User user);
     }
@@ -187,7 +185,6 @@ public class RegisterInfoFragment extends Fragment {
         etCPR.setInputType(InputType.TYPE_CLASS_NUMBER);
         etCPR.setFloatingLabelText("CPR-number");
         cLayout.addView(etCPR);
-
 
         etAddress.setFloatingLabelAlwaysShown(true);
         etAddress.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);

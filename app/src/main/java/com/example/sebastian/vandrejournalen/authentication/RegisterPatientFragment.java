@@ -27,10 +27,7 @@ import static android.content.ContentValues.TAG;
 
 
 public class RegisterPatientFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-    private View rootView;
     private OnFragmentInteractionListener mListener;
     LinearLayout vLinearLayout;
     Context context;
@@ -41,6 +38,7 @@ public class RegisterPatientFragment extends Fragment {
     String cpr;
     Patient patient = new Patient();
     ServerClient client;
+
     public RegisterPatientFragment() {
         // Required empty public constructor
     }
@@ -68,7 +66,7 @@ public class RegisterPatientFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_register_patient, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_register_patient, container, false);
         setHasOptionsMenu(true);
         vLinearLayout = rootView.findViewById(R.id.layoutRegisterPatient);
         Log.d(TAG, "onCreateView: "+user.getUserID());

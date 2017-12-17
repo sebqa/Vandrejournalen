@@ -86,33 +86,27 @@ public class MainActivity extends AppCompatActivity
         */
 
         super.onCreate(savedInstanceState);
-         language = prefs.getString("language","en");
+        language = prefs.getString("language","en");
         setLanguage(language);
+
+        //Get User json string from SP
         String jsonUser = getIntent().getStringExtra("user");
+
+        //Convert User json string to User object
         Gson gson = new Gson();
+
+        //If no user is set because of activity restart, get "userMain" instead
         if(jsonUser ==null){
             jsonUser = prefs.getString("userMain","");
         } else{
+            //If a user is set, put it in SP in case of activity restart
             prefs.edit().putString("userMain",jsonUser).apply();
 
         }
         user = gson.fromJson(jsonUser, User.class);
 
-        role = user.getRole();
-
-        switch (role){
-            case "Patient":
-                setTheme(R.style.PinkTheme);
-                break;
-            case "General Practitioner":
-                setTheme(R.style.BlueTheme);
-                break;
-            case "Midwife":
-                setTheme(R.style.YellowTheme);
-                break;
-            case "Specialist":
-                setTheme(R.style.GreenTheme);
-        }
+        //Use User role to get theme
+        setTheme(RoleHelper.getTheme(user));
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
@@ -126,33 +120,40 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
 
-
+        //Hide slide panel on start up
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
+        //Setup navigation drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //Use User role to choose menu layout
         navigationView.inflateMenu(RoleHelper.getOptionsMenu(user));
         View headerview = navigationView.getHeaderView(0);
         TextView tvRole = headerview.findViewById(R.id.tvRole);
         TextView tvName = headerview.findViewById(R.id.tvName);
 
+        //Set text of navigation header
         if(mylocale == null ){
             tvRole.setText(user.getRole());
         } else if(mylocale.getLanguage().equals("en")){
+            //If language is english
             tvRole.setText(user.getRole());
         } else{
+            //If language is not english, translate the role
             tvRole.setText(RoleHelper.translateRole(user.getRole()));
         }
         tvName.setText(user.getName());
+
+        //Set click listener for navigation drawer
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 int id = item.getItemId();
-                Log.d(""+id, "onNavigationItemSelected: ");
+                //Check the first menu item by default
                 navigationView.getMenu().getItem(0).setChecked(false);
 
                 if (id == R.id.nav_camera) {
@@ -204,6 +205,7 @@ public class MainActivity extends AppCompatActivity
                     slidingUpPanelLayout.setEnabled(false);
                     constraintLayout.removeView(slidingUpPanelLayout);
                     slidingUpPanelLayout.setEnabled(false);
+
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -403,7 +405,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        prefs.edit().remove("userMain").apply();
+
     }
 
     protected void setLanguage(String language){

@@ -36,6 +36,25 @@ public class RoleHelper {
                 return R.menu.activity_main_drawer;
         }
     }
+
+    public static int getTheme(User user){
+        String role = user.getRole();
+        int theme = 0;
+        switch (role){
+            case "Patient":
+                theme = R.style.PinkTheme;
+                break;
+            case "General Practitioner":
+                theme = R.style.BlueTheme;
+                break;
+            case "Midwife":
+                theme = R.style.YellowTheme;
+                break;
+            case "Specialist":
+                theme = R.style.GreenTheme;
+        }
+        return theme;
+    }
     public static int getContentmain(User user){
         String role = user.getRole();
         switch(role){

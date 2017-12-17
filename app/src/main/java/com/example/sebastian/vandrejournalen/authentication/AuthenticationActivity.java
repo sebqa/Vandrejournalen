@@ -74,10 +74,7 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         if (!tokenString.equals("")){
             //If it exists, go to login screen
             user.setToken(tokenString);
-            Log.d(TAG, "onCreate: "+user.getToken());
             goToLogin();
-            Log.d(TAG, "onCreate: user is set "+user.getRole());
-
         } else {
             //If the token does not exist, create the RegisterFragment
             Fragment fragment= RegisterFragment.newInstance();
@@ -91,7 +88,6 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         this.user = user;
         // Attach the User object to the fragment
         Fragment fragment = addBundle(letIDFragment.newInstance());
-
         //Custom animation
         ft = addAnim();
         ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
@@ -145,7 +141,9 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void goToLogin() {
+        //Add bundle
         Fragment fragment = addBundle(LoginFragment.newInstance());
+        //Add animations
         ft = addAnim();
         ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
         canExit = false;

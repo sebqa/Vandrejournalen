@@ -170,7 +170,8 @@ public class letIDFragment extends Fragment {
         if((validate(rawInput))) {
             //Convert input to int
             letID.setInKeyCode(Integer.parseInt(rawInput));
-            
+
+
             Call<User> call = client.checkLet("logInCheckLetIdKeyCode.php", letID);
             call.enqueue(new Callback<User>() {
                 @Override
@@ -220,6 +221,8 @@ public class letIDFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        //Initialize interface with activity context
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         }
@@ -232,6 +235,7 @@ public class letIDFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
+        //Interface methods
         void onSuccessfulLogin(User user);
         void restartActivity();
     }
