@@ -33,7 +33,7 @@ public class ResultsPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Bundle args = new Bundle();
-        Fragment fragment = ResultsFragment.newInstance(user, arraylist.get(position));
+        Fragment fragment = ResultsFragment.newInstance();
         String obj2 = new Gson().toJson(user);
         args.putString("user" , obj2);
         String obj = new Gson().toJson(arraylist.get(position));

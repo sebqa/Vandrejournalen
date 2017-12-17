@@ -38,6 +38,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 public class SecureUtil {
 
+    private static final String TAG = "SECUREUTIL";
     private Context context;
     private static final String KEY_NAME = "key";
     private static final String TRANSFORMATION = KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/"
@@ -73,7 +74,6 @@ public class SecureUtil {
             byte[] encryptedPasswordBytes = cipher.doFinal(passwordBytes);
             //Convert to string
             encryptedPassword = Base64.encodeToString(encryptedPasswordBytes, Base64.DEFAULT);
-
             //Save IV in shared preferences
             SharedPreferences.Editor editor = context.getSharedPreferences(STORAGE_FILE_NAME, Activity.MODE_PRIVATE).edit();
             editor.putString("encryptionIv", Base64.encodeToString(encryptionIv, Base64.DEFAULT));

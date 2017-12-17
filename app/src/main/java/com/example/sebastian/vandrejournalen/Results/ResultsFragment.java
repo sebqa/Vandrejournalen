@@ -30,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.sebastian.journalapp.R;
 import com.example.sebastian.vandrejournalen.Patient;
 import com.example.sebastian.vandrejournalen.RoleHelper;
+import com.example.sebastian.vandrejournalen.SecureUtil;
 import com.example.sebastian.vandrejournalen.User;
 import com.example.sebastian.vandrejournalen.networking.ServerClient;
 import com.example.sebastian.vandrejournalen.networking.ServiceGenerator;
@@ -49,11 +50,7 @@ import static android.content.ContentValues.TAG;
 
 
 public class ResultsFragment extends Fragment  {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private TextView tvShowNotes;
     private View rootView;
-    boolean notesShowing = false;
     Context context;
     MaterialDialog dialog;
     LinearLayout cLinearLayout,hLinearLayout,notesLayout;
@@ -69,14 +66,14 @@ public class ResultsFragment extends Fragment  {
     ServerClient client;
     private boolean edited;
 
+
     public ResultsFragment() {
         // Required empty public constructor
     }
 
-    public static ResultsFragment newInstance(User user, Consultation consultation) {
+    public static ResultsFragment newInstance() {
         ResultsFragment fragment = new ResultsFragment();
         Bundle args = new Bundle();
-        Log.d(TAG, "newInstance: "+user.getRole());
         fragment.setArguments(args);
         return fragment;
     }
@@ -99,18 +96,12 @@ public class ResultsFragment extends Fragment  {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_results, container, false);
         setHasOptionsMenu(true);
-        ITEMS.add(getString(R.string.gp)+ " - id 12323437198");
-        ITEMS.add(getString(R.string.mw));
-        ITEMS.add(getString(R.string.sp));
-        //etName = rootView.findViewById(R.id.name);
+
         cLinearLayout = rootView.findViewById(R.id.resultsLayout);
         hLinearLayout = rootView.findViewById(R.id.hLayout);
-        /*tvShowNotes = rootView.findViewById(R.id.tvShowNotes);
-        notesLayout = rootView.findViewById(R.id.notesLayout);*/
 
         client = ServiceGenerator.createService(ServerClient.class);
 
-        //txt.setText(consultation.getDay()+"/"+consultation.getMonth()+"/"+consultation.getYear());
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -214,6 +205,7 @@ public class ResultsFragment extends Fragment  {
         }
         if (consultation.getInitialer() != null) {
             Log.d(TAG, "consultationLayout: " + consultation.getConsultationID());
+            Log.d(TAG, "consultationLayout: "+consultation.getInitialer());
             etType.setText(consultation.getInitialer());
             //mListener.showFab();
         }
@@ -381,6 +373,8 @@ public class ResultsFragment extends Fragment  {
             consultation.setFosterskoen(etFosterskoen.getText().toString());
             consultation.setFosteraktivitet(etFosteraktivitet.getText().toString());
             consultation.setUndersoegelsessted(etUndersoegelsessted.getText().toString());
+            Log.d(TAG, "sendConsultation: "+user.getName());
+            consultation.setInitialer(user.getUserID());
 
 
             Call<String> call = client.postConsultation("addJournalConsultation.php", consultation);

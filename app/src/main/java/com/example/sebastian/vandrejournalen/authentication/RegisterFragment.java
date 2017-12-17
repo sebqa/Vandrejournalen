@@ -32,14 +32,6 @@ import retrofit2.Response;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RegisterFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RegisterFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RegisterFragment extends Fragment {
 
     ServerClient client;
@@ -47,15 +39,13 @@ public class RegisterFragment extends Fragment {
     Button continueBtn;
     TextView tvSignedUp;
     User user;
-    // TODO: Rename and change types of parameters
     private OnFragmentInteractionListener mListener;
+
 
     public RegisterFragment() {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static RegisterFragment newInstance() {
         RegisterFragment fragment = new RegisterFragment();
         Bundle args = new Bundle();
@@ -66,8 +56,6 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -77,6 +65,9 @@ public class RegisterFragment extends Fragment {
         etInput = rootView.findViewById(R.id.keyInput);
         tvSignedUp = rootView.findViewById(R.id.tvSignedUp);
 
+        //Initialize the Http client
+        client = ServiceGenerator.createService(ServerClient.class);
+
         tvSignedUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,12 +75,13 @@ public class RegisterFragment extends Fragment {
             }
         });
 
+        //Add an onKeyLister to the button
         etInput.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                //Check if "Enter" button is pressed
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
                         (i == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
                     onContinue();
                     return true;
                 }
@@ -97,15 +89,13 @@ public class RegisterFragment extends Fragment {
             }
         });
         continueBtn = rootView.findViewById(R.id.continueBtn);
-
-        client = ServiceGenerator.createService(ServerClient.class);
-
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onContinue();
             }
         });
+
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -114,10 +104,9 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        //Define the interface with the activity context
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
-
         }
     }
 
@@ -129,26 +118,36 @@ public class RegisterFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+
+        //Interface methods
         void goToLogin();
         void goToInfo(User user);
     }
 
 
     public void onContinue(){
+
+        //Disable input field
         etInput.setEnabled(false);
+
+        //Check input length
         final String input = etInput.getText().toString();
         if (input.length() == 36) {
+            //If its a key...
+            //Send the key to appropriate script
             Call<User> call = client.checkKey("checkKey.php", etInput.getText().toString());
+
+            //Listen for response
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
+                    //Response received in correct format
+                    //Check if the contents are not null
                     if (response.body() != null) {
+                        //Add all attributes of response to the user object
                         user = response.body();
-                        Log.d(TAG, "onClick: " + user.getInstitution());
 
-
-
+                        //Create a dialog with User role and institution
                         new MaterialDialog.Builder(getActivity())
                                 .title("Verification")
                                 .content("Please verify that you are a " +user.getRole() + " at " + user.getInstitution())
@@ -186,30 +185,40 @@ public class RegisterFragment extends Fragment {
 
                 }
             });
-        } else if(input.length() <= 11) {
+        } else if(input.length() == 11 || input.length() == 10) {
+            //If its a CPR
+            //Check if hyphen was added
             String cpr = etInput.getText().toString().trim();
             if(input.length() == 10){
                 if (cpr.contains("-")){
 
                 } else{
+                    //Add hyphen
                     StringBuilder str = new StringBuilder(cpr);
                     str.insert(6,"-");
                     cpr = str.toString();
                 }
             }
+            //Send the CPR to the appropriate script
             Call<String> call = client.checkCPR("checkCPR.php", cpr);
-
             final String finalCpr = cpr;
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
-                    Log.d(TAG, "onResponse: "+response.body());
                     if(response.body() != null){
+                        //If the response is "1"
                         if(response.body().trim().equals("1")) {
                             Toast.makeText(getActivity(), "Match!", Toast.LENGTH_SHORT).show();
+
+                            //Add attributes to User object
                             User user = new User();
                             user.setCpr(finalCpr);
+
+                            //Call for fragment transition
                             mListener.goToInfo(user);
+                        } else{
+                            Toast.makeText(getActivity(), "No Match!", Toast.LENGTH_SHORT).show();
+                            etInput.setEnabled(true);
                         }
 
 

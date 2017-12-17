@@ -78,7 +78,7 @@ public interface ServerClient {
 
     Call<Patient> getPatientInfo(
             @Path("page") String page,
-            @Body String cpr
+            @Body String userID
     );
 
     @POST("/{page}")

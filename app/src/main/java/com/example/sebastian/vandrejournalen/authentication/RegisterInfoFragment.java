@@ -32,26 +32,22 @@ import static android.content.ContentValues.TAG;
 
 
 public class RegisterInfoFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    ServerClient client;
 
-    // TODO: Rename and change types of parameters
+
+    ServerClient client;
     MaterialEditText etCPR, etName, etAddress, etPrivateTlf, etWorkTlf, etPassword, etVerifypass;
     Context context;
-    Button sendButton, backButton;
+    Button sendButton;
     LinearLayout cLayout;
     private OnFragmentInteractionListener mListener;
-    private View rootView;
     User user;
     SharedPreferences prefs;
+
     public RegisterInfoFragment() {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
-    public static RegisterInfoFragment newInstance(User user) {
+    public static RegisterInfoFragment newInstance() {
         RegisterInfoFragment fragment = new RegisterInfoFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -63,21 +59,20 @@ public class RegisterInfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("obj"), User.class);
-
+            user = gson.fromJson(getArguments().getString("user"), User.class);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_register_info, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_register_info, container, false);
+        //Create Http Client
         client = ServiceGenerator.createService(ServerClient.class);
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-
         cLayout = rootView.findViewById(R.id.layoutRegisterInfo);
 
+        //Create ET's
         etCPR = new MaterialEditText(context);
         etName = new MaterialEditText(context);
         etAddress = new MaterialEditText(context);
@@ -90,65 +85,71 @@ public class RegisterInfoFragment extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (user.getInstitution() != null) {
-                    user.setInstitution(user.getInstitution());
-                    user.setAddress(user.getAddress());
-                } else {
+                if (etPassword == etVerifypass) {
 
-                }
-                String cpr = etCPR.getText().toString().trim();
-                if (cpr.contains("-")) {
-                    user.setCpr(cpr);
-                } else {
-                    StringBuilder str = new StringBuilder(cpr);
-                    str.insert(6, "-");
-                    user.setCpr(str.toString());
-                }
-                user.setName(etName.getText().toString());
+                    //Add attributes to the user object
+                    if (user.getInstitution() != null) {
+                        user.setInstitution(user.getInstitution());
+                        user.setAddress(user.getAddress());
+                    }
+                    //Check CPR-number format
+                    String cpr = etCPR.getText().toString().trim();
+                    if (cpr.contains("-")) {
+                        user.setCpr(cpr);
+                    } else {
+                        StringBuilder str = new StringBuilder(cpr);
+                        str.insert(6, "-");
+                        user.setCpr(str.toString());
+                    }
+                    user.setName(etName.getText().toString());
 
-                try {
-                    if(!etPrivateTlf.getText().toString().equals("")) {
-                    user.setPhoneprivate(Integer.parseInt(etPrivateTlf.getText().toString()));
-                }
-
-                    user.setPhonework(Integer.parseInt(etWorkTlf.getText().toString()));
-                    user.setPassword(etPassword.getText().toString());
-                } catch (NumberFormatException e){
-
-            }
-
-                Call<User> call = client.registerInfo("registerInformation.php", user);
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        if(response.body() != null){
-                            user.setUserID(response.body().getUserID());
-                            user.setToken(response.body().getToken());
-                            mListener.onSuccessfulLogin(user);
-                            Log.d(TAG, "onResponse: "+response.body().getUserID());
-                            Log.d(TAG, "onResponse: "+response.body().getToken());
+                    //Catch parse errors, in case input is not a number
+                    try {
+                        //Check if input is empty
+                        if (!etPrivateTlf.getText().toString().equals("")) {
+                            user.setPhoneprivate(Integer.parseInt(etPrivateTlf.getText().toString()));
                         }
-                        Log.d(TAG, "onResponse: "+response.message());
+                        user.setPhonework(Integer.parseInt(etWorkTlf.getText().toString()));
+                        user.setPassword(etPassword.getText().toString());
+                    } catch (NumberFormatException e) {
+
                     }
 
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onFailure: Error registerInformation");
-                    }
-                });
 
+                    Call<User> call = client.registerInfo("registerInformation.php", user);
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            //Check if the response is not null
+                            if (response.body() != null) {
+                                //Add attributes to User object
+                                user.setUserID(response.body().getUserID());
+                                user.setToken(response.body().getToken());
+                                //Call to Activity
+                                mListener.onSuccessfulLogin(user);
+                            } else {
+                                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        }
 
-
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+                            Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else{
+                    Toast.makeText(context, "Passwords don't match", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+        //Start a new UI thread to create the layout
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
+                //Check if the fragment has been properly added to the layout
                 if(isAdded())
                     initLayout();
-
             }
         });
 
@@ -157,10 +158,9 @@ public class RegisterInfoFragment extends Fragment {
 
     public void onAttach(Context context) {
         super.onAttach(context);
+        //Define the interface with the activity context
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
-
         }
         this.context=context;
     }
@@ -173,42 +173,48 @@ public class RegisterInfoFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        void loginExists(User user);
+
+        //Interface methods
         void onSuccessfulLogin(User user);
     }
 
     public void initLayout() {
+        //Initialize input fields
+        //Set labels and the know information
+
         etCPR.setFloatingLabelAlwaysShown(true);
         etCPR.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etCPR.setInputType(InputType.TYPE_CLASS_NUMBER);
         etCPR.setFloatingLabelText("CPR-number");
         cLayout.addView(etCPR);
-        if(user.getCpr() != null){
-            etCPR.setText(user.getCpr());
-            etCPR.setFocusable(false);
-            user.setRole("Patient");
-        }
-        etName.setFloatingLabelAlwaysShown(true);
-        etName.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
-        etName.setFloatingLabelText("Name");
-        cLayout.addView(etName);
 
 
         etAddress.setFloatingLabelAlwaysShown(true);
         etAddress.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etAddress.setFloatingLabelText("Address");
-        if(!user.getRole().equals("Patient")){
+
+        //Check if CPR-number is set
+        if(user.getCpr() != null){
+            //If a CPR-number is set, the user is a patient
+            etCPR.setText(user.getCpr());
+            etCPR.setFocusable(false);
+            user.setRole("Patient");
+        } else{
+            //Else set attributes know about professional
             etAddress.setText(user.getInstitution());
             etAddress.setFloatingLabelText("Institution");
         }
-
+        etName.setFloatingLabelAlwaysShown(true);
+        etName.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etName.setFloatingLabelText("Name");
+        cLayout.addView(etName);
         cLayout.addView(etAddress);
 
         etPrivateTlf.setFloatingLabelAlwaysShown(true);
         etPrivateTlf.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etPrivateTlf.setInputType(InputType.TYPE_CLASS_NUMBER);
         etPrivateTlf.setFloatingLabelText("Private telephone number");
-        //cLayout.addView(etPrivateTlf);
+        cLayout.addView(etPrivateTlf);
 
         etWorkTlf.setFloatingLabelAlwaysShown(true);
         etWorkTlf.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
@@ -227,9 +233,6 @@ public class RegisterInfoFragment extends Fragment {
         etVerifypass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         etVerifypass.setFloatingLabelText("Verify password");
         cLayout.addView(etVerifypass);
-
-
-
     }
 
 }

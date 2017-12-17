@@ -403,6 +403,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+        prefs.edit().remove("userMain").apply();
     }
 
     protected void setLanguage(String language){

@@ -64,8 +64,7 @@ public class NotesListTab extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_noteslist,container,false);
         setHasOptionsMenu(true);
         recyclerView =  rootView.findViewById(R.id.recentRecyclerView);
-        calendar = Calendar.getInstance(TimeZone.getDefault());
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         notesList = new ArrayList<Note>();
 
 
@@ -94,6 +93,7 @@ public class NotesListTab extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("New note for today");
+                final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
                 // Set up the input
                 InputFilter[] inputFilter = new InputFilter[1];

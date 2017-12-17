@@ -127,6 +127,7 @@ public class LoginFragment extends Fragment {
                 Log.d(TAG, "onResponse: " + response.body());
                 if (response.body() != null) {
                     if (!response.body().trim().equals("FALSE")){
+                        user = new User();
                         user.setUserID(response.body().trim());
                         mListener.loginExists(user);
                     }

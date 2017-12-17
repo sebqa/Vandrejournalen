@@ -84,7 +84,7 @@ public class BasicHealthInfoFragment extends Fragment {
         Log.d(TAG, "onCreateView: user og patient data"+user.getName()+patient.getName());
 
         initLayout(rootView);
-        if(user.getRole().equals("Patient")){
+        if(user.getRole().equals("Patient")||user.getRole().equals("Specialist")){
             setEditable();
         } else{
             etMensDag.setOnClickListener(new View.OnClickListener() {
@@ -109,19 +109,19 @@ public class BasicHealthInfoFragment extends Fragment {
         button.setVisibility(View.INVISIBLE);
         etMensDag.setClickable(false);
         hepYes.setClickable(false);
-        hepNo .setClickable(false);
-        bloodyes .setClickable(false);
-        bloodNo .setClickable(false);
-        mrhesYes .setClickable(false);
-        mrhesNo .setClickable(false);
-        iregYes .setClickable(false);
-        iregNo .setClickable(false);
-        crhesYes .setClickable(false);
-        crhesNo .setClickable(false);
-        antiYes .setClickable(false);
-        antiNo .setClickable(false);
-        antiDYes .setClickable(false);
-        antiDNo .setClickable(false);
+        hepNo.setClickable(false);
+        bloodyes.setClickable(false);
+        bloodNo.setClickable(false);
+        mrhesYes.setClickable(false);
+        mrhesNo.setClickable(false);
+        iregYes.setClickable(false);
+        iregNo.setClickable(false);
+        crhesYes.setClickable(false);
+        crhesNo.setClickable(false);
+        antiYes.setClickable(false);
+        antiNo.setClickable(false);
+        antiDYes.setClickable(false);
+        antiDNo.setClickable(false);
         urinDyrk.setClickable(false);
     }
 

@@ -2,6 +2,8 @@ package com.example.sebastian.vandrejournalen.Results;
 
 import android.support.annotation.NonNull;
 
+import com.example.sebastian.vandrejournalen.SecureUtil;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -33,12 +35,13 @@ public class Consultation implements Serializable, Comparable<Consultation> {
     public String fosterskoen = "";
     public String fosteraktivitet = "";
     public String undersoegelsessted = "";
-    public String initialer = "";
+    public String initialer;
     String journalID;
     public String fullName;
     public String time;
     String consultationID;
     String dateString;
+    SecureUtil secureUtil;
 
     public int getGestationsalder() {
         return gestationsalder;
@@ -178,6 +181,7 @@ public class Consultation implements Serializable, Comparable<Consultation> {
 
 
     public Consultation() {
+
     }
 
     public Consultation(Date date, String event){
