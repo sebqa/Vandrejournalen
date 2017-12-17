@@ -39,7 +39,6 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     FragmentTransaction ft;
     public static Locale mylocale;
     public static int theme;
-    String token ="";
     static boolean canExit = true;
 
     @Override
@@ -61,13 +60,6 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         //boolean for navigation. If this value is true, the phone's back button
         // will exit the app otherwise it will pop the backstack.
         canExit = true;
-
-        //Slide animation for fragments
-        ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
-                R.anim.fragment_slide_left_exit,
-                R.anim.fragment_slide_right_enter,
-                R.anim.fragment_slide_right_exit);
 
         //Get the language previously set and set it for current session
         String language = prefs.getString("language","en");
@@ -95,21 +87,13 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void loginExists(User user) {
+        //Update User
+        this.user = user;
         // Attach the User object to the fragment
-        Bundle args = new Bundle();
-
-        //Convert the User object to a string
-        String obj = new Gson().toJson(user);
-        args.putString("user" , obj);
-        Fragment fragment = letIDFragment.newInstance(user);
-        fragment.setArguments(args);
+        Fragment fragment = addBundle(letIDFragment.newInstance());
 
         //Custom animation
-        ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
-            R.anim.fragment_slide_left_exit,
-            R.anim.fragment_slide_right_enter,
-            R.anim.fragment_slide_right_exit);
+        ft = addAnim();
         ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
 
         canExit = false;
@@ -161,37 +145,17 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
 
     @Override
     public void goToLogin() {
-
-        Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("user",obj);
-
-        token = user.getToken();
-        Fragment fragment = LoginFragment.newInstance(token,"");
-        fragment.setArguments(args);
-        ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
-                R.anim.fragment_slide_left_exit,
-                R.anim.fragment_slide_right_enter,
-                R.anim.fragment_slide_right_exit);
+        Fragment fragment = addBundle(LoginFragment.newInstance());
+        ft = addAnim();
         ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
         canExit = false;
     }
 
     @Override
     public void goToInfo(User user) {
-        Bundle args = new Bundle();
-        Gson gson = new Gson();
-        String obj = gson.toJson(user);
-        args.putString("user" , obj);
-        Fragment fragment = RegisterInfoFragment.newInstance();
-        fragment.setArguments(args);
-        ft = fm.beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
-                R.anim.fragment_slide_left_exit,
-                R.anim.fragment_slide_right_enter,
-                R.anim.fragment_slide_right_exit);
+        this.user = user;
+        Fragment fragment = addBundle(RegisterInfoFragment.newInstance());
+        ft = addAnim();
         ft.replace(R.id.fragment_container,fragment).addToBackStack(null).commit();
         canExit = false;
     }
@@ -199,20 +163,8 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
     @Override
     protected void onResume() {
         super.onResume();
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //secureUtil.checkLockScreen();
-
-        }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, "User confirmed", Toast.LENGTH_SHORT).show();
 
-        } else {
-            Toast.makeText(this, "User confirmation failed", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -222,16 +174,39 @@ public class AuthenticationActivity extends AppCompatActivity implements LoginFr
         } else{
             finish();
         }
-        }
+    }
 
     @Override
     public void restartActivity() {
+        //Recreate the activity and reset the access token
         Intent intent=new Intent(AuthenticationActivity.this,AuthenticationActivity.class);
         user.setToken(null);
         prefs.edit().putString("token",null).apply();
-        token = null;
         finish();
         startActivity(intent);
 
+    }
+
+    private Fragment addBundle (Fragment fragment){
+        //Create a bundle to hold attributes
+        Bundle args = new Bundle();
+        Gson gson = new Gson();
+        //Convert it to a JSON string
+        String obj = gson.toJson(user);
+        args.putString("user" , obj);
+        //Add the bundle to the fragment
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private FragmentTransaction addAnim(){
+        //Create fragment transaction
+        ft = fm.beginTransaction();
+        //Define animations
+        ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
+        return ft;
     }
 }
