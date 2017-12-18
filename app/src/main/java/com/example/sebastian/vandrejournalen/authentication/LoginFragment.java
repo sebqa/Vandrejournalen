@@ -77,6 +77,7 @@ public class LoginFragment extends Fragment {
         button = rootView.findViewById(R.id.button);
         tvNotReg = rootView.findViewById(R.id.tvNotReg);
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        //Create Http Client
         client = ServiceGenerator.createService(ServerClient.class);
 
         //If a users token has been set

@@ -32,7 +32,6 @@ public class RegisterPatientFragment extends Fragment {
     LinearLayout vLinearLayout;
     Context context;
     MaterialEditText etCPR;
-    MaterialEditText etRegisterPatient;
     Button btnCreateUser, startJournal;
     User user;
     String cpr;
@@ -45,10 +44,11 @@ public class RegisterPatientFragment extends Fragment {
 
     public static RegisterPatientFragment newInstance(User user) {
         RegisterPatientFragment fragment = new RegisterPatientFragment();
+        //Add Bundle to fragment
         Bundle args = new Bundle();
         Gson gson = new Gson();
         String obj = gson.toJson(user);
-        args.putString("obj" , obj);
+        args.putString("user" , obj);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,9 +57,9 @@ public class RegisterPatientFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            user = new Gson().fromJson(getArguments().getString("obj"), User.class);
+            //Get User object from Bundle
+            user = new Gson().fromJson(getArguments().getString("user"), User.class);
         }
-
     }
 
     @Override
@@ -69,21 +69,18 @@ public class RegisterPatientFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_register_patient, container, false);
         setHasOptionsMenu(true);
         vLinearLayout = rootView.findViewById(R.id.layoutRegisterPatient);
-        Log.d(TAG, "onCreateView: "+user.getUserID());
-        etRegisterPatient = new MaterialEditText(context);
-        client = ServiceGenerator.createService(ServerClient.class);
         etCPR = rootView.findViewById(R.id.etCPR);
         btnCreateUser = rootView.findViewById(R.id.btnCreateUser);
         startJournal = rootView.findViewById(R.id.startBtn);
+
+        //Create Http Client
+        client = ServiceGenerator.createService(ServerClient.class);
 
         // Get CPR number from EditText to string
         btnCreateUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cpr = etCPR.getText().toString();
-
-                Log.d(TAG, "onClick: "+cpr);
-
                 registerExpectedUser(cpr);
                 }
         });
@@ -93,15 +90,13 @@ public class RegisterPatientFragment extends Fragment {
             public void onClick(View view) {
                 cpr = etCPR.getText().toString();
                 checkCPR();
-
-
-
             }
         });
-
         return rootView;
     }
+
     private void registerExpectedUser(String cpr) {
+        //Check CPR-number format
         if (cpr.contains("-")){
 
         } else{
@@ -109,23 +104,27 @@ public class RegisterPatientFragment extends Fragment {
             str.insert(6,"-");
             cpr = str.toString();
         }
+
+        //Create Patient and add attributes
         Patient nUser = new Patient();
         nUser.setCpr(cpr);
         nUser.setProfUserID(user.getUserID());
 
+        //Send Patient object
         Call<String> call = client.cprExp("registerExpectedPatient.php",nUser );
 
+        //Listen for response
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.d(TAG, "onResponse: " + response.body());
+                //Check contents of response
                 if (response.body() != null) {
-
+                    //If the query was successful
                     if (response.body().trim().equals("1")) {
                         Toast.makeText(getActivity(), "CPR received", Toast.LENGTH_SHORT).show();
-                        startJournal.setVisibility(View.VISIBLE);
-
-                    } else if (response.body().trim().equals("0")) {
+                    }
+                    //If the patient has already registered
+                    else if (response.body().trim().equals("0")) {
                         Toast.makeText(context, "CPR Exists, start journal", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getActivity(), "CPR not received", Toast.LENGTH_SHORT).show();
