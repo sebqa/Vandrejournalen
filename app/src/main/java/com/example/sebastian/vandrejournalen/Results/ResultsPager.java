@@ -131,7 +131,7 @@ public class ResultsPager extends Fragment{
                             return o1.getDate().compareTo(o2.getDate());
                         }
                     });
-                    if(arrayList.isEmpty()&& !user.getRole().equals("Patient")){
+                    if(arrayList.isEmpty()&& !user.getRole().equals("Patient")||!user.getRole().equals("Specialist")){
                         setTodayDate();
                     }
                     adapter.notifyDataSetChanged();

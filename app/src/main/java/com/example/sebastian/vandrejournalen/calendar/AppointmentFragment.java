@@ -22,9 +22,6 @@ import java.util.ArrayList;
 
 
 public class AppointmentFragment extends Fragment  {
-    private TextView previewDate, appointTitle;
-    private View rootView;
-    private RecyclerView recyclerView;
     TextView apText;
     Appointment appointment;
     User user;
@@ -54,10 +51,10 @@ public class AppointmentFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_appointment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_appointment, container, false);
        if(user.getRole().equals("Patient")) {
-            previewDate = rootView.findViewById(R.id.previewDate);
-            appointTitle = rootView.findViewById(R.id.appointTitle);
+           TextView previewDate = rootView.findViewById(R.id.previewDate);
+           TextView appointTitle = rootView.findViewById(R.id.appointTitle);
 
             DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy\nkk:mm:ss");
 
@@ -65,17 +62,13 @@ public class AppointmentFragment extends Fragment  {
 
             if(appointment.getName() != null){
                 appointTitle.setText(appointment.getName());
+            }
 
-            } /*else if (appointment.getJournalMidwifeName() != null){
-                appointTitle.setText(appointment.getJournalMidwifeName());
-            } else if (appointment.getJournalSpecialistName() != null){
-                appointTitle.setText(appointment.getJournalSpecialistName());
-            }*/
 
 
             apText = rootView.findViewById(R.id.appointText);
 
-            recyclerView = rootView.findViewById(R.id.apNotesList);
+           RecyclerView recyclerView = rootView.findViewById(R.id.apNotesList);
             recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                     DividerItemDecoration.VERTICAL));
 

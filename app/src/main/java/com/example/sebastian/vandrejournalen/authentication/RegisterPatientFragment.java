@@ -28,6 +28,7 @@ import static android.content.ContentValues.TAG;
 
 public class RegisterPatientFragment extends Fragment {
 
+    //This fragment is for registration of new patients by the GP, as well as starting a new journal for those patients.
     private OnFragmentInteractionListener mListener;
     LinearLayout vLinearLayout;
     Context context;
@@ -127,6 +128,7 @@ public class RegisterPatientFragment extends Fragment {
                     else if (response.body().trim().equals("0")) {
                         Toast.makeText(context, "CPR Exists, start journal", Toast.LENGTH_SHORT).show();
                     } else {
+                        //If query fails
                         Toast.makeText(getActivity(), "CPR not received", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -143,6 +145,8 @@ public class RegisterPatientFragment extends Fragment {
     }
 
     private void checkCPR() {
+
+        //Check format of CPR-number
         String cpr =etCPR.getText().toString();
         if (cpr.contains("-")){
             patient.setCpr(cpr);
@@ -151,59 +155,52 @@ public class RegisterPatientFragment extends Fragment {
             str.insert(6,"-");
             patient.setCpr(str.toString());
         }
+
+        //Add User id to patient
         patient.setProfUserID(user.getUserID());
-        Log.d(TAG, "checkCPR: "+patient.getCpr());
 
+        //Network request to retreive information about the patient, i.e. name, address, email, phones
         Call<Patient> call = client.getPatientInfo("returnPatientInformation.php",patient.getCpr() );
-
+        //Listen for request response
         call.enqueue(new Callback<Patient>() {
             @Override
             public void onResponse(Call<Patient> call, Response<Patient> response) {
-                Log.d(TAG, "onResponse: "+response.message());
+                //Check if contents are not null
                 if(response.body() != null) {
-
-                    Log.d(TAG, "onResponse: "+response.body());
-                    Log.d(TAG, "onResponse: "+response.body().getName());
-                    Log.d(TAG, "onResponse: "+response.body().getAddress());
-                    Log.d(TAG, "onResponse: "+response.body().getEmail());
-                    Log.d(TAG, "onResponse: "+response.body().getPhoneprivate());
-                    Log.d(TAG, "onResponse: "+response.body().getPhonework());
-
+                    //Add attributes of response to Patient object
                     patient = response.body();
+                    //Proceed to next network call
                     sendProfUserID();
                 } else{
                     Toast.makeText(context, R.string.patient_not_registered, Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
             public void onFailure(Call<Patient> call, Throwable t) {
                 Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onFailure: returnPatientInformation");
             }
         });
     }
 
     public void sendProfUserID(){
-
-        Log.d(TAG, "sendProfUserID: "+user.getUserID());
+        //Make network call for prof info
         Call<User> call = client.startJournal("returnProfInformation.php",user.getUserID() );
-
+        //Listen for response
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                //Check response contents
+                if(response.body() != null){
+                    //Add attributes to User object
+                    user.setName(response.body().getName());
+                    user.setAddress(response.body().getAddress());
+                    user.setEmail(response.body().getEmail());
+                    user.setPhonework(response.body().getPhonework());
 
-                user.setName(response.body().getName());
-                user.setAddress(response.body().getAddress());
-                user.setEmail(response.body().getEmail());
-                user.setPhonework(response.body().getPhonework());
-
-
-                Log.d(TAG, "onResponse: sendProfUserID" + " "+user.getName());
-
-                createJournal();
-
+                    //Proceed to next network call
+                    createJournal();
+                }
             }
 
             @Override
@@ -214,6 +211,7 @@ public class RegisterPatientFragment extends Fragment {
     }
 
     private void createJournal() {
+        //Check format of CPR-number
         String cpr = etCPR.getText().toString();
         if (cpr.contains("-")){
 
@@ -222,29 +220,28 @@ public class RegisterPatientFragment extends Fragment {
             str.insert(6,"-");
             cpr = str.toString();
         }
+        //Add attributes to Patient object
         patient.setCpr(cpr);
-        Log.d(TAG, "createJournal: "+patient.getCpr());
         patient.setProfUserID(user.getUserID());
 
+        //Network call to start a new journal for this user
         Call<String> call = client.cprExp("createJournal.php",patient );
-        Log.d(TAG, "createJournal: patient id"+patient.getCpr()+"+"+patient.getProfUserID());
-
+        //Listen for response
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.d(TAG, "onResponse: CreateJournal" + response.body());
+                //Check response contents
                 if (response.body() != null) {
-                    Log.d(TAG, "onResponse:1 "+patient.getName());
+                    //Check response value
                     if(!response.body().trim().equals("0")) {
-                        Log.d(TAG, "onResponse:2 "+patient.getName());
+                        //Update patient values, add journalID, remove CPR
                         patient.setCpr("");
-
                         patient.setJournalID(response.body());
+                        //Callback to replace fragment
                         mListener.startJournal(patient, user);
                     } else {
                         Toast.makeText(context, "Journal exists or patient doesn't", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
             @Override
@@ -263,8 +260,8 @@ public class RegisterPatientFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-       // TODO: Update argument type and name
-       void startJournal(Patient patient, User user);
+        //Interface methods
+        void startJournal(Patient patient, User user);
     }
 
     @Override
@@ -272,8 +269,6 @@ public class RegisterPatientFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
-
         }
         this.context = context;
     }

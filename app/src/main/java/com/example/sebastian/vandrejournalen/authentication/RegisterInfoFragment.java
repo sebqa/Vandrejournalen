@@ -85,7 +85,8 @@ public class RegisterInfoFragment extends Fragment {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (etPassword == etVerifypass) {
+                //Check if passwords match
+                if (etPassword.getText().toString().equals(etVerifypass.getText().toString())) {
 
                     //Add attributes to the user object
                     if (user.getInstitution() != null) {
@@ -201,6 +202,8 @@ public class RegisterInfoFragment extends Fragment {
             etAddress.setText(user.getInstitution());
             etAddress.setFloatingLabelText("Institution");
         }
+        //Add input fields
+
         etName.setFloatingLabelAlwaysShown(true);
         etName.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
         etName.setFloatingLabelText("Name");
