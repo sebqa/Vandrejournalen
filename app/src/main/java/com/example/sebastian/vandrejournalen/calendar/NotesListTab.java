@@ -41,8 +41,6 @@ import java.util.TimeZone;
 public class NotesListTab extends Fragment {
 
     private static final String TAG = "NOTESLISTTAB";
-    EditText input;
-    Button showBtn;
     SharedPreferences sharedPrefs;
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
@@ -50,7 +48,7 @@ public class NotesListTab extends Fragment {
     User user;
     SecureUtil secureUtil;
     ArrayList<Note> notesList;
-    Calendar calendar;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -97,12 +95,12 @@ public class NotesListTab extends Fragment {
 
                 // Set up the input
                 InputFilter[] inputFilter = new InputFilter[1];
-                inputFilter[0] = new InputFilter.LengthFilter(100);
+                inputFilter[0] = new InputFilter.LengthFilter(300);
                 final MaterialEditText input = new MaterialEditText(getActivity());
 
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
                 input.setSingleLine(false);
-                input.setMaxCharacters(100);
+                input.setMaxCharacters(300);
                 input.setFilters(inputFilter);
                 builder.setView(input);
                 input.requestFocus();
@@ -165,7 +163,6 @@ public class NotesListTab extends Fragment {
     public void saveNotes(){
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
-
         String json = secureUtil.encrypt(gson.toJson(notesList));
         editor.putString("notes", json);
         editor.apply();
