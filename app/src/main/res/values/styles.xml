@@ -9,6 +9,22 @@
 
     </style>
 
+    <style name="GreenTheme" parent="AppTheme.NoActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">@color/greenPrimary</item>
+    <item name="colorPrimaryDark">@color/greenPrimaryDark</item>
+    <item name="colorAccent">@color/greenAccent</item>
+
+</style>
+
+    <style name="YellowTheme" parent="AppTheme.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/yellowPrimary</item>
+        <item name="colorPrimaryDark">@color/yellowPrimaryDark</item>
+        <item name="colorAccent">@color/yellowAccent</item>
+
+    </style>
+
     <style name="PinkTheme" parent="AppTheme.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/pinkPrimary</item>

@@ -1,37 +1,31 @@
-package com.example.sebastian.vandrejournalen;
+package com.example.sebastian.vandrejournalen.calendar;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
-import com.example.sebastian.vandrejournalen.calendar.CalendarTab;
+import com.example.sebastian.vandrejournalen.User;
+import com.google.gson.Gson;
 
 
 public class SearchFragment extends Fragment {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-    private SearchView searchView;
-    String role;
+    User user;
     public SearchFragment() {
         // Required empty public constructor
     }
 
 
-    public static SearchFragment newInstance(String role) {
+    public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString("role",role);
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,7 +33,9 @@ public class SearchFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            role = getArguments().getString("role");
+            //Get User object from Bundle
+            Gson gson = new Gson();
+            user = gson.fromJson(getArguments().getString("user"), User.class);
         }
 
     }
@@ -49,7 +45,7 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         // Inflate the layout for this fragment
-        searchView = rootView.findViewById(R.id.search_view);
+        SearchView searchView = rootView.findViewById(R.id.search_view);
         searchView.clearFocus();
 
         loadFragment();
@@ -58,7 +54,14 @@ public class SearchFragment extends Fragment {
 
     private void loadFragment() {
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(R.id.content_search, CalendarTab.newInstance(role)).commit();
+        //Create fragment instance
+        CalendarTab fragment = CalendarTab.newInstance();
+        //Add object as json string to bundle
+        Bundle args = new Bundle();
+        String obj = new Gson().toJson(user);
+        args.putString("user" , obj);
+        fragment.setArguments(args);
+        fm.beginTransaction().replace(R.id.content_search, fragment).commit();
 
     }
 

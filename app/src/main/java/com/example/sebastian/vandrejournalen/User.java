@@ -1,15 +1,95 @@
 package com.example.sebastian.vandrejournalen;
 
+import java.io.Serializable;
+
 /**
  * Created by Sebastian on 10-11-2017.
  */
 
-public class User {
+public class User implements Serializable {
     String role;
     String name;
     String token;
     String cpr;
-    String pass;
+    String password;
+    String address;
+    String email;
+    int phoneprivate;
+    int phonework;
+    String institution;
+    String userID;
+    boolean response;
+    String journalID;
+
+    public String getMidwifeName() {
+        return midwifeName;
+    }
+
+    public void setMidwifeName(String midwifeName) {
+        this.midwifeName = midwifeName;
+    }
+
+    public String getSpecialistName() {
+        return specialistName;
+    }
+
+    public void setSpecialistName(String specialistName) {
+        this.specialistName = specialistName;
+    }
+
+    String midwifeName;
+    String specialistName;
+
+    public String getJournalID() {
+        return journalID;
+    }
+
+    public void setJournalID(String journalID) {
+        this.journalID = journalID;
+    }
+    public int getPhoneprivate() {
+        return phoneprivate;
+    }
+
+    public void setPhoneprivate(int phoneprivate) {
+        this.phoneprivate = phoneprivate;
+    }
+
+    public int getPhonework() {
+        return phonework;
+    }
+
+    public void setPhonework(int phonework) {
+        this.phonework = phonework;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }public User(){
+
+    }
+
+    public String getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
+    }
+
+
 
     public String getName() {
         return name;
@@ -35,8 +115,8 @@ public class User {
         this.cpr = cpr;
     }
 
-    public String getPass() {
-        return pass;
+    public String getPassword() {
+        return password;
     }
 
     public String getUserID() {
@@ -47,14 +127,11 @@ public class User {
         this.userID = userID;
     }
 
-    String userID;
 
-    boolean response;
-
-    public User(String role, String cpr, String pass){
+    public User(String role, String cpr, String password){
         this.role = role;
         this.cpr = cpr;
-        this.pass = pass;
+        this.password = password;
     }
 
     public String getRole() {
@@ -73,7 +150,7 @@ public class User {
         this.response = response;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

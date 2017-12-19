@@ -12,24 +12,23 @@
     >
 
     <TextView
+        android:id="@+id/noteDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hamburger med ost"
-        android:gravity="top"
-        android:id="@+id/eventDate"
-        android:textSize="25sp"
-        android:textStyle="bold"
         android:fontFamily="sans-serif"
+        android:gravity="top"
         android:paddingLeft="8dp"
-        />
+        android:text="Hamburger med ost"
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:id="@+id/eventText"
+        android:id="@+id/noteText"
         android:textSize="15sp"
-        android:layout_below="@+id/eventDate"
+        android:layout_below="@+id/noteDate"
         android:layout_marginBottom="1dp"
         android:paddingLeft="8dp"
 

@@ -1,0 +1,95 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.sebastian.vandrejournalen.authentication.letIDFragment"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/letidlogo" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text=""
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/insKey"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/letID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Card ID: " />
+        </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_gravity="center">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="8888"
+        android:id="@+id/letTag"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_weight="3"
+        android:maxLines="1"
+        android:textSize="18sp"
+        android:textAlignment="textEnd"
+        android:layout_marginBottom="10dp"
+        />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/letInput"
+        android:layout_marginLeft="12dp"
+        android:layout_weight="1"
+        android:inputType="numberPassword"/>
+
+</LinearLayout>
+    <Button
+        android:id="@+id/continueBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="?attr/colorPrimary"
+        android:text="@string/cont"
+        android:textColor="#FFF" />
+
+
+
+</LinearLayout>
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Not you?"
+    android:layout_gravity="bottom|center_horizontal"
+    android:id="@+id/tvNotYou"
+    />
+</FrameLayout>

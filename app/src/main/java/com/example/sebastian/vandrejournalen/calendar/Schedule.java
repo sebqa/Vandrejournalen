@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.sebastian.journalapp.R;
-
-import java.util.ArrayList;
+import com.example.sebastian.vandrejournalen.User;
+import com.google.gson.Gson;
 
 /**
  * Created by Sebastian on 02-11-2016.
@@ -19,33 +19,29 @@ import java.util.ArrayList;
 
 public class Schedule extends Fragment  {
     FragmentPagerAdapter adapterViewPager;
-    String role;
+    User user;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            role = getArguments().getString("role");
+            Gson gson = new Gson();
+            //Get User object from Bundle
+            user = gson.fromJson(getArguments().getString("user"), User.class);
         }
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_schedule,container,false);
-
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(getFragmentManager(),getContext(),role);
+        adapterViewPager = new SchedulePagerAdapter(getFragmentManager(),getContext(),user);
         vpPager.setAdapter(adapterViewPager);
+        //Choose how many fragments are kept alive at any given time
         vpPager.setOffscreenPageLimit(3);
-
-
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = rootView.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
-
-
-
 
         return rootView;
     }
@@ -53,19 +49,13 @@ public class Schedule extends Fragment  {
     @Override
     public void onStop() {
         super.onStop();
-
     }
 
-
-
-
-    public static Schedule newInstance(String role) {
+    public static Schedule newInstance() {
         Schedule fragment = new Schedule();
         Bundle args = new Bundle();
-        args.putString("role",role);
         fragment.setArguments(args);
         return fragment;
     }
-
 }
 

@@ -1,5 +1,6 @@
 package com.example.sebastian.vandrejournalen.networking;
 
+
 import java.security.cert.CertificateException;
 
 import javax.net.ssl.SSLContext;
@@ -7,20 +8,25 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by Sebastian on 28-11-2017.
  */
 
 public class ServiceGenerator {
-    private static final String BASE_URL = "http://35.156.15.3/";
+    //Set Ip to append  pages to
+    private static final String BASE_URL = "https://18.195.46.104/";
 
+    //Build client
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
                     .client(getUnsafeOkHttpClient())
                     .addConverterFactory(GsonConverterFactory.create());
 
@@ -29,6 +35,7 @@ public class ServiceGenerator {
     private static OkHttpClient.Builder httpClient =
             new OkHttpClient.Builder();
 
+    //Method to create new instance
     public static <S> S createService(
             Class<S> serviceClass) {
         return retrofit.create(serviceClass);
@@ -36,7 +43,7 @@ public class ServiceGenerator {
 
 
     public static OkHttpClient getUnsafeOkHttpClient() {
-
+        //method returns Http Client which accepts all certificates
         try {
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -75,6 +82,6 @@ public class ServiceGenerator {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
+
 }

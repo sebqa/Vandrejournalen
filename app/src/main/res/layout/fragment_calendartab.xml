@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    xmlns:fab="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
 
     <br.com.jpttrindade.calendarview.view.CalendarView
         android:id="@+id/calendarView"
@@ -20,4 +22,42 @@
         app:weekdayNameHeight="24dp">
 
     </br.com.jpttrindade.calendarview.view.CalendarView>
-</LinearLayout>
+
+
+
+
+   <!-- <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:menu_colorNormal="?attr/colorPrimaryDark"
+        app:menu_colorPressed="?attr/colorPrimaryDark"
+        app:menu_colorRipple="?attr/colorPrimaryDark">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabAppointment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_action_add"
+            app:fab_label="@string/nappointment"
+            app:fab_colorNormal="?attr/colorPrimaryDark"
+            app:fab_colorPressed="?attr/colorPrimaryDark"
+            app:fab_colorRipple="?attr/colorPrimaryDark"/>-->
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabStartJournal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_action_add"
+            />
+
+
+    <!--</com.github.clans.fab.FloatingActionMenu>-->
+</FrameLayout>
