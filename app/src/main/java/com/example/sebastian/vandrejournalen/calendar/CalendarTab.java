@@ -48,7 +48,6 @@ import static android.content.ContentValues.TAG;
 
 public class CalendarTab extends Fragment {
 
-    private static final String TAG = "CALENDARTAB";
     public CalendarView calendarView;
     ArrayList<Appointment> arrayList = new ArrayList<Appointment>();
     private CalendarTab.OnFragmentInteractionListener mListener;
@@ -346,23 +345,16 @@ public class CalendarTab extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        //Detach listeners
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-
     }
 
 

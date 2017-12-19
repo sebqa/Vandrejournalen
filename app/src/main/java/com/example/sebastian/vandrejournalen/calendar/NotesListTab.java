@@ -52,9 +52,9 @@ public class NotesListTab extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            //Get User from object
             Gson gson = new Gson();
             user = gson.fromJson(getArguments().getString("user"), User.class);        }
-
     }
     @Nullable
     @Override
@@ -62,33 +62,33 @@ public class NotesListTab extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_noteslist,container,false);
         setHasOptionsMenu(true);
         recyclerView =  rootView.findViewById(R.id.recentRecyclerView);
-        final Gson gson = new Gson();
         notesList = new ArrayList<Note>();
-
-
         secureUtil = new SecureUtil(getActivity());
-        Log.d(TAG, "onCreateView: Before load of sharedprefs"+user.getUserID());
+
+        //Initiate SP
         sharedPrefs = getContext().getSharedPreferences("notes", Context.MODE_PRIVATE);
+            //Check if anything is saved
             if(sharedPrefs !=null) {
-                Log.d(TAG, "onCreateView: "+sharedPrefs.getString("notes", null));
+                //Get the notes as a string
                 String json = sharedPrefs.getString("notes" ,null);
                 if(json != null){
-                Type type = new TypeToken<ArrayList<Note>>() {
-                }.getType();
-                notesList = gson.fromJson(secureUtil.decrypt(json), type);
+                    //Check if the string is empty
+                    Type type = new TypeToken<ArrayList<Note>>() {
+                    }.getType();
+                    //Decrypt the string and add the array of notes to the list
+                    notesList = new Gson().fromJson(secureUtil.decrypt(json), type);
                 }
                 if(notesList != null) {
                     initList();
                 }
-
         }
 
         FloatingActionButton fab = rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
 
-
             @Override
             public void onClick(View view) {
+                //Create dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("New note for today");
                 final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -97,7 +97,7 @@ public class NotesListTab extends Fragment {
                 InputFilter[] inputFilter = new InputFilter[1];
                 inputFilter[0] = new InputFilter.LengthFilter(300);
                 final MaterialEditText input = new MaterialEditText(getActivity());
-
+                //Configure input
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
                 input.setSingleLine(false);
                 input.setMaxCharacters(300);
@@ -110,27 +110,27 @@ public class NotesListTab extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //Add attributes to new note object
                         Note note = new Note();
                         note.setDate(calendar.getTime());
                         note.setText(input.getText().toString());
+                        //If the list is not null, show the list
                         if(notesList != null) {
                             initList();
-
                         } else{
                             notesList = new ArrayList<Note>();
                             initList();
                         }
                         notesList.add(0,note);
-
                         adapter.notifyDataSetChanged();
                         saveNotes();
-
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
+                        //Hide keyboard
                         getActivity().getWindow().setSoftInputMode(
                                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
                         );
@@ -138,11 +138,7 @@ public class NotesListTab extends Fragment {
                 });
                 builder.show();
             }
-
-
         });
-
-
         return rootView;
     }
 
@@ -161,8 +157,10 @@ public class NotesListTab extends Fragment {
     }
 
     public void saveNotes(){
+        //Save notes
         SharedPreferences.Editor editor = sharedPrefs.edit();
         Gson gson = new Gson();
+        //Convert to string and encrypt notes
         String json = secureUtil.encrypt(gson.toJson(notesList));
         editor.putString("notes", json);
         editor.apply();
