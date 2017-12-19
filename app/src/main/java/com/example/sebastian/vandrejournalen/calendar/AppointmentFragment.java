@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 
 public class AppointmentFragment extends Fragment  {
+
     TextView apText;
     Appointment appointment;
     User user;
@@ -41,6 +42,8 @@ public class AppointmentFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+
+            //Get objects from Bundle
             appointment = new Gson().fromJson(getArguments().getString("appointment","Patient"),Appointment.class);
             user = new Gson().fromJson(getArguments().getString("user","Patient"),User.class);
 
@@ -52,27 +55,22 @@ public class AppointmentFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_appointment, container, false);
-       if(user.getRole().equals("Patient")) {
-           TextView previewDate = rootView.findViewById(R.id.previewDate);
-           TextView appointTitle = rootView.findViewById(R.id.appointTitle);
+        TextView previewDate = rootView.findViewById(R.id.previewDate);
+        TextView appointTitle = rootView.findViewById(R.id.appointTitle);
 
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy\nkk:mm:ss");
+        //Define format of date string
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy\nkk:mm:ss");
 
-            previewDate.setText(formatter.format(appointment.getDate()));
+        //Show appontment attributes, date and name
+        previewDate.setText(formatter.format(appointment.getDate()));
+        appointTitle.setText(appointment.getName());
 
-            if(appointment.getName() != null){
-                appointTitle.setText(appointment.getName());
-            }
+        apText = rootView.findViewById(R.id.appointText);
 
-
-
-            apText = rootView.findViewById(R.id.appointText);
-
-           RecyclerView recyclerView = rootView.findViewById(R.id.apNotesList);
-            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                    DividerItemDecoration.VERTICAL));
-
-        }
+        //Create a listview for notes
+       /* RecyclerView recyclerView = rootView.findViewById(R.id.apNotesList);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL));*/
 
 
         return rootView;
