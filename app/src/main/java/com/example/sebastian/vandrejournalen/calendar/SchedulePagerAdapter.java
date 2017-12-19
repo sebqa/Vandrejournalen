@@ -35,14 +35,14 @@ public class SchedulePagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: // Fragment # 0 - This will show FirstFragment
+            case 0: // This will show CalendarTab
                 CalendarTab fragment = CalendarTab.newInstance();
                 Bundle args = new Bundle();
                 String obj = new Gson().toJson(user);
                 args.putString("user" , obj);
                 fragment.setArguments(args);
                 return fragment;
-            case 1: // Fragment # 0 - This will show FirstFragment different title
+            case 1: // This will show NotesListTab
                 NotesListTab fragment2 = NotesListTab.newInstance();
                 Bundle args2 = new Bundle();
                 String obj2 = new Gson().toJson(user);
@@ -50,7 +50,6 @@ public class SchedulePagerAdapter extends FragmentPagerAdapter {
                 fragment2.setArguments(args2);
 
                 return fragment2;
-
             default:
                 return null;
         }
@@ -64,7 +63,6 @@ public class SchedulePagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if (position == 0){
-
             return context.getResources().getString(R.string.calendar);
         } else {
             return context.getResources().getString(R.string.notes);

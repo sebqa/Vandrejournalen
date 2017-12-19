@@ -34,7 +34,6 @@ import static android.content.ContentValues.TAG;
 public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAdapterPatientList.RecyclerViewHolder> {
     int position;
     private ArrayList<Patient> arrayList = new ArrayList<Patient>();
-    private int selectedPos = 0;
     ServerClient client;
     OnFragmentInteractionListener mListener;
     Context ctx;
@@ -66,6 +65,7 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
         //Attach the values we retrieve from the Item class to the values.
         final Patient patient = arrayList.get(position);
 
+        //Set the source of text for textviews
         holder.date.setText(patient.getName());
         holder.event.setText(patient.getAddress());
         this.position = position;
@@ -78,9 +78,6 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
     }
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-
-
         TextView date,event;
         private View container;
         ArrayList<Patient> patients = new ArrayList<Patient>();
@@ -92,7 +89,7 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
             this.patients = patients;
             this.ctx = ctx;
 
-            //Cast the values to a Text or ImageView in the layout.
+            //Cast the values to a Text in the layout.
             date = view.findViewById(R.id.noteDate);
             event = view.findViewById(R.id.noteText);
             container = view.findViewById(R.id.item_container);
@@ -109,21 +106,23 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
             //Find out which item was clicked
             int position = getAdapterPosition();
             final Patient patient = this.patients.get(position);
-            Log.d(TAG, "onClick: Clicked"+patient.getName());
+            //Check if the patient was made correctly
             if(patient != null) {
+                //Network call to get the info needed to start SectionSelectionFragment
                 Call<Patient> call = client.getPatientInfo("returnPatientInformationFromPatientID.php",patient.getUserID() );
-
+                //Listen for response
                 call.enqueue(new Callback<Patient>() {
                     @Override
                     public void onResponse(Call<Patient> call, Response<Patient> response) {
+                        //Check response contents
                         if(response.body() != null) {
+                            //Create Patient object from response
                             Patient cPatient = response.body();
+                            //Callback to change fragment
                             mListener.sectionSelection(cPatient);
-
                         } else{
                             Toast.makeText(ctx, R.string.patient_not_registered, Toast.LENGTH_SHORT).show();
                         }
-
                     }
 
                     @Override
@@ -131,20 +130,11 @@ public class RecyclerAdapterPatientList extends RecyclerView.Adapter<RecyclerAda
                         Toast.makeText(ctx, "Network Error", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-            }else{
-                //Toast.makeText(view.getContext(), "Item no longer exists",
-                        //Toast.LENGTH_SHORT).show();
-
             }
-
-
         }
-
     }
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        //Interface methods
         void sectionSelection(Patient patient);
     }
 

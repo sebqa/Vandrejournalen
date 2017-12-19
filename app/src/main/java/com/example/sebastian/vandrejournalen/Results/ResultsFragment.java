@@ -52,20 +52,15 @@ import static android.content.ContentValues.TAG;
 public class ResultsFragment extends Fragment  {
     private View rootView;
     Context context;
-    MaterialDialog dialog;
-    LinearLayout cLinearLayout,hLinearLayout,notesLayout;
+    LinearLayout cLinearLayout,hLinearLayout;
     User user;
     FloatingActionButton fab, fabCheck;
-    MaterialSpinner typeSpinner;
     Consultation consultation;
     MaterialEditText etGestationsalder, etVaegt, etBlodtryk, etUrinASLeuNit, etOedem, etSymfyseFundus, etFosterpraes, etFosterskoen, etFosteraktivitet, etUndersoegelsessted, etInitialer,etType;
-    boolean persSelected = false;
-    ArrayList<String> ITEMS = new ArrayList<String>();
     OnFragmentInteractionListener mListener;
     Patient patient;
     ServerClient client;
     private boolean edited;
-
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -82,8 +77,8 @@ public class ResultsFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            //Get objects from Bundle
             user = new Gson().fromJson(getArguments().getString("user","Midwife"),User.class);
-            Log.d(TAG, "onCreate: "+user.getRole());
             consultation = new Gson().fromJson(getArguments().getString("obj"), Consultation.class);
             patient = new Gson().fromJson(getArguments().getString("patient", "Patient"), Patient.class);
 
@@ -99,53 +94,40 @@ public class ResultsFragment extends Fragment  {
 
         cLinearLayout = rootView.findViewById(R.id.resultsLayout);
         hLinearLayout = rootView.findViewById(R.id.hLayout);
-
+        //Create Http Client
         client = ServiceGenerator.createService(ServerClient.class);
 
-
+        //Create new thread to init layout
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 if(isAdded())
                 consultationLayout();
                 setEditable();
-
-
             }
         });
-
-
-
-        //etName.setText(consultation.getEvent());
         return rootView;
-
-    }
-
-    private void updateAppointment() {
-
-    // Make
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        updateAppointment();
     }
 
     public interface OnFragmentInteractionListener {
+        //Interface methods
         void showDatePicker();
         void updateEdited(boolean edited);
     }
 
     public void consultationLayout() {
+        //Create input fields
         etGestationsalder = new MaterialEditText(context);
         etVaegt = new MaterialEditText(context);
         etBlodtryk = new MaterialEditText(context);
@@ -157,25 +139,25 @@ public class ResultsFragment extends Fragment  {
         etFosteraktivitet = new MaterialEditText(context);
         etUndersoegelsessted = new MaterialEditText(context);
         etInitialer = new MaterialEditText(context);
+        etType = new MaterialEditText(context);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         params.topMargin = 16;
 
-        // Fullname
+        //Add date to top of layout
         TextView tvDate = new TextView(context);
         tvDate.setLayoutParams(params);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
         tvDate.setText(dateFormat.format(consultation.getDate()));
-
         hLinearLayout.addView(tvDate,0);
 
-       etType = new MaterialEditText(context);
-
+        //Check if the user is a GP or MW
         if (user.getRole().equals("General Practitioner")||user.getRole().equals("Midwife")) {
+            //init and show fab button
             fab = rootView.findViewById(R.id.fab);
             fab.setVisibility(View.VISIBLE);
+            //init fabcheck button
             fabCheck = rootView.findViewById(R.id.fabCheck);
             fabCheck.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -192,39 +174,45 @@ public class ResultsFragment extends Fragment  {
                 }
             });
 
+            //Check if consultationID is null or "". If so, this is a new consultation
             if (consultation.getConsultationID() == null || consultation.getConsultationID().equals("")) {
+                //Set attributes
                 consultation.setInitialer(user.getName());
                 consultation.setConsultationID("");
+                //Change edited value
                 edited = true;
+                //Callback to update edited in MainActivity
                 mListener.updateEdited(edited);
+
                 fab.setVisibility(View.INVISIBLE);
                 fabCheck.setVisibility(View.VISIBLE);
-                //mListener.hideFab();
+
+                //Set text of responsible
                 etType.setText(user.getName());
             }
         }
+        //Check if any initials exists
         if (consultation.getInitialer() != null) {
-            Log.d(TAG, "consultationLayout: " + consultation.getConsultationID());
-            Log.d(TAG, "consultationLayout: "+consultation.getInitialer());
             etType.setText(consultation.getInitialer());
-            //mListener.showFab();
         }
-            etType.setFloatingLabelAlwaysShown(true);
-            etType.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
-            etType.setFloatingLabelText(getString(R.string.responsible));
-            etType.setFocusable(false);
-            cLinearLayout.addView(etType);
+        etType.setFloatingLabelAlwaysShown(true);
+        etType.setFloatingLabel(MaterialEditText.FLOATING_LABEL_HIGHLIGHT);
+        etType.setFloatingLabelText(getString(R.string.responsible));
+        etType.setFocusable(false);
+        cLinearLayout.addView(etType);
 
 
+        //Create a new textwatcher instance
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Check if edited is false
                 if(!edited) {
+                    //Info has been edited
                     fab.setVisibility(View.INVISIBLE);
                     fabCheck.setVisibility(View.VISIBLE);
                     edited = true;
@@ -234,9 +222,10 @@ public class ResultsFragment extends Fragment  {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         };
+
+        //Init input fields - set textlistener to register if anyting is updated
 
         // Gestationsalder
         etGestationsalder.setText(String.valueOf(consultation.gestationsalder));
@@ -321,46 +310,15 @@ public class ResultsFragment extends Fragment  {
         recyclerView.addItemDecoration(new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL));
 
-
-
-        //Get notes for this consultation
-       /* RecyclerAdapter adapter = new RecyclerAdapter(RoleHelper.getAllAppointments(user), context);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);*/
-
-        /*final TextView notesTitle = new TextView(context);
-        notesTitle.setText("NOTER");
-        notesTitle.setTextSize(20);
-        notesTitle.setLayoutParams(params);
-
-        tvShowNotes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (notesShowing) {
-                    cLinearLayout.removeView(notesTitle);
-                    cLinearLayout.removeView(recyclerView);
-                    tvShowNotes.setText("Vis noter");
-
-                    notesShowing = false;
-                } else {
-                    cLinearLayout.addView(notesTitle);
-                    cLinearLayout.addView(recyclerView);
-                    recyclerView.requestFocus();
-                    tvShowNotes.setText("Skjul noter");
-                    notesShowing = true;
-                }
-            }
-        });*/
-
     }
 
     private void sendConsultation() {
+        //Update edited value
         edited = false;
         mListener.updateEdited(edited);
+        //Set attributes of consultation
         consultation.setJournalID(patient.getJournalID());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Log.d(TAG, "sendConsultation: "+consultation.getConsultationID());
         try {
             consultation.setDateString(dateFormat.format(consultation.getDate()));
             consultation.setBlodtryk(etBlodtryk.getText().toString());
@@ -373,23 +331,20 @@ public class ResultsFragment extends Fragment  {
             consultation.setFosterskoen(etFosterskoen.getText().toString());
             consultation.setFosteraktivitet(etFosteraktivitet.getText().toString());
             consultation.setUndersoegelsessted(etUndersoegelsessted.getText().toString());
-            Log.d(TAG, "sendConsultation: "+user.getName());
             consultation.setInitialer(user.getUserID());
 
-
+            //Send consultation object
             Call<String> call = client.postConsultation("addJournalConsultation.php", consultation);
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
-                    Log.d(TAG, "onResponse: " + response.body().trim());
-                    if (!response.body().trim().equals("FALSE")) {
-
+                    //Check response content
+                    if(response.body() != null) {
+                        if (!response.body().trim().equals("FALSE")) {
+                            Toast.makeText(context, "Updated", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    Log.d(TAG, "onResponse: " + response.body().trim());
-                    Log.d(TAG, "onResponse: "+consultation.getGestationsalder());
-                    Toast.makeText(context, "Updated", Toast.LENGTH_SHORT).show();
                 }
-
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
@@ -399,75 +354,10 @@ public class ResultsFragment extends Fragment  {
         }catch (NumberFormatException e1){
             Toast.makeText(context, "Wrong input", Toast.LENGTH_SHORT).show();
         }
-
-
-    }
-
-    private void initSpinner() {
-        typeSpinner = new MaterialSpinner(context);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, ITEMS);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        typeSpinner.setAdapter(adapter);
-        typeSpinner.setTextSize(16);
-        typeSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                if(item.equals(user.getRole()) || item.equals(RoleHelper.translateRole(user.getRole()))||position == 0 || item.length() > 20){
-                    Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
-                } else {
-                    if(dialog == null) {
-                        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
-                                .title(getResources().getString(R.string.choose) +" "+item)
-                                .items("Person - id 292837567198","Anden person - id 12323437198","Tredje person - id 077287234818")
-                                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                    @Override
-                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .dismissListener(new DialogInterface.OnDismissListener() {
-                                    @Override
-                                    public void onDismiss(DialogInterface dialogInterface) {
-                                        if(persSelected){
-                                            persSelected = false;
-                                        }else {
-
-                                            typeSpinner.setSelectedIndex(0);
-                                        }
-                                        dialog = null;
-                                    }
-                                })
-                                .itemsCallback(new MaterialDialog.ListCallback() {
-                                    @Override
-                                    public void onSelection(MaterialDialog mdialog, View view, int which, CharSequence text) {
-                                        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-                                        persSelected = true;
-                                        if(!ITEMS.contains(text.toString())){
-                                            ITEMS.add(0,text.toString());
-                                            adapter.notifyDataSetChanged();
-                                            typeSpinner.setDropdownHeight(600);
-
-                                            typeSpinner.setSelectedIndex(0);
-                                        } else{
-                                            typeSpinner.setSelectedIndex(ITEMS.indexOf(text.toString()));
-                                        }
-
-                                        dialog = null;
-
-                                    }
-                                });
-                        dialog = builder.build();
-                        dialog.show();
-                    } else if(dialog.isShowing()){
-                        dialog = null;
-                    }
-                }
-
-            }
-        });
     }
 
     public void setEditable() {
+        //Disallow editing for patients
         String role = user.getRole();
         switch(role) {
             case "Midwife":
@@ -502,8 +392,6 @@ public class ResultsFragment extends Fragment  {
         if (context instanceof ResultsFragment.OnFragmentInteractionListener) {
             mListener = (ResultsFragment.OnFragmentInteractionListener) context;
         } else {
-
-
         }
         this.context = context;
     }

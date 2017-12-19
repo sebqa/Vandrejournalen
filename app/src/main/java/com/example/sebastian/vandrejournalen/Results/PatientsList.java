@@ -25,10 +25,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Sebastian on 30-12-2016.
- */
-
 public class PatientsList extends Fragment {
 
     private static final String TAG = "PATIENTSLIT";
@@ -43,8 +39,8 @@ public class PatientsList extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
-            user = gson.fromJson(getArguments().getString("obj"), User.class);        }
-
+            user = gson.fromJson(getArguments().getString("user"), User.class);
+        }
     }
     @Nullable
     @Override
@@ -52,21 +48,26 @@ public class PatientsList extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_patients_list,container,false);
         setHasOptionsMenu(true);
         recyclerView =  rootView.findViewById(R.id.recyclerView);
+        //Create Http Client
         client = ServiceGenerator.createService(ServerClient.class);
 
-        Log.d(TAG, "onCreateView: "+user.getUserID());
+        //send User object to get a list of patients
         Call<ArrayList<Patient>> call = client.getPatients("returnMyPatients.php", user);
+        //Load list
         initList();
-
+        //Listen for response
         call.enqueue(new Callback<ArrayList<Patient>>() {
             @Override
             public void onResponse(Call<ArrayList<Patient>> call, Response<ArrayList<Patient>> response) {
+                //Check response contents
                 if(response.body() != null){
+                    //Reset list
                     patients.clear();
+                    //Add response body list to patients list
                     patients.addAll(response.body());
+                    //Tell the adapter that we have new information
                     adapter.notifyDataSetChanged();
                 }
-
             }
 
             @Override
@@ -74,7 +75,6 @@ public class PatientsList extends Fragment {
                 Toast.makeText(getContext(), "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         return rootView;
     }
@@ -86,19 +86,24 @@ public class PatientsList extends Fragment {
     }
 
     public static PatientsList newInstance(User user) {
+        //Create fragment instance
         PatientsList fragment = new PatientsList();
+        //Create package
         Bundle args = new Bundle();
         Gson gson = new Gson();
+        //Convert User object to a jsonstring
         String obj = gson.toJson(user);
-        args.putString("obj" , obj);
+        //Add jsonstring to package
+        args.putString("user" , obj);
         fragment.setArguments(args);
         return fragment;
     }
 
     public void initList(){
-
+        //Add vertical divider lines
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
+        //Create adapter with list of patients and context
         adapter = new RecyclerAdapterPatientList(patients, getActivity());
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);

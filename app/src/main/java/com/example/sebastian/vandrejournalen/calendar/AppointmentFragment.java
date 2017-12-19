@@ -61,16 +61,11 @@ public class AppointmentFragment extends Fragment  {
         //Define format of date string
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy\nkk:mm:ss");
 
-        //Show appontment attributes, date and name
+        //Show appointment attributes, date and name
         previewDate.setText(formatter.format(appointment.getDate()));
         appointTitle.setText(appointment.getName());
 
         apText = rootView.findViewById(R.id.appointText);
-
-        //Create a listview for notes
-       /* RecyclerView recyclerView = rootView.findViewById(R.id.apNotesList);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                DividerItemDecoration.VERTICAL));*/
 
 
         return rootView;

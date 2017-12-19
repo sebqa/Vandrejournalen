@@ -129,6 +129,7 @@ public class CalendarTab extends Fragment {
                 }
             }
         });
+        dialog.show();
     }
 
 

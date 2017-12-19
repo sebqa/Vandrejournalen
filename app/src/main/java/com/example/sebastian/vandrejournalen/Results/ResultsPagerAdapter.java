@@ -17,7 +17,6 @@ import java.util.ArrayList;
  */
 
 public class ResultsPagerAdapter extends FragmentStatePagerAdapter {
-    private static final String TAG = "RESULTSPAGERADAPTER";
     User user;
     ArrayList<Consultation> arraylist;
     Context context;
@@ -32,8 +31,12 @@ public class ResultsPagerAdapter extends FragmentStatePagerAdapter {
     }
     @Override
     public Fragment getItem(int position) {
+
+        //Create package
         Bundle args = new Bundle();
+        //Create instance of fragment
         Fragment fragment = ResultsFragment.newInstance();
+        //Convert objects to jsonstrings and add to package
         String obj2 = new Gson().toJson(user);
         args.putString("user" , obj2);
         String obj = new Gson().toJson(arraylist.get(position));

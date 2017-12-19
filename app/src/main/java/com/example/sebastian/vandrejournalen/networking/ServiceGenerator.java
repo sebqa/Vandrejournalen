@@ -19,8 +19,10 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class ServiceGenerator {
+    //Set Ip to append  pages to
     private static final String BASE_URL = "https://18.195.46.104/";
 
+    //Build client
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -33,6 +35,7 @@ public class ServiceGenerator {
     private static OkHttpClient.Builder httpClient =
             new OkHttpClient.Builder();
 
+    //Method to create new instance
     public static <S> S createService(
             Class<S> serviceClass) {
         return retrofit.create(serviceClass);
@@ -40,7 +43,7 @@ public class ServiceGenerator {
 
 
     public static OkHttpClient getUnsafeOkHttpClient() {
-
+        //method returns Http Client which accepts all certificates
         try {
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -79,17 +82,6 @@ public class ServiceGenerator {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
-/*    public static certClient(){
-        CertificatePinner certPinner = new CertificatePinner.Builder()
-                .add("http://35.156.15.3/",
-                        "sha256/4hw5tz+scE+TW+mlai5YipDfFWn1dqvfLG+nU7tq1V8=")
-                .build();
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .certificatePinner(certPinner)
-                .build();
-    }*/
 }

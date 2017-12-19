@@ -57,7 +57,6 @@ public class BasicHealthInfoFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static BasicHealthInfoFragment newInstance() {
         BasicHealthInfoFragment fragment = new BasicHealthInfoFragment();
         Bundle args = new Bundle();
@@ -69,7 +68,7 @@ public class BasicHealthInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            //Get objects from Bundle
             patient = new Gson().fromJson(getArguments().getString("patient","Patient"),Patient.class);
             user = new Gson().fromJson(getArguments().getString("user","Patient"),User.class);
         }
@@ -81,7 +80,6 @@ public class BasicHealthInfoFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_basic_health_info, container, false);
         cLayout = rootView.findViewById(R.id.cLayout);
-        Log.d(TAG, "onCreateView: user og patient data"+user.getName()+patient.getName());
 
         initLayout(rootView);
         if(user.getRole().equals("Patient")||user.getRole().equals("Specialist")){
@@ -139,16 +137,21 @@ public class BasicHealthInfoFragment extends Fragment {
             });
         }
 
+        //Create Http Client
         client = ServiceGenerator.createService(ServerClient.class);
-        Log.d(TAG, "getBasicInfo: JOURNALID"+ user.getJournalID());
+        //Send journalID to receive BasicInfo object
         Call<BasicInfo> call = client.getBasicInfo("returnJournalBasicHealth.php", journalID);
         call.enqueue(new Callback<BasicInfo>() {
             @Override
             public void onResponse(Call<BasicInfo> call, Response<BasicInfo> response) {
+                //Check response contents
                 if(response.body() != null){
+                    //Set response as object
                     basicInfo = response.body();
+                    //Add journal id of the patient to object
                     basicInfo.setJournalID(patient.getJournalID());
 
+                    //Update fields and radio buttons to reflect object data
                     try {
                         etMensDag.setText(basicInfo.getMensDag());
                         etCyklus.setText(basicInfo.getCyklus());
@@ -204,14 +207,9 @@ public class BasicHealthInfoFragment extends Fragment {
                         } else{
                             urinDyrk.setChecked(false);
                         }
-
-
                     } catch (NullPointerException e){
-                        Log.d(TAG, "onResponse: Noget er null"+response.body().getMensDag());
                     }
-
                 }
-
             }
 
             @Override
@@ -219,13 +217,11 @@ public class BasicHealthInfoFragment extends Fragment {
                 Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void initLayout(View rootView) {
         etMensDag = rootView.findViewById(R.id.lastMens);
         etMensDag.setHint(R.string.last_mens);
-
         etCyklus  = rootView.findViewById(R.id.cycle);
         etCyklus.setText(R.string.cycle);
         calcYes = rootView.findViewById(R.id.calcYes);
@@ -248,7 +244,6 @@ public class BasicHealthInfoFragment extends Fragment {
         antiDYes = rootView.findViewById(R.id.antidYes);
         antiDNo = rootView.findViewById(R.id.antidNo);
         urinDyrk = rootView.findViewById(R.id.urinYes);
-
         button = rootView.findViewById(R.id.savExitBtn);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -258,26 +253,16 @@ public class BasicHealthInfoFragment extends Fragment {
                 mListener.popStack();
             }
         });
-
-
-
-
-
-
     }
 
     private void sendInfo() {
+        //Add all info from input fields to object basicInfo
         basicInfo.setCyklus(etCyklus.getText().toString());
-        if(calcNo.isChecked()){
-            basicInfo.setbSikker(false);
-        } else{
-            basicInfo.setbSikker(true);
-        }
+        basicInfo.setbSikker(calcYes.isChecked());
         basicInfo.setGrav(Integer.parseInt(etGrav.getText().toString()));
         basicInfo.setHojde(Integer.parseInt(ethojde.getText().toString()));
         basicInfo.setBMI(Float.parseFloat(etBMI.getText().toString()));
-
-        basicInfo.setHep(true);
+        basicInfo.setHep(hepYes.isChecked());
         basicInfo.setBlodTaget(bloodyes.isChecked());
         basicInfo.setRhesus(mrhesYes.isChecked());
         basicInfo.setIrreg(iregYes.isChecked());
@@ -286,12 +271,13 @@ public class BasicHealthInfoFragment extends Fragment {
         basicInfo.setAntiD(antiDYes.isChecked());
         basicInfo.setUrin(urinDyrk.isChecked());
 
+        //Send basiInfo object to server
         Call<String> call = client.sendBasic("addJournalBasicHealth.php",basicInfo);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                //Check response content
                 if(response.body() != null){
-                    Log.d(TAG, "onResponse: "+response.body());
                     try {
                         if(response.body().trim().equals("TRUE")) {
                             Toast.makeText(context, R.string.info_saved, Toast.LENGTH_SHORT).show();
@@ -301,7 +287,6 @@ public class BasicHealthInfoFragment extends Fragment {
                     } catch (NullPointerException e){
                         Toast.makeText(context, "Nullpointer", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
 
@@ -310,7 +295,6 @@ public class BasicHealthInfoFragment extends Fragment {
                 Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void showDatePicker() {
@@ -375,7 +359,7 @@ public class BasicHealthInfoFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        //Interface method
         void popStack();
     }
 }

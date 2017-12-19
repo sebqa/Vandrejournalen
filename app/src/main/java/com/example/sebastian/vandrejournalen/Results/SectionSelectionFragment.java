@@ -28,7 +28,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.content.ContentValues.TAG;
 
 
 public class SectionSelectionFragment extends Fragment implements View.OnClickListener{
@@ -48,7 +47,6 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static SectionSelectionFragment newInstance() {
         SectionSelectionFragment fragment = new SectionSelectionFragment();
         Bundle args = new Bundle();
@@ -60,6 +58,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            //Get objects from Bundle
             if(getArguments().getString("patient",null)!= null) {
                 patient = new Gson().fromJson(getArguments().getString("patient", "Patient"), Patient.class);
             }
@@ -86,6 +85,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         tvDiab= rootView.findViewById(R.id.diabeetesLink);
         tvPoB= rootView.findViewById(R.id.birthPlaceLink);
         tvCloseBtn = rootView.findViewById(R.id.closeBtn);
+        //Create buttons and tv's
         newMidwife = new Button(context);
         newSpecialist = new Button(context);
         newMidwife.setText(R.string.attMid);
@@ -93,6 +93,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         tvMidwifeName = new TextView(context);
         tvSpecialistName = new TextView(context);
 
+        //Set click listener
         tvBasic.setOnClickListener(this);
         tvCons.setOnClickListener(this);
         tvTests.setOnClickListener(this);
@@ -100,29 +101,28 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         tvDiab.setOnClickListener(this);
         tvPoB.setOnClickListener(this);
 
-
+        //Create theme color
         TypedValue typedValue = new TypedValue();
         if (this.getActivity().getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true))
         {
-            // how to get color?
-            int colorWindowBackground = typedValue.data;// **just add this line to your code!!**
+            //Set color of buttons
+            int colorWindowBackground = typedValue.data;//
             newMidwife.setBackgroundColor(colorWindowBackground);
             newMidwife.setTextColor(Color.parseColor("#FFFFFF"));
             newSpecialist.setBackgroundColor(colorWindowBackground);
             newSpecialist.setTextColor(Color.parseColor("#FFFFFF"));
         }
 
-
         if(user.getRole().equals("Patient")) {
             getProfInfo();
-            Log.d(TAG, "onCreateView: "+user.getMidwifeName());
-
+            //Show attached profs
             if(user.getMidwifeName() != null) {
                 newMidwife.setText(getString(R.string.mw) + ": " + user.getMidwifeName());
             }
             if(user.getSpecialistName() != null) {
                 newSpecialist.setText("Specialist: " + user.getSpecialistName());
             }
+            //show buttons
             secContent.addView(newMidwife);
             secContent.addView(newSpecialist);
 
@@ -134,6 +134,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
             tvCloseBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //Create dialog
                     new MaterialDialog.Builder(context)
                             .title(R.string.closeJourn)
                             .positiveText(getString(R.string.yes))
@@ -158,6 +159,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
             newMidwife.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //Create dialog
                     new MaterialDialog.Builder(context)
                             .title(R.string.atprof)
                             .positiveText(getString(R.string.cont))
@@ -186,13 +188,11 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
                 }
             });
 
-
-
-
             secContent.addView(newSpecialist);
             newSpecialist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //Create dialog
                     new MaterialDialog.Builder(context)
                             .title(R.string.atprof)
                             .positiveText(getString(R.string.cont))
@@ -208,7 +208,6 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     profCpr = dialog.getInputEditText().getText().toString();
                                     attachProf("Specialist");
-
                                 }
                             })
                             .onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -224,29 +223,27 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
             getPatientInfo();
         }
 
-
         return rootView;
     }
 
     private void closeJournal() {
-
+        //To close a journal, set profid of patient
         patient.setProfUserID(user.getUserID());
+        //Network call with Patient object
         Call<String> call = client.attachProf("closeJournal.php",patient);
+        //Listen for response
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                //Check response content
                 if(response.body() != null) {
-                    Log.d(TAG, "onResponse: "+response.body().trim());
+                    //Check response value
                     if(response.body().trim().equals("TRUE")){
                         Toast.makeText(context, R.string.journalclosed, Toast.LENGTH_SHORT).show();
+                        //Callback to replace fragment with previous
                         mListener.popStack();
-
                     } else{
-                        Log.d(TAG, "onResponse: "+response.body().trim());
-                        Log.d(TAG, "onResponse: "+response.message());
-
                     }
-
                 }
             }
 
@@ -258,39 +255,37 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     }
 
     private void attachProf(final String role) {
-        String cpr =profCpr;
+        //Check format of CPR-number
+        String cpr = profCpr;
         if (cpr.contains("-")){
             patient.setProfCPR(cpr);
         } else{
             StringBuilder str = new StringBuilder(cpr);
             str.insert(6,"-");
             patient.setProfCPR(str.toString());
-            Log.d(TAG, "checkCred: "+user.getCpr());
         }
+        //Add the role of the prof to be attached, to Patient object
         patient.setProfRole(role);
-
-        Log.d(TAG, "attachProf: "+patient.getProfCPR());
-        Log.d(TAG, "attachProf: "+patient.getProfRole());
-        Log.d(TAG, "attachProf: "+patient.getJournalID());
-
+        //Send Patient object
         Call<String> call = client.attachProf("addProfToJournal.php",patient);
+        //Listen for response
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                //Check response content
                 if(response.body() != null) {
-                    Log.d(TAG, "onResponse: "+response.body().trim());
-
+                    //Set text, depending on the role
                     if(role.equals("Midwife")){
                         newMidwife.setText(getString(R.string.mw)+ ": "+response.body().trim());
                     } else{
                         newSpecialist.setText("Specialist: "+response.body().trim());
                     }
-
                 }  else {
+                    //if there was no respone, set text to default
                     newMidwife.setText(R.string.attMid);
                     newSpecialist.setText(R.string.attSpec);
                 }
-                }
+            }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
@@ -300,55 +295,45 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
     }
 
     private void getPatientInfo() {
+        //Use the existing Patient object to populate textviews
+        tvRole.setText("Patient");
+        tvName.append(patient.getName());
+        tvAddress.append(patient.getAddress());
+        tvEmail.append(patient.getEmail());
+        tvPhone.append("" + patient.getPhonework() + "\n" + patient.getPhoneprivate());
 
-            if (patient.getCpr() != null) {
-/*
-                tvHeadline.append(" - "+patient.getCpr());
-*/
-            }
-            tvRole.setText("Patient");
-            tvName.append(patient.getName());
-            tvAddress.append(patient.getAddress());
-            tvEmail.append(patient.getEmail());
-            tvPhone.append("" + patient.getPhonework() + "\n" + patient.getPhoneprivate());
+        if (patient.getMidwifeName() != null) {
+            newMidwife.setText(getString(R.string.mw) + ": " + patient.getMidwifeName());
 
-
-            if (patient.getMidwifeName() != null) {
-                newMidwife.setText(getString(R.string.mw) + ": " + patient.getMidwifeName());
-
-            }
-            if (patient.getSpecialistName() != null) {
-                newSpecialist.setText("Specialist: " + patient.getSpecialistName());
-            }
-
-
+        }
+        if (patient.getSpecialistName() != null) {
+            newSpecialist.setText("Specialist: " + patient.getSpecialistName());
+        }
     }
 
     private void getProfInfo() {
-
+        //Get information about the GP
+        //Send user id
         Call<Patient> call = client.getProfInfo("findGpInfo.php",user.getUserID() );
-
+        //Listen for response
         call.enqueue(new Callback<Patient>() {
             @Override
             public void onResponse(Call<Patient> call, Response<Patient> response) {
+                //Check response content
                 if(response.body() != null) {
+                    //set object to response body
                     prof = response.body();
                     try {
+                        //Populate textviews with object
                         tvRole.setText(getResources().getString(R.string.gp));
                         tvName.append(prof.getName());
                         tvAddress.append(prof.getAddress());
                         tvEmail.append(prof.getEmail());
                         tvPhone.append("" + prof.getPhonework());
                         user.setJournalID(prof.getPatientJournalID());
-
-
-
                     }catch (NullPointerException e){
                     }
                 }
-                else{
-                }
-
             }
 
             @Override
@@ -365,8 +350,6 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
-
         }
         this.context = context;
     }
@@ -379,13 +362,16 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
+        //Create fragment
         Fragment fragment = new Fragment();
+        //Create Bundle
         Bundle args = new Bundle();
+        //Convert objects to jsonstrings
         String obj = new Gson().toJson(user);
         args.putString("user" , obj);
         String obj1 = new Gson().toJson(patient);
         args.putString("patient" , obj1);
-
+        //Replace fragment based on button click
         switch (view.getId()){
             case R.id.basicInfoLink:
                 fragment = BasicHealthInfoFragment.newInstance();
@@ -409,7 +395,7 @@ public class SectionSelectionFragment extends Fragment implements View.OnClickLi
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        //Interface methods
         void updateFragment(Fragment fragment);
         void popStack();
     }

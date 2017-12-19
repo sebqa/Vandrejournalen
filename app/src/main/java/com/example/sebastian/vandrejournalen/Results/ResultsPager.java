@@ -44,8 +44,6 @@ public class ResultsPager extends Fragment{
     ServerClient client;
     String journalID;
 
-
-    // TODO: Rename and change types of parameters
     ArrayList<Consultation> arrayList = new ArrayList<Consultation>();
     ViewPagerArrowIndicator viewPagerArrowIndicator;
     ArrayList<Date> dates = new ArrayList<Date>();
@@ -63,13 +61,13 @@ public class ResultsPager extends Fragment{
 
     public static ResultsPager newInstance(User user) {
         ResultsPager fragment = new ResultsPager();
-        Bundle args = new Bundle();
         return fragment;
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            //Get objects from Bundle
             Gson gson = new Gson();
             user = gson.fromJson(getArguments().getString("user"), User.class);
             if(getArguments().getString("patient",null)!= null) {
@@ -84,10 +82,12 @@ public class ResultsPager extends Fragment{
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_results_pager, container, false);
         viewPager = rootView.findViewById(R.id.resultsPager);
-        //arrayList = RoleHelper.getAllAppointments(user);
+        //set today's date
         final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         today = calendar.getTime();
+
         viewPagerArrowIndicator =  rootView.findViewById(R.id.viewPagerArrowIndicator);
+        //Create Http Client
         client = ServiceGenerator.createService(ServerClient.class);
 
         getConsultations();
@@ -96,45 +96,53 @@ public class ResultsPager extends Fragment{
     }
 
     private void setUpPager() {
-
+        //Create theme color
         int[] attrs = {R.attr.colorPrimary};
         TypedArray ta = context.obtainStyledAttributes(attrs);
         int color = ta.getResourceId(0, android.R.color.black);
         ta.recycle();
-        Log.d(TAG, "onCreateView: "+user.getRole());
 
         adapter = new ResultsPagerAdapter(getFragmentManager(),getContext(),arrayList,user, patient);
 
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(arrayList.size()-1);
         viewPagerArrowIndicator.bind(viewPager);
+        //Add theme color to arrows
         viewPagerArrowIndicator.setArrowColor(getResources().getColor(color));
-
     }
 
     private void getConsultations() {
+        //Check if we need to send User's journal id or Patient's journal id
         if(user.getRole().equals("Patient")){
             journalID = user.getJournalID();
         } else {
             journalID = patient.getJournalID();
         }
+        //Send journal ID and get an array of Consultations
         Call<ArrayList<Consultation>> call = client.getConsultations("returnJournalConsultations.php", journalID );
-
+        //Listen for response
         call.enqueue(new Callback<ArrayList<Consultation>>() {
             @Override
             public void onResponse(Call<ArrayList<Consultation>> call, Response<ArrayList<Consultation>> response) {
+                //Check response content
                 if(response.body() != null){
+                    //Reset list of Consultations
                     arrayList.clear();
+                    //Add all Consultaions in response body
                     arrayList.addAll(response.body());
+                    //Sort the Consultations by date
                     Collections.sort(arrayList, new Comparator<Consultation>() {
                         public int compare(Consultation o1, Consultation o2) {
                             return o1.getDate().compareTo(o2.getDate());
                         }
                     });
-                    if(arrayList.isEmpty()&& !user.getRole().equals("Patient")||!user.getRole().equals("Specialist")){
+                    //If the list is empty and the user is not a patient or specialist, they automatically create a new consultation
+                    if(arrayList.isEmpty() && !user.getRole().equals("Patient") &&!user.getRole().equals("Specialist")){
                         setTodayDate();
                     }
                     adapter.notifyDataSetChanged();
+
+                    //If there are Consultations in the list
                     if(!arrayList.isEmpty()){
                         getNearestDate();
                     }
@@ -148,32 +156,37 @@ public class ResultsPager extends Fragment{
     }
 
     public void showDatePickerDialog() throws ParseException {
+        //Initialize calendar
         final Calendar c = Calendar.getInstance();
+        //Set today's date
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
+
+        //get correct language of dialog
         Locale locale = getResources().getConfiguration().locale;
         Locale.setDefault(locale);
 
+        //Create dialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                 new DatePickerDialog.OnDateSetListener() {
                     boolean mFirst = true;
-
                     @Override
                     public void onDateSet(DatePicker view, int nyear,
                                           int monthOfYear, int dayOfMonth) {
+                        //Check if it is run for the first time. Bug causes it to double run. (not our fault!)
                         if (mFirst) {
                             mFirst = false;
+                            //Update date
                             year = nyear;
                             month = monthOfYear+1;
                             day = dayOfMonth;
-                            Log.d(TAG, "showDatePickerDialog: "+year+month+day);
-                            //showTimePickerDialog(c);
                             setDate();
                         }
                     }
                 }, year, month, day);
 
+        //Don't allow selection of dates before today
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date d = sdf.parse(day+"/"+(month+1)+"/"+year);
         datePickerDialog.getDatePicker().setMinDate(d.getTime());
@@ -206,14 +219,11 @@ public class ResultsPager extends Fragment{
 
     public void getNearestDate(){
         now = System.currentTimeMillis();
-        //Check if it's today
+        //Add all Consultation's dates to a list
         for (int i=0; i< arrayList.size();i++){
             dates.add(arrayList.get(i).getDate());
-            /* if(calendar.get(Calendar.DAY_OF_MONTH) == arrayList.get(i).getDay() && calendar.get(Calendar.MONTH)+1 == arrayList.get(i).getMonth() && calendar.get(Calendar.YEAR) == arrayList.get(i).getYear()){
-                viewPager.setCurrentItem(i,false);
-
-            }*/
         }
+        //Compare the dates
         Date closest = Collections.min(dates, new Comparator<Date>() {
             public int compare(Date d1, Date d2) {
                 long diff1 = Math.abs(d1.getTime() - now);
@@ -229,16 +239,21 @@ public class ResultsPager extends Fragment{
         super.onDetach();
     }
 
-
-
-
     public void afterToday(Date closest){
+        //If date is not after today
         if(!closest.after(today)) {
+            //Move to this consultation
             viewPager.setCurrentItem(dates.indexOf(closest));
-
         }
         else {
-            afterToday(dates.get(dates.indexOf(closest)-1));
+            //If there are more Consultations in the list
+            if(dates.indexOf(closest)-1 >1) {
+                //Run method again with the previous consultation entry in the list
+                afterToday(dates.get(dates.indexOf(closest) - 1));
+            } else{
+                //Move to this consultation
+                viewPager.setCurrentItem(dates.indexOf(closest));
+            }
         }
     }
 
@@ -249,29 +264,42 @@ public class ResultsPager extends Fragment{
     }
 
     public void setTodayDate() {
+
         final Calendar c = Calendar.getInstance();
+        //Get today's date
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH)+1;
         day = c.get(Calendar.DAY_OF_MONTH);
 
+        //Create new Date object
         Date date = new Date();
+        //Create new Consultation object
         Consultation consultation = new Consultation(date, null);
+        //Set the date with values
         consultation.setDate(day, month, year);
+        //Add consultations to the list
         arrayList.add(consultation);
+        //Tell adapter an item was added
         adapter.notifyDataSetChanged();
+        //Move to this consultation
         viewPager.setCurrentItem(arrayList.size(), true);
         Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
     }
 
     public void setDate() {
+        //Create new Date object
         Date date = new Date();
+        //Create new Consultation object
         Consultation consultation = new Consultation(date, null);
+        //Set the date with values
         consultation.setDate(day, month, year);
+        //Add consultations to the list
         arrayList.add(consultation);
+        //Tell adapter an item was added
         adapter.notifyDataSetChanged();
+        //Move to this consultation
         viewPager.setCurrentItem(arrayList.size(), true);
         Toast.makeText(getActivity(), "New consultation", Toast.LENGTH_SHORT).show();
-
     }
 
 }

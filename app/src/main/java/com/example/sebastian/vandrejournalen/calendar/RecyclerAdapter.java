@@ -22,7 +22,6 @@ import java.util.ArrayList;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
     int position;
     private ArrayList<Note> arrayList = new ArrayList<Note>();
-    private int selectedPos = 0;
 
     Context ctx;
 

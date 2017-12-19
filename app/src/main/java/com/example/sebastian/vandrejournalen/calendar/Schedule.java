@@ -25,9 +25,9 @@ public class Schedule extends Fragment  {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Gson gson = new Gson();
+            //Get User object from Bundle
             user = gson.fromJson(getArguments().getString("user"), User.class);
         }
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,14 +36,12 @@ public class Schedule extends Fragment  {
         ViewPager vpPager = rootView.findViewById(R.id.vpPager);
         adapterViewPager = new SchedulePagerAdapter(getFragmentManager(),getContext(),user);
         vpPager.setAdapter(adapterViewPager);
+        //Choose how many fragments are kept alive at any given time
         vpPager.setOffscreenPageLimit(3);
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = rootView.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
-
-
-
 
         return rootView;
     }
@@ -51,11 +49,7 @@ public class Schedule extends Fragment  {
     @Override
     public void onStop() {
         super.onStop();
-
     }
-
-
-
 
     public static Schedule newInstance() {
         Schedule fragment = new Schedule();
@@ -63,6 +57,5 @@ public class Schedule extends Fragment  {
         fragment.setArguments(args);
         return fragment;
     }
-
 }
 
