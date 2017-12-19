@@ -420,18 +420,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onToday(ArrayList<Appointment> arrayList, int pos) {
-        //Add Bundle with User and Appointment objects to fragment
-        Bundle args = new Bundle();
-        Fragment fragment = AppointmentFragment.newInstance();
-        String obj2 = new Gson().toJson(user);
-        args.putString("user" , obj2);
-        String obj1 = new Gson().toJson(arrayList.get(0));
-        args.putString("appointment" , obj1);
-        fragment.setArguments(args);
-        fn.beginTransaction().replace(R.id.sliding,fragment).commit();
+        if(user.getRole().equals("Patient")) {
+            //Add Bundle with User and Appointment objects to fragment
+            Bundle args = new Bundle();
+            Fragment fragment = AppointmentFragment.newInstance();
+            String obj2 = new Gson().toJson(user);
+            args.putString("user", obj2);
+            String obj1 = new Gson().toJson(arrayList.get(0));
+            args.putString("appointment", obj1);
+            fragment.setArguments(args);
+            fn.beginTransaction().replace(R.id.sliding, fragment).commit();
 
-        //Collapse sliding panel
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            //Collapse sliding panel
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }
     }
 
 
